@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ImageBackground } from 'react-native';
+import { ImageBackground, TouchableOpacity } from 'react-native';
 import {
   Container,
   Content,
@@ -8,8 +8,6 @@ import {
   View
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
-
-
 
 import styles from "./styles";
 

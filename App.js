@@ -4,6 +4,7 @@ import { createStackNavigator } from 'react-navigation';
 
 import MainScreen from './screens/MainScreen.js';
 import Login from './screens/Login';
+import Signup from './screens/Signup';
 
 export default class App extends React.Component {
   render() {
@@ -23,10 +24,16 @@ const AppStackNavigator = createStackNavigator(
       navigationOptions: {
         header: null,
       },
-    }
-  },
+    },
+  Signup: {
+    screen: Signup,
+    navigationOptions: {
+      header: null,
+    },
+  }
+},
   {
-    initialRouteName: "Main",
+    initialRouteName: "Login",
     navigationOptions: {
       headerStyle: {
         backgroundColor: '#cc0404',

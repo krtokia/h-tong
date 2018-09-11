@@ -5,7 +5,7 @@ const bg = require("../../assets/images/bg.png");
 const logo = require("../../assets/images/logo.png");
 const deviceHeight = Dimensions.get("window").height;
 
-export default class App extends Component {
+export default class Signup extends Component {
   constructor(props){
     super(props);
 
@@ -64,7 +64,6 @@ export default class App extends Component {
   }
 
   render() {
-    const navigation = this.props.navigation;
     return (
       <ImageBackground source={bg} style={styles.background}>
       <View style={styles.container}>
@@ -82,13 +81,6 @@ export default class App extends Component {
           secureTextEntry={true}
           style={styles.input}
         />
-        <Button
-          buttonStyle={{ marginTop: 20 }}
-          backgroundColor="transparent"
-          textStyle={{ color: "#bcbec1" }}
-          title="Sign Up"
-          onPress={() => navigation.navigate("Signup")}
-          />
         <Button
           title={'Login'}
           style={styles.loginBtn}

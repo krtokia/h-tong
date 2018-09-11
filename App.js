@@ -15,10 +15,29 @@ export default class App extends React.Component {
   }
 }
 
-const AppStackNavigator = createStackNavigator({
-  Main: { screen: MainScreen },
-  Login: { screen: Login }
-})
+const AppStackNavigator = createStackNavigator(
+  {
+    Main: { screen: MainScreen },
+    Login: {
+      screen: Login,
+      navigationOptions: {
+        header: null,
+      },
+    }
+  },
+  {
+    initialRouteName: "Login",
+    navigationOptions: {
+      headerStyle: {
+        backgroundColor: '#cc0404',
+        shadowOpacity: 0,
+        shadowOffset: { width:0, height:0 },
+        shadowRadius: 0,
+        elevation: 0,
+      }
+    }
+  }
+)
 
 const styles = StyleSheet.create({
   container: {

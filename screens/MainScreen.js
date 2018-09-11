@@ -10,7 +10,7 @@ import Some2 from './Something2';
 import Some3 from './Something3';
 import Some4 from './Something4';
 
-const Logo  = require('../assets/images/logo.png');
+const Logo  = require('../assets/images/headIcon.png');
 
 class MainScreen extends Component{
   static navigationOptions = {

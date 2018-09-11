@@ -12,6 +12,13 @@ import { Grid, Col, Row } from "react-native-easy-grid";
 import styles from "./styles";
 
 class Home extends Component{
+  constructor (props, context){
+    super(props, context);
+    this.goTest = this.goTest.bind(this);
+  }
+  goTest() {
+    this.props.navigation.navigate("Login");
+  }
   render(){
     return (
       <Container>
@@ -22,7 +29,7 @@ class Home extends Component{
           <View style={styles.container}>
             <View style={styles.innerContainer}>
               <View style={styles.spotHeader}>
-                <Text style={styles.spotTitle}>내 현장</Text>
+                <Text style={styles.spotTitle} onPress={this.goTest}>내 현장</Text>
                 <Text style={styles.spotMore}>편집</Text>
               </View>
               <View style={styles.spotList}>

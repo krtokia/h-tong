@@ -11,7 +11,8 @@ export default class Signup extends Component {
 
     this.state={
       userId: '',
-      userPass: ''
+      userPass: '',
+      userName: ''
     };
   }
 
@@ -23,9 +24,9 @@ export default class Signup extends Component {
   }
 
   onLogin() {
-    const { userId, userPass } = this.state;
+    const { userId, userPass, userName } = this.state;
 
-        fetch('http://13.124.127.253/api/login.php', {
+        fetch('http://13.124.127.253/api/signup.php', {
             method: 'POST',
             headers: {
               'Accept' : 'application/json',
@@ -33,12 +34,17 @@ export default class Signup extends Component {
             },
             body: JSON.stringify({
               id: userId,
-              pw: userPass
+              pw: userPass,
+              name: userName
             })
         }).then((response) => response.json())
           .then((responseJson)=> {
-            if(responseJson === 'data matched') {
-              this.props.navigation.navigate("TabNavi");
+            if(responseJson === 'success') {
+              Alert.alert(
+                '현장통',
+                "가입이 완료 되었습니다"
+              )
+              this.props.navigation.navigate("Login");
             } else {
               //alert(responseJson);
               Alert.alert(
@@ -51,15 +57,9 @@ export default class Signup extends Component {
           });
 
         if (this.props.valid) {
-          this.props.navigation.navigate("TabNavi");
-          return this.props.navigation.dispatch(
-            NavigationActions.reset({
-              index: 0,
-              actions: [NavigationActions.navigate({routeName: "TabNavi"})]
-            })
-          );
+          this.props.navigation.goBack();
         } else {
-          Alert.alert("아이디나 패스워드를 입력해주세요");
+          Alert.alert("All the fields are compulsory!")
         }
   }
 
@@ -69,20 +69,26 @@ export default class Signup extends Component {
       <View style={styles.container}>
         <Image source={logo} style={styles.logo} />
         <TextInput
-          value={this.state.username}
-          onChangeText={(username) => this.setState({ username })}
-          placeholder={'Username'}
+          value={this.state.userName}
+          onChangeText={(userName) => this.setState({ userName })}
+          placeholder={'이름'}
           style={styles.input}
         />
         <TextInput
-          value={this.state.password}
-          onChangeText={(password) => this.setState({ password })}
-          placeholder={'Password'}
+          value={this.state.userId}
+          onChangeText={(userId) => this.setState({ userId })}
+          placeholder={'아이디'}
+          style={styles.input}
+        />
+        <TextInput
+          value={this.state.userPass}
+          onChangeText={(userPass) => this.setState({ userPass })}
+          placeholder={'패스워드'}
           secureTextEntry={true}
           style={styles.input}
         />
         <Button
-          title={'Login'}
+          title={'가입하기'}
           style={styles.loginBtn}
           onPress={this.onLogin.bind(this)}
         />

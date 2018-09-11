@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, Button, TextInput, View, StyleSheet, ImageBackground, Image, Dimensions } from 'react-native';
+import { Alert, Button, TextInput, View, StyleSheet, ImageBackground, Image, Dimensions, TouchableHighlight } from 'react-native';
 
 const bg = require("../../assets/images/bg.png");
 const logo = require("../../assets/images/logo.png");
@@ -82,6 +82,7 @@ export default class App extends Component {
           secureTextEntry={true}
           style={styles.input}
         />
+
         <Button
           buttonStyle={{ marginTop: 20 }}
           backgroundColor="transparent"
@@ -89,6 +90,7 @@ export default class App extends Component {
           title="Sign Up"
           onPress={() => navigation.navigate("Signup")}
           />
+
         <Button
           title={'Login'}
           style={styles.loginBtn}
@@ -122,6 +124,7 @@ const styles = StyleSheet.create({
     borderRadius: 0,
   },
   loginBtn: {
+    color:"#841584",
     top: -100,
     width: 200,
     height: 44,

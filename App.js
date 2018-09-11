@@ -34,7 +34,7 @@ const AppStackNavigator = createStackNavigator(
         shadowOffset: { width:0, height:0 },
         shadowRadius: 0,
         elevation: 0,
-      }
+      },
     }
   }
 )

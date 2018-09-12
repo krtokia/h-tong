@@ -7,94 +7,77 @@ const deviceHeight = Dimensions.get("window").height;
 export default {
   container: {
     flex: 1,
-    width: null,
-    height: null,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  innerContainer: {
-    width: deviceWidth / 1.1,
-    margin: 10,
-    marginBottom: 40,
-  },
-  logoHeader: {
-    width: 20,
-    height: 28,
-    alignSelf: "center"
-  },
-  header: {
-    width: Dimensions.get("window").width,
-    flexDirection: "row",
-    paddingLeft: 15,
-    paddingRight: 15,
-    marginLeft: Platform.OS === "ios" ? undefined : -30
-  },
-  imageHeader: {
-    height: 25,
-    width: 95,
-    resizeMode: "contain"
-  },
-  indexLogoBox: {
-    flex: 1,
-    height: deviceHeight / 4,
-    width: deviceWidth,
-    justifyContent: 'center',
-    alignItems: 'center',
+  HomeHeader: {
     marginTop: 10,
+    flexDirection: "row",
+    paddingLeft: 10,
+    paddingRight: 10,
   },
-  indexLogo: {
-    height: deviceHeight / 4.5,
-    resizeMode: 'contain'
+  HomeList: {
+    width: deviceWidth - 10,
+    height: deviceHeight / 2,
+    paddingTop: 20,
   },
-  indexTextBox: {
-    justifyContent: 'center',
-    alignItems: 'center',
+  SmallList: {
+    width: deviceWidth - 10,
+    height: deviceHeight / 3.4,
+    paddingTop: 20,
   },
-  emptyBox: {
+  TextList: {
+    width: deviceWidth - 10,
+    height: deviceHeight / 3.4,
+    paddingTop: 20,
+  },
+  HomeItems: {
+    padding: 5,
+    margin: 5,
+    borderWidth: 1,
+    borderColor: '#888888'
+  },
+  SubItems: {
+    margin: 1,
+  },
+  itemImage: {
     flex: 1,
-    height: 50,
+    width:'100%',
+    height:'100%',
   },
-  items: {
-    width: deviceWidth,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 30,
+  itemIcon: {
+    alignSelf: "flex-end",
+    marginRight: 5,
   },
-  itemTitle: {
+  hItemTitle: {
     fontWeight: 'bold'
   },
-  itemSub: {
+  hItemSub: {
     fontSize: 10,
   },
-  itemText: {
-
+  rItemTitle: {
+    fontWeight: 'bold',
+    fontSize: 10,
+  },
+  SmallText: {
+    fontSize: 10,
   },
   itemLogo: {
     justifyContent: 'center',
     alignItems: 'flex-end',
     paddingRight: 10,
   },
-  spotHeader: {
-    flexDirection: "row",
-    marginBottom: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
-  spotTitle: {
+  subTitle: {
     fontSize: 20,
     fontWeight: 'bold'
   },
-  spotMore: {
+  subMore: {
     marginLeft:'auto',
     fontSize:13,
     textAlignVertical: 'bottom'
   },
   spotList: {
     height: deviceHeight / 1.5,
-  },
-  itemImage: {
-    width:'100%',
-    height:'100%',
   },
   itemTitle: {
     fontWeight: 'bold',
@@ -103,10 +86,6 @@ export default {
   },
   itemSub: {
     fontSize: 14,
-  },
-  itemIcon: {
-    alignSelf: "flex-end",
-    marginRight: 5,
   },
   spotSubBox: {
     paddingBottom: 50,

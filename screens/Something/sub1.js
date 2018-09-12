@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { NavigationActions } from 'react-navigation';
-class Some1 extends Component{
+
+class Some1sub extends Component{
   render(){
     return (
       <View style={style.container}>
-        <Text onPress={() => NavigationActions.back()}>some1</Text>
+        <Text>some1sub</Text>
       </View>
     );
   }
 }
-export default Some1;
+export default Some1sub;
 
 const style = StyleSheet.create({
   container: {

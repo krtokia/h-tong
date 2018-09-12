@@ -14,14 +14,8 @@ import styles from "./styles";
 
 
 class Home extends Component{
-  constructor (props, context){
-    super(props, context);
-    this.goTest = this.goTest.bind(this);
-  }
-  goTest() {
-    this.props.navigation.navigate("Login");
-  }
   render(){
+    const navigation = this.props.navigation;
     return (
       <Container>
         <Content
@@ -31,9 +25,11 @@ class Home extends Component{
           <View style={styles.container}>
             <View style={styles.innerContainer}>
               <View style={styles.spotHeader}>
-
+                <TouchableOpacity
+                  onPress = {() => navigation.navigate("Signup")}
+                  >
                 <Text style={styles.spotTitle}>내 현장</Text>
-
+                </TouchableOpacity>
                 <Text style={styles.spotMore}>편집</Text>
               </View>
               <View style={styles.spotList}>

@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { Alert, Button, TextInput, View, StyleSheet, ImageBackground, Image, Dimensions } from 'react-native';
+import {
+  Alert,
+  Button,
+  TextInput,
+  View,
+  ImageBackground,
+  Image,
+  Dimensions,
+  StatusBar
+} from 'react-native';
+import { Header } from 'react-navigation';
 
 const bg = require("../../assets/images/bg.png");
 const logo = require("../../assets/images/logo.png");
@@ -7,6 +17,13 @@ const logo = require("../../assets/images/logo.png");
 import styles from './styles';
 
 export default class Signup extends Component {
+  static navigationOptions = ({
+    headerStyle: {
+      backgroundColor:'rgba(0,0,0,0)',
+      marginBottom:(StatusBar.currentHeight+Header.HEIGHT)*-1
+    }
+  });
+  
   constructor(props){
     super(props);
 

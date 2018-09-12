@@ -9,8 +9,10 @@ import {
   Image,
   Dimensions,
   TouchableHighlight,
-  Text
+  Text,
+  StatusBar
 } from 'react-native';
+import { Header } from 'react-navigation';
 
 const bg = require("../../assets/images/bg.png");
 const logo = require("../../assets/images/logo.png");
@@ -18,6 +20,10 @@ const logo = require("../../assets/images/logo.png");
 import styles from './styles.js'
 
 export default class App extends Component {
+  static navigationOptions = ({
+    header: null
+  });
+
   constructor(props){
     super(props);
 

@@ -11,6 +11,7 @@ import { Grid, Col, Row } from "react-native-easy-grid";
 
 import styles from "./styles";
 
+
 class Home extends Component{
   constructor (props, context){
     super(props, context);

@@ -73,7 +73,7 @@ export default class Signup extends Component {
           <TextInput
             value={this.state.userName}
             onChangeText={(userName) => this.setState({ userName })}
-            placeholder={'Username'}
+            placeholder={'이름'}
             style={styles.input}
             underlineColorAndroid='rgba(0,0,0,0)'
           />
@@ -87,7 +87,7 @@ export default class Signup extends Component {
           <TextInput
             value={this.state.userPass}
             onChangeText={(userPass) => this.setState({ userPass })}
-            placeholder={'Password'}
+            placeholder={'패스워드'}
             secureTextEntry={true}
             style={styles.input}
             underlineColorAndroid='rgba(0,0,0,0)'
@@ -96,7 +96,7 @@ export default class Signup extends Component {
         <View style={styles.btnBoxes}>
           <View style={{width:200}}>
             <Button
-              title={'Sign-In'}
+              title={'가입하기'}
               color='#cc0404'
               onPress={this.onLogin.bind(this)}
             />

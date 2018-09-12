@@ -50,7 +50,7 @@ export default class App extends Component {
         }).then((response) => response.json())
           .then((responseJson)=> {
             if(responseJson === 'data matched') {
-              this.props.navigation.navigate("TabNavi");
+              this.props.navigation.navigate("Main");
             } else {
               //alert(responseJson);
               Alert.alert(
@@ -61,18 +61,6 @@ export default class App extends Component {
           }).catch((error) => {
             console.log(error)
           });
-
-        if (this.props.valid) {
-          this.props.navigation.navigate("TabNavi");
-          return this.props.navigation.dispatch(
-            NavigationActions.reset({
-              index: 0,
-              actions: [NavigationActions.navigate({routeName: "TabNavi"})]
-            })
-          );
-        } else {
-          Alert.alert("아이디나 패스워드를 입력해주세요");
-        }
   }
 
   render() {
@@ -85,14 +73,14 @@ export default class App extends Component {
           <TextInput
             value={this.state.username}
             onChangeText={(username) => this.setState({ username })}
-            placeholder={'Username'}
+            placeholder={'아이디'}
             style={styles.input}
             underlineColorAndroid='rgba(0,0,0,0)'
           />
           <TextInput
             value={this.state.password}
             onChangeText={(password) => this.setState({ password })}
-            placeholder={'Password'}
+            placeholder={'패스워드'}
             secureTextEntry={true}
             style={styles.input}
             underlineColorAndroid='rgba(0,0,0,0)'
@@ -104,12 +92,12 @@ export default class App extends Component {
               onPress={() => navigation.navigate("Signup")}
               style={{textDecorationLine:'underline'}}
               >
-              Signup
+              회원 가입
             </Text>
           </View>
           <View style={{width:200}}>
             <Button
-              title={'Login'}
+              title={'로그인'}
               color='#cc0404'
               onPress={this.onLogin.bind(this)}
             />

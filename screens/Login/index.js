@@ -1,9 +1,21 @@
 import React, { Component } from 'react';
-import { Alert, Button, TextInput, View, StyleSheet, ImageBackground, Image, Dimensions, TouchableHighlight } from 'react-native';
+import {
+  Alert,
+  Button,
+  TextInput,
+  View,
+  StyleSheet,
+  ImageBackground,
+  Image,
+  Dimensions,
+  TouchableHighlight,
+  Text
+} from 'react-native';
 
 const bg = require("../../assets/images/bg.png");
 const logo = require("../../assets/images/logo.png");
-const deviceHeight = Dimensions.get("window").height;
+
+import styles from './styles.js';
 
 export default class App extends Component {
   constructor(props){
@@ -69,80 +81,42 @@ export default class App extends Component {
       <ImageBackground source={bg} style={styles.background}>
       <View style={styles.container}>
         <Image source={logo} style={styles.logo} />
-        <TextInput
-          value={this.state.username}
-          onChangeText={(username) => this.setState({ username })}
-          placeholder={'Username'}
-          style={styles.input}
-        />
-        <TextInput
-          value={this.state.password}
-          onChangeText={(password) => this.setState({ password })}
-          placeholder={'Password'}
-          secureTextEntry={true}
-          style={styles.input}
-        />
-
-        <Button
-          buttonStyle={{ marginTop: 20 }}
-          backgroundColor="transparent"
-          textStyle={{ color: "#bcbec1" }}
-          title="Sign Up"
-          onPress={() => navigation.navigate("Signup")}
+        <View style={styles.inputBoxes}>
+          <TextInput
+            value={this.state.username}
+            onChangeText={(username) => this.setState({ username })}
+            placeholder={'Username'}
+            style={styles.input}
+            underlineColorAndroid='rgba(0,0,0,0)'
           />
-
-        <Button
-          title={'Login'}
-          style={styles.loginBtn}
-          onPress={this.onLogin.bind(this)}
-        />
+          <TextInput
+            value={this.state.password}
+            onChangeText={(password) => this.setState({ password })}
+            placeholder={'Password'}
+            secureTextEntry={true}
+            style={styles.input}
+            underlineColorAndroid='rgba(0,0,0,0)'
+          />
+        </View>
+        <View style={styles.btnBoxes}>
+          <View style={{marginBottom:20,alignSelf:'center'}}>
+            <Text
+              onPress={() => navigation.navigate("Signup")}
+              style={{textDecorationLine:'underline'}}
+            >
+              Signup
+            </Text>
+          </View>
+          <View style={{width:200}}>
+            <Button
+              title={'Login'}
+              color='#cc0404'
+              onPress={this.onLogin.bind(this)}
+            />
+          </View>
+        </View>
       </View>
       </ImageBackground>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  input: {
-    top: -40,
-    width: 200,
-    height: 44,
-    padding: 10,
-    borderWidth: 1,
-    color: "#fff",
-    borderColor: 'black',
-    marginBottom: 10,
-    flexDirection: "row",
-    backgroundColor: "#A4A4A470",
-    borderWidth: 0,
-    borderColor: "transparent",
-    borderRadius: 0,
-  },
-  loginBtn: {
-    color:"#841584",
-    top: -100,
-    width: 200,
-    height: 44,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: 'black',
-    marginBottom: 10,
-  },
-  background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  backgroundColor: "rgba(0,0,0,0.1)"
-  },
-  logo: {
-  flex: 1,
-  resizeMode: "contain",
-  height:deviceHeight/4,
-  alignSelf: "center"
-  },
-});

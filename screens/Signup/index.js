@@ -3,7 +3,8 @@ import { Alert, Button, TextInput, View, StyleSheet, ImageBackground, Image, Dim
 
 const bg = require("../../assets/images/bg.png");
 const logo = require("../../assets/images/logo.png");
-const deviceHeight = Dimensions.get("window").height;
+
+import styles from './styles';
 
 export default class Signup extends Component {
   constructor(props){
@@ -68,76 +69,41 @@ export default class Signup extends Component {
       <ImageBackground source={bg} style={styles.background}>
       <View style={styles.container}>
         <Image source={logo} style={styles.logo} />
-        <TextInput
-          value={this.state.userName}
-          onChangeText={(userName) => this.setState({ userName })}
-          placeholder={'이름'}
-          style={styles.input}
-        />
-        <TextInput
-          value={this.state.userId}
-          onChangeText={(userId) => this.setState({ userId })}
-          placeholder={'아이디'}
-          style={styles.input}
-        />
-        <TextInput
-          value={this.state.userPass}
-          onChangeText={(userPass) => this.setState({ userPass })}
-          placeholder={'패스워드'}
-          secureTextEntry={true}
-          style={styles.input}
-        />
-        <Button
-          title={'가입하기'}
-          style={styles.loginBtn}
-          onPress={this.onLogin.bind(this)}
-        />
+        <View style={styles.inputBoxes}>
+          <TextInput
+            value={this.state.userName}
+            onChangeText={(username) => this.setState({ userName })}
+            placeholder={'Username'}
+            style={styles.input}
+            underlineColorAndroid='rgba(0,0,0,0)'
+          />
+          <TextInput
+            value={this.state.userId}
+            onChangeText={(userId) => this.setState({ userId })}
+            placeholder={'아이디'}
+            style={styles.input}
+            underlineColorAndroid='rgba(0,0,0,0)'
+          />
+          <TextInput
+            value={this.state.userPass}
+            onChangeText={(password) => this.setState({ userPass })}
+            placeholder={'Password'}
+            secureTextEntry={true}
+            style={styles.input}
+            underlineColorAndroid='rgba(0,0,0,0)'
+          />
+        </View>
+        <View style={styles.btnBoxes}>
+          <View style={{width:200}}>
+            <Button
+              title={'Sign-In'}
+              color='#cc0404'
+              onPress={this.onLogin.bind(this)}
+            />
+          </View>
+        </View>
       </View>
       </ImageBackground>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  input: {
-    top: -40,
-    width: 200,
-    height: 44,
-    padding: 10,
-    borderWidth: 1,
-    color: "#fff",
-    borderColor: 'black',
-    marginBottom: 10,
-    flexDirection: "row",
-    backgroundColor: "#A4A4A470",
-    borderWidth: 0,
-    borderColor: "transparent",
-    borderRadius: 0,
-  },
-  loginBtn: {
-    top: -100,
-    width: 200,
-    height: 44,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: 'black',
-    marginBottom: 10,
-  },
-  background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
-  backgroundColor: "rgba(0,0,0,0.1)"
-  },
-  logo: {
-  flex: 1,
-  resizeMode: "contain",
-  height:deviceHeight/4,
-  alignSelf: "center"
-  },
-});

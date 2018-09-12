@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator, Header } from 'react-navigation';
 
 import MainScreen from './screens/MainScreen.js';
 import Login from './screens/Login';
@@ -28,7 +28,7 @@ const AppStackNavigator = createStackNavigator(
   Signup: {
     screen: Signup,
     navigationOptions: {
-      
+      headerStyle: { backgroundColor:'rgba(0,0,0,0)',marginBottom:Header.HEIGHT*-1}
     },
   }
 },

@@ -50,6 +50,7 @@ export default class App extends Component {
         }).then((response) => response.json())
           .then((responseJson)=> {
             if(responseJson === 'data matched') {
+              console.log(responseJson);
               this.props.navigation.navigate("Main");
             } else {
               //alert(responseJson);
@@ -61,6 +62,10 @@ export default class App extends Component {
           }).catch((error) => {
             console.log(error)
           });
+  }
+
+  skip() {
+    this.props.navigation.navigate("Main");
   }
 
   render() {
@@ -99,7 +104,7 @@ export default class App extends Component {
             <Button
               title={'로그인'}
               color='#cc0404'
-              onPress={this.onLogin.bind(this)}
+              onPress={this.skip.bind(this)}
             />
           </View>
         </View>

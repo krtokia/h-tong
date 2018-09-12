@@ -8,6 +8,7 @@ import {
   View
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
+import { NavigationActions } from "react-navigation";
 
 import styles from "./styles";
 
@@ -30,7 +31,9 @@ class Home extends Component{
           <View style={styles.container}>
             <View style={styles.innerContainer}>
               <View style={styles.spotHeader}>
-                <Text style={styles.spotTitle} onPress={this.goTest}>내 현장</Text>
+
+                <Text style={styles.spotTitle}>내 현장</Text>
+
                 <Text style={styles.spotMore}>편집</Text>
               </View>
               <View style={styles.spotList}>

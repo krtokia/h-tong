@@ -15,7 +15,7 @@ export default {
     height: 44,
     padding: 10,
     borderWidth: 1,
-    color: "#fff",
+    color: "#000",
     marginBottom: 10,
     flexDirection: "row",
     backgroundColor: "rgba(255,255,255,0.8)",

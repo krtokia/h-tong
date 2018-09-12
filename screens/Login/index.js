@@ -15,7 +15,7 @@ import {
 const bg = require("../../assets/images/bg.png");
 const logo = require("../../assets/images/logo.png");
 
-import styles from './styles.js';
+import styles from './styles.js'
 
 export default class App extends Component {
   constructor(props){
@@ -35,7 +35,7 @@ export default class App extends Component {
   }
 
   onLogin() {
-    const { userId, userPass } = this.state;
+    const { username, password } = this.state;
 
         fetch('http://13.124.127.253/api/login.php', {
             method: 'POST',
@@ -44,8 +44,8 @@ export default class App extends Component {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              id: userId,
-              pw: userPass
+              id: username,
+              pw: password
             })
         }).then((response) => response.json())
           .then((responseJson)=> {
@@ -103,7 +103,7 @@ export default class App extends Component {
             <Text
               onPress={() => navigation.navigate("Signup")}
               style={{textDecorationLine:'underline'}}
-            >
+              >
               Signup
             </Text>
           </View>

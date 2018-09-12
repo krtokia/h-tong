@@ -15,7 +15,7 @@ export default {
     height: 44,
     padding: 10,
     borderWidth: 1,
-    color: "#fff",
+    color: "#000",
     marginBottom: 10,
     flexDirection: "row",
     backgroundColor: "rgba(255,255,255,0.8)",
@@ -30,11 +30,11 @@ export default {
   resizeMode: "contain",
   height:deviceHeight/4,
   alignSelf: "center",
-  marginTop: 80,
+  marginTop: 50,
   marginBottom: 50,
   },
   inputBoxes: {
-
+    marginTop: 50
   },
   btnBoxes: {
 

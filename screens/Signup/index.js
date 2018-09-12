@@ -72,7 +72,7 @@ export default class Signup extends Component {
         <View style={styles.inputBoxes}>
           <TextInput
             value={this.state.userName}
-            onChangeText={(username) => this.setState({ userName })}
+            onChangeText={(userName) => this.setState({ userName })}
             placeholder={'Username'}
             style={styles.input}
             underlineColorAndroid='rgba(0,0,0,0)'
@@ -86,7 +86,7 @@ export default class Signup extends Component {
           />
           <TextInput
             value={this.state.userPass}
-            onChangeText={(password) => this.setState({ userPass })}
+            onChangeText={(userPass) => this.setState({ userPass })}
             placeholder={'Password'}
             secureTextEntry={true}
             style={styles.input}

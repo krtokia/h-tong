@@ -24,7 +24,7 @@ class HomeDetail extends Component{
             <View style={styles.SmallList}>
               <View style={styles.HomeHeader}>
                 <TouchableOpacity
-                  onPress = {() => navigation.navigate("Signup")}
+                  onPress = {() => this.props.navigation.navigate("HomeReal")}
                 >
                   <Text style={styles.subTitle}>내 현장</Text>
                 </TouchableOpacity>

@@ -31,6 +31,11 @@ export default {
     height: deviceHeight / 3.4,
     paddingTop: 20,
   },
+  BigList: {
+    width: deviceWidth - 10,
+    minHeight: deviceHeight,
+    paddingTop: 20,
+  },
   HomeItems: {
     padding: 5,
     margin: 5,

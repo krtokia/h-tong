@@ -17,6 +17,7 @@ import Home from "./Home/Home.js";
 import HomeDetail from "./Home/HomeDetail.js";
 import HomeFriends from "./Home/HomeFriends.js";
 import HomeNotice from "./Home/HomeNotice.js";
+import HomeReal from "./Home/HomeReal.js";
 
 const Logo  = require('../assets/images/headIcon.png');
 
@@ -31,8 +32,10 @@ export default MainScreen;
 
 const HomeStackNavi = createStackNavigator({
   HomeMain: { screen: Home },
-  HomeSub1: { screen: HomeSub1 },
-  HomeSub2: { screen: HomeSub2 },
+  HomeDetail: { screen: HomeDetail },
+  HomeFriends: { screen: HomeFriends },
+  HomeNotice: { screen: HomeNotice },
+  HomeReal: { screen: HomeReal },
 }, {
   initialRouteName: "HomeMain",
   headerMode: 'none',

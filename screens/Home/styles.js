@@ -10,6 +10,14 @@ export default {
     justifyContent: 'center',
     alignItems: 'center',
   },
+  tongName : {
+    width: deviceWidth - 10,
+    height: deviceHeight / 2,
+  },
+  tongImage : {
+    width: deviceWidth / 2,
+    height: deviceWidth / 2,
+  },
   HomeHeader: {
     marginTop: 10,
     flexDirection: "row",

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ImageBackground, TouchableOpacity } from 'react-native';
+import { ImageBackground, TouchableOpacity, TouchableHighlight } from 'react-native';
 import {
   Container,
   Content,
@@ -201,7 +201,9 @@ class Home extends Component{
             <View style={styles.TextList}>
               <Grid>
                 <Row style={styles.HomeItems}>
-                  <Text>일지1</Text>
+                  <TouchableHighlight onPress={() => this.props.navigation.navigate("createTong")}>
+                    <Text>현장통 생성</Text>
+                  </TouchableHighlight>
                 </Row>
                 <Row style={styles.HomeItems}>
                   <Text>일지2</Text>

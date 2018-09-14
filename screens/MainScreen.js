@@ -19,6 +19,8 @@ import HomeFriends from "./Home/HomeFriends.js";
 import HomeNotice from "./Home/HomeNotice.js";
 import HomeReal from "./Home/HomeReal.js";
 
+import createTong from "./Home/createTong.js";
+
 const Logo  = require('../assets/images/headIcon.png');
 
 class MainScreen extends Component{
@@ -36,6 +38,7 @@ const HomeStackNavi = createStackNavigator({
   HomeFriends: { screen: HomeFriends },
   HomeNotice: { screen: HomeNotice },
   HomeReal: { screen: HomeReal },
+  createTong: { screen: createTong},
 }, {
   initialRouteName: "HomeMain",
   headerMode: 'none',

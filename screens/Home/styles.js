@@ -12,7 +12,7 @@ export default {
   },
   tongName : {
     width: deviceWidth - 10,
-    height: deviceHeight / 2,
+    height: deviceHeight / 6,
   },
   tongImage : {
     width: deviceWidth / 2,

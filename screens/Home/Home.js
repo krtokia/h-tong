@@ -18,22 +18,23 @@ class Home extends Component{
     super(props);
     this.state= {
       isLoading: true,
-
+      dataSource: null,
     }
   }
 
   componentDidMount() {
+    //console.log("START componentDidMount");
+
     return fetch("http://13.124.127.253/api/results.php?page=home")
       .then((response) => response.json())
       .then((responseJson) => {
-        let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.setState({
-          isLoading:false,
-          dataSource: ds.cloneWithRows(responseJson),
-        }, function() {
-
+          isLoading: false,
+          dataSource: responseJson,
         });
       })
+
       .catch((error) => {
         console.error(error);
       });
@@ -66,7 +67,25 @@ class Home extends Component{
           <ActivityIndicator />
         </View>
       )
-    }
+    } else {
+      let tongs = this.state.dataSource.map((val, key) => {
+        return <Row>
+          <Col style={styles.HomeItems}>
+            <Row size={7}>
+              <ImageBackground
+                source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}}
+                style={styles.itemImage}
+                >
+                <Icon name="more" style={styles.itemIcon}/>
+              </ImageBackground>
+            </Row>
+            <Row size={3} style={{flexDirection:"column"}}>
+              <Text style={styles.itemTitle} onPress={() => this.props.navigation.navigate("HomeDetail")}> {val.tongTitle} </Text>
+            </Row>
+          </Col>
+        </Row>
+      });
+
     return (
       <Container>
         <Content
@@ -76,22 +95,7 @@ class Home extends Component{
           <View style={styles.container}>
             <View style={styles.HomeList}>
               <Grid>
-                <Row>
-                  <Col style={styles.HomeItems}>
-                    <Row size={7}>
-                      <ImageBackground
-                        source={require("../../assets/images/testImages/1.jpg")}
-                        style={styles.itemImage}
-                        >
-                        <Icon name="more" style={styles.itemIcon}/>
-                      </ImageBackground>
-                    </Row>
-                    <Row size={3} style={{flexDirection:"column"}}>
-                      <Text style={styles.itemTitle} onPress={() => this.props.navigation.navigate("HomeDetail")}> title </Text>
-                      <Text style={styles.itemSub} onPress={() => this.props.navigation.navigate("HomeDetail")}>content</Text>
-                    </Row>
-                  </Col>
-                </Row>
+                {tongs}
               </Grid>
             </View>
             <View style={styles.SmallList}>
@@ -226,5 +230,6 @@ class Home extends Component{
       </Container>
     );
   }
+}
 }
 export default Home;

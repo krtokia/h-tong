@@ -41,7 +41,7 @@ class TongMain extends Component{
               </View>
             </View>
             <View style={styles.TextList}>
-                <Row style={styles.HomeItems} size={30}>
+                <Row style={styles.HomeItems}>
                   <Text style={styles.SmallText}>날씨</Text>
                 </Row>
             </View>

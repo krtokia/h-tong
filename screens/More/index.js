@@ -12,6 +12,35 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from './styles.js';
 
 class More extends Component{
+
+  constructor(props) {
+    super(props);
+
+    this.state={
+      isLoading: true,
+      dataSource: null,
+      id: 'sid',
+    }
+  }
+
+  componentDidMount() {
+    //console.log("START componentDidMount");
+
+    return fetch("http://13.124.127.253/api/results.php?page=setting&id=" + this.state.id)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.setState({
+          isLoading: false,
+          dataSource: responseJson,
+        });
+      })
+
+      .catch((error) => {
+        console.error(error);
+      });
+    }
+
   render(){
     return (
       <ScrollView>
@@ -22,7 +51,7 @@ class More extends Component{
               <Image source={require('../../assets/images/profile_no.png')} style={{width:'100%',height:'100%',resizeMode:'cover'}} />
             </View>
             <View style={{marginRight:'auto',marginLeft:20,}}>
-              <Text style={{fontSize:20}}>이름</Text>
+              <Text style={{fontSize:20}}>{this.state.id}</Text>
               <Text>현장 3 · 다가오는 일정 0 · 북마크 0</Text>
             </View>
           </TouchableOpacity>
@@ -42,7 +71,7 @@ class More extends Component{
           </TouchableOpacity>
           <TouchableOpacity style={styles.ColBox}>
             <Icon name='bullhorn' size={40} />
-            <Text style={{marginTop:5}}>공지사항</Text>
+            <Text style={{marginTop:5}}>현장통 설정</Text>
           </TouchableOpacity>
         </View>
         <View style={[styles.Box]}>

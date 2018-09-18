@@ -9,11 +9,13 @@ import {
   Button,
   TextInput} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import { ImagePicker } from 'expo';
 import styles from './styles.js';
 
 class Prepare extends Component{
   state = {
+    id: 'sid',
+    iamgeSource: null,
     modalVisibleDoc: false,
     modalVisibleSign: false,
     modalVisibleAcc: false,
@@ -28,6 +30,74 @@ class Prepare extends Component{
   setModalVisibleAcc(visible) {
     this.setState({modalVisibleAcc: visible});
   };
+
+  uploadImage() {
+
+  const {id, imageSource} = this.state;
+
+  let apiUrl = 'http://13.124.127.253/api/upload.php?mode=document';
+  let uri = imageSource;
+  let uriParts = uri.split('.');
+  let fileType = uriParts[uriParts.length - 1];
+
+  //constant varaibles that equal propertes in state
+
+
+  const formData = new FormData();
+  //Add your input data
+  formData.append('name', id);
+
+  //Add your photo
+  //this, retrive the file extension of your photo
+  /*
+  let localUri = result.uri;
+  let filename = localUri.split('/').pop();
+  */
+
+  formData.append('photo', {
+    uri,
+    name: `photo.${fileType}`,
+    type: `image/${fileType}`,
+  });
+
+  let options = {
+    method: 'POST',
+    body: formData,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+
+      return fetch(apiUrl, options).then((response) => response.json())
+        .then((responseJson)=> {
+          if(responseJson === 'data matched') {
+            console.log(responseJson);
+            this.props.navigation.navigate("Main");
+          } else {
+            //alert(responseJson);
+            Alert.alert(
+              '현장통',
+              responseJson
+            )
+          }
+        }).catch((error) => {
+          console.log(error)
+        });
+      }
+
+      _pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+          allowsEditing: true,
+          aspect: [4, 3],
+        });
+
+        console.log(result);
+
+        if (!result.cancelled) {
+          this.setState({ imageSource: result.uri });
+        }
+      };
 
   render(){
     return (
@@ -53,7 +123,7 @@ class Prepare extends Component{
           <View style={{flex:1,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
             <TouchableOpacity
               style={{width:100,height:150,borderWidth:1,borderColor:'#aaa',flexDirection:'column',justifyContent:'center',alignItems:'center'}}
-              onPress={() => { this.setModalVisibleDoc(!this.state.modalVisibleDoc);}}
+              onPress={this._pickImage}
               >
               <Icon name='file' size={50} />
               <Text>서류 등록</Text>

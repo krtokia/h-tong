@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppRegistry, ListView, ImageBackground, TouchableOpacity, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { Image, AppRegistry, ListView, ImageBackground, TouchableOpacity, TouchableHighlight, ActivityIndicator } from 'react-native';
 import {
   Container,
   Content,
@@ -9,9 +9,20 @@ import {
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { NavigationActions } from "react-navigation";
+import {RkCard, RkTheme} from 'react-native-ui-kitten';
 
 import styles from "./styles";
 
+RkTheme.setType('RkCard', 'tongView', {
+
+  img:{
+      height: 150,
+    },
+  content: {
+    alignSelf: 'center',
+    top: -10,
+  },
+});
 
 class Home extends Component{
   constructor(props) {
@@ -51,15 +62,6 @@ class Home extends Component{
     );
   }
 
-  fetchData = async () => {
-    const response = await fetch("http://13.124.127.253/api/results.php?page=home");
-    const json = await response.json();
-
-    this.setState({data: json.results});
-    console.log("this is data");
-    console.log(data);
-  };
-
   render(){
     if (this.state.isLoading) {
       return (
@@ -69,21 +71,12 @@ class Home extends Component{
       )
     } else {
       let tongs = this.state.dataSource.map((val, key) => {
-        return <Row>
-          <Col style={styles.HomeItems}>
-            <Row size={7}>
-              <ImageBackground
-                source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}}
-                style={styles.itemImage}
-                >
-                <Icon name="more" style={styles.itemIcon}/>
-              </ImageBackground>
-            </Row>
-            <Row size={3} style={{flexDirection:"column"}}>
-              <Text style={styles.itemTitle} onPress={() => this.props.navigation.navigate("HomeDetail")}> {val.tongTitle} </Text>
-            </Row>
-          </Col>
-        </Row>
+        return <RkCard rkType='tongView' key={key} style={styles.tongView}>
+                  <Image rkCardImg source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />
+                  <View rkCardContent>
+                    <Text rkType='small'>{val.tongTitle}</Text>
+                  </View>
+                </RkCard>
       });
 
     return (
@@ -94,122 +87,9 @@ class Home extends Component{
         >
           <View style={styles.container}>
             <View style={styles.HomeList}>
-              <Grid>
                 {tongs}
-              </Grid>
             </View>
-            <View style={styles.SmallList}>
-              <Grid>
-                <Row>
-                  <Col style={styles.HomeItems}>
-                    <Row size={7}>
-                      <ImageBackground
-                        source={require("../../assets/images/testImages/1.jpg")}
-                        style={styles.itemImage}
-                        >
-                        <Icon name="more" style={styles.itemIcon}/>
-                      </ImageBackground>
-                    </Row>
-                    <Row size={3} style={{flexDirection:"column"}}>
-                      <Text style={styles.rItemTitle}> title </Text>
-                    </Row>
-                  </Col>
-                  <Col style={styles.HomeItems}>
-                    <Row size={7}>
-                      <ImageBackground
-                        source={require("../../assets/images/testImages/1.jpg")}
-                        style={styles.itemImage}
-                        >
-                        <Icon name="more" style={styles.itemIcon}/>
-                      </ImageBackground>
-                    </Row>
-                    <Row size={3} style={{flexDirection:"column"}}>
-                      <Text style={styles.rItemTitle}> title </Text>
-                    </Row>
-                  </Col>
-                  <Col style={styles.HomeItems}>
-                    <Row size={7}>
-                      <ImageBackground
-                        source={require("../../assets/images/testImages/1.jpg")}
-                        style={styles.itemImage}
-                        >
-                        <Icon name="more" style={styles.itemIcon}/>
-                      </ImageBackground>
-                    </Row>
-                    <Row size={3} style={{flexDirection:"column"}}>
-                      <Text style={styles.rItemTitle}> title </Text>
-                    </Row>
-                  </Col>
-                  <Col style={styles.HomeItems}>
-                    <Row size={7}>
-                      <ImageBackground
-                        source={require("../../assets/images/testImages/1.jpg")}
-                        style={styles.itemImage}
-                        >
-                        <Icon name="more" style={styles.itemIcon}/>
-                      </ImageBackground>
-                    </Row>
-                    <Row size={3} style={{flexDirection:"column"}}>
-                      <Text style={styles.rItemTitle}> title </Text>
-                    </Row>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col style={styles.HomeItems}>
-                    <Row size={7}>
-                      <ImageBackground
-                        source={require("../../assets/images/testImages/4.jpg")}
-                        style={styles.itemImage}
-                        >
-                        <Icon name="more" style={styles.itemIcon}/>
-                      </ImageBackground>
-                    </Row>
-                    <Row size={3} style={{flexDirection:"column"}}>
-                      <Text style={styles.rItemTitle}> title </Text>
-                    </Row>
-                  </Col>
-                  <Col style={styles.HomeItems}>
-                    <Row size={7}>
-                      <ImageBackground
-                        source={require("../../assets/images/testImages/4.jpg")}
-                        style={styles.itemImage}
-                        >
-                        <Icon name="more" style={styles.itemIcon}/>
-                      </ImageBackground>
-                    </Row>
-                    <Row size={3} style={{flexDirection:"column"}}>
-                      <Text style={styles.rItemTitle}> title </Text>
-                    </Row>
-                  </Col>
-                  <Col style={styles.HomeItems}>
-                    <Row size={7}>
-                      <ImageBackground
-                        source={require("../../assets/images/testImages/4.jpg")}
-                        style={styles.itemImage}
-                        >
-                        <Icon name="more" style={styles.itemIcon}/>
-                      </ImageBackground>
-                    </Row>
-                    <Row size={3} style={{flexDirection:"column"}}>
-                      <Text style={styles.rItemTitle}> title </Text>
-                    </Row>
-                  </Col>
-                  <Col style={styles.HomeItems}>
-                    <Row size={7}>
-                      <ImageBackground
-                        source={require("../../assets/images/testImages/4.jpg")}
-                        style={styles.itemImage}
-                        >
-                        <Icon name="more" style={styles.itemIcon}/>
-                      </ImageBackground>
-                    </Row>
-                    <Row size={3} style={{flexDirection:"column"}}>
-                      <Text style={styles.rItemTitle}> title </Text>
-                    </Row>
-                  </Col>
-                </Row>
-              </Grid>
-            </View>
+
             <View style={styles.TextList}>
               <Grid>
                 <Row style={styles.HomeItems}>
@@ -218,10 +98,10 @@ class Home extends Component{
                   </TouchableHighlight>
                 </Row>
                 <Row style={styles.HomeItems}>
-                  <Text>일지2</Text>
+                  <Text>현장통 찾기</Text>
                 </Row>
                 <Row style={styles.HomeItems}>
-                  <Text>일지3</Text>
+                  <Text>현장통 가이드</Text>
                 </Row>
               </Grid>
             </View>

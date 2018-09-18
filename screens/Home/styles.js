@@ -9,6 +9,7 @@ export default {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    flexWrap: 'wrap',
   },
   tongName : {
     width: deviceWidth - 10,
@@ -18,6 +19,11 @@ export default {
     width: deviceWidth / 2,
     height: deviceWidth / 2,
   },
+  tongView: {
+    width: '48%',
+    height: '60%',
+    margin: '1%',
+  },
   HomeHeader: {
     marginTop: 10,
     flexDirection: "row",
@@ -25,8 +31,10 @@ export default {
     paddingRight: 10,
   },
   HomeList: {
-    width: deviceWidth - 10,
+    width: '100%',
     height: deviceHeight / 2,
+    flexWrap: 'wrap',
+    flexDirection: "row",
     paddingTop: 20,
   },
   SmallList: {
@@ -37,6 +45,7 @@ export default {
   TextList: {
     width: deviceWidth - 10,
     height: deviceHeight / 3.4,
+    
     paddingTop: 20,
   },
   BigList: {

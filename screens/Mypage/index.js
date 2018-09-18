@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-class Some4 extends Component{
+class Mypage extends Component{
   render(){
     return (
       <View style={style.container}>
-        <Text>Some4</Text>
+        <Text>Mypage</Text>
       </View>
     );
   }
 }
-export default Some4;
+export default Mypage;
 
 const style = StyleSheet.create({
   container: {

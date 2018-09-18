@@ -9,7 +9,7 @@ import Signup from './Signup';
 import Some1 from './Something';
 import Some2 from './Something2';
 import Some3 from './Something3';
-import Some4 from './Something4';
+
 
 import Some1sub from './Something/sub1';
 
@@ -18,6 +18,9 @@ import HomeDetail from "./Home/HomeDetail.js";
 import HomeFriends from "./Home/HomeFriends.js";
 import HomeNotice from "./Home/HomeNotice.js";
 import HomeReal from "./Home/HomeReal.js";
+
+import More from './More';
+import Mypage from './Mypage';
 
 import createTong from "./Home/createTong.js";
 
@@ -31,6 +34,13 @@ class MainScreen extends Component{
   }
 }
 export default MainScreen;
+
+const MypageStackNavi = createStackNavigator({
+  MypageMain: { screen: Mypage },
+
+},{
+  headerMode: 'null',
+});
 
 const HomeStackNavi = createStackNavigator({
   HomeMain: { screen: Home },
@@ -69,8 +79,8 @@ const TabNavigator = createMaterialTopTabNavigator({
     tabBarIcon: ({tintColor}) => <Icon name="user" size={25} color={tintColor}  />,
     }
   },
-  Some4: {
-    screen: Some4,
+  More: {
+    screen: More,
     navigationOptions: {
       tabBarIcon: ({tintColor}) => <Icon name="ellipsis-v" size={25} color={tintColor}  />,
     }
@@ -112,7 +122,8 @@ const AppStackNavigator = createStackNavigator({
       ),
       headerLeft: null,
     }
-  }
+  },
+  Mypage: { screen: MypageStackNavi },
   }, {
   initialRouteName: "Login",
   navigationOptions: {

@@ -4,19 +4,24 @@ import {
   Container,
   Content,
   Text,
-  Icon,
-  View
+  View,
+  Image,
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
-import { NavigationActions } from "react-navigation";
+import { NavigationActions, Header, Left } from "react-navigation";
+
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {RkTextInput, RkText, RkTheme} from 'react-native-ui-kitten';
 
 import styles from "./styles";
 
-class HomeDetail extends Component{
+class TongMain extends Component{
   static navigationOptions = ({
-    headerStyle: {height:200},
+    headerTitle: null,
+    headerRight: null,
+    headerStyle: { height:200 },
+    headerLeftContainerStyle: {paddingBottom:150},
   });
 
   render(){
@@ -46,4 +51,4 @@ class HomeDetail extends Component{
     );
   }
 }
-export default HomeDetail;
+export default TongMain;

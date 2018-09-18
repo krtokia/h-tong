@@ -73,7 +73,7 @@ class Home extends Component{
       let tongs = this.state.dataSource.map((val, key) => {
         return <RkCard rkType='tongView' key={key} style={styles.tongView}>
                   <TouchableOpacity
-                          onPress = {() => this.props.navigation.navigate("HomeDetail")}
+                          onPress = {() => this.props.navigation.navigate("TongMain")}
                   >
                   <Image rkCardImg source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />
                   </TouchableOpacity>

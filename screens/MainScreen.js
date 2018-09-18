@@ -20,9 +20,14 @@ import HomeNotice from "./Home/HomeNotice.js";
 import HomeReal from "./Home/HomeReal.js";
 
 import More from './More';
+
 import Mypage from './Mypage';
+import Prepare from './Mypage/Prepare.js';
+import Personal from './Mypage/Personal.js';
 
 import createTong from "./Home/createTong.js";
+
+import TongMain from "./Home/TongMain.js";
 
 const Logo  = require('../assets/images/headIcon.png');
 
@@ -37,7 +42,8 @@ export default MainScreen;
 
 const MypageStackNavi = createStackNavigator({
   MypageMain: { screen: Mypage },
-
+  Prepare: { screen: Prepare },
+  Personal: { screen: Personal },
 },{
   headerMode: 'null',
 });
@@ -103,27 +109,11 @@ const AppStackNavigator = createStackNavigator({
   Main: {
     screen: TabNavigator,
     navigationOptions: {
-      headerTitle: (
-        <Image
-          source={Logo}
-          style={{
-            width:40,
-            height:40,
-            resizeMode:'contain',
-            marginLeft:20,
-          }}
-        />
-      ),
-      headerRight: (
-        <View style={{flexDirection:"row"}}>
-          <Icon name="search" size={25} style={{color:'#999',marginRight:20}} onPress={() => navigate('Some4')} />
-          <Icon name="plus" size={28} style={{color:'#999',marginRight:10}} />
-        </View>
-      ),
       headerLeft: null,
     }
   },
   Mypage: { screen: MypageStackNavi },
+  TongMain: { screen: TongMain },
   }, {
   initialRouteName: "Login",
   navigationOptions: {
@@ -134,6 +124,23 @@ const AppStackNavigator = createStackNavigator({
       shadowRadius: 0,
       elevation: 0,
     },
+    headerTitle: (
+      <Image
+        source={Logo}
+        style={{
+          width:40,
+          height:40,
+          resizeMode:'contain',
+          marginLeft:20,
+        }}
+      />
+    ),
+    headerRight: (
+      <View style={{flexDirection:"row"}}>
+        <Icon name="search" size={25} style={{color:'#999',marginRight:20}} onPress={() => navigate('Some4')} />
+        <Icon name="plus" size={28} style={{color:'#999',marginRight:10}} />
+      </View>
+    ),
   }
 })
 

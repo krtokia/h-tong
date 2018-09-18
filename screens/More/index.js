@@ -46,11 +46,11 @@ class More extends Component{
           </TouchableOpacity>
         </View>
         <View style={[styles.Box]}>
-          <TouchableOpacity style={styles.MoreItems} onPress={() => this.props.navigation.navigate('MypageMain')}>
+          <TouchableOpacity style={styles.MoreItems} onPress={() => this.props.navigation.navigate('Prepare')}>
             <Icon name='home' size={30} />
             <Text style={styles.TextBox}>작업전 등록사항</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.MoreItems}>
+          <TouchableOpacity style={styles.MoreItems} onPress={() => this.props.navigation.navigate('Personal')}>
             <Icon name='home' size={30} />
             <Text style={styles.TextBox}>개인신상</Text>
           </TouchableOpacity>

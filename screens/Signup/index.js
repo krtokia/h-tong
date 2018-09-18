@@ -21,9 +21,11 @@ export default class Signup extends Component {
     headerStyle: {
       backgroundColor:'rgba(0,0,0,0)',
       marginBottom:(StatusBar.currentHeight+Header.HEIGHT)*-1
-    }
+    },
+    headerTitle: null,
+    headerRight: null,
   });
-  
+
   constructor(props){
     super(props);
 

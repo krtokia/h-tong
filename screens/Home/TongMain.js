@@ -6,9 +6,14 @@ import {
   Text,
   View,
   Image,
+  Header,
+  Left,
+  Right,
+  Body,
+  Button
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
-import { NavigationActions, Header, Left } from "react-navigation";
+import { NavigationActions } from "react-navigation";
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -18,15 +23,30 @@ import styles from "./styles";
 
 class TongMain extends Component{
   static navigationOptions = ({
-    headerTitle: null,
-    headerRight: null,
-    headerStyle: { height:200 },
-    headerLeftContainerStyle: {paddingBottom:150},
+    header: null,
   });
 
   render(){
     return (
       <Container>
+      <Header style={styles.HeaderStyle}>
+        <ImageBackground source={require('../../assets/images/testImages/4.jpg')} style={styles.ImageHeader} >
+        <Left style={[styles.LeftStyle]}>
+          <Button
+            transparent
+            onPress={() => this.props.navigation.goBack()}
+            styles={{width:20}}
+          >
+            <Icon active name="angle-left" size={25} />
+          </Button>
+        </Left>
+        <Body style={[styles.HeaderBody]}>
+          <View style={styles.HeaderLogo}>
+            <Text style={styles.HeaderText}>현장통 이름</Text>
+          </View>
+        </Body>
+        </ImageBackground>
+      </Header>
         <Content
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#fff" }}

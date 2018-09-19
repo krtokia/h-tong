@@ -45,7 +45,7 @@ export default {
   TextList: {
     width: deviceWidth - 10,
     height: deviceHeight / 3.4,
-    
+
     paddingTop: 20,
   },
   BigList: {
@@ -95,8 +95,6 @@ export default {
   },
   subMore: {
     marginLeft:'auto',
-    fontSize:13,
-    textAlignVertical: 'bottom'
   },
   spotList: {
     height: deviceHeight / 1.5,
@@ -119,5 +117,33 @@ export default {
     paddingTop: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#aaaaaa"
+  },
+  HeaderStyle: {
+    height:200,
+  },
+  LeftStyle: {
+    width: '100%',
+    paddingTop: 25,
+    paddingLeft: 10,
+  },
+  HeaderBody: {
+    width: '100%',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  HeaderLogo: {
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    padding: 10,
+  },
+  HeaderText: {
+    fontSize: 20,
+    color: '#fff',
+    fontWeight: '600',
+  },
+  ImageHeader: {
+    width: deviceWidth,
+    height: 200,
+    flexDirection:'column',
   }
 };

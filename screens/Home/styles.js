@@ -62,25 +62,6 @@ export default {
   SubItems: {
     margin: 1,
   },
-  itemImage: {
-    flex: 1,
-    width:'100%',
-    height:'100%',
-  },
-  itemIcon: {
-    alignSelf: "flex-end",
-    marginRight: 5,
-  },
-  hItemTitle: {
-    fontWeight: 'bold'
-  },
-  hItemSub: {
-    fontSize: 10,
-  },
-  rItemTitle: {
-    fontWeight: 'bold',
-    fontSize: 10,
-  },
   SmallText: {
     fontSize: 10,
   },
@@ -119,7 +100,7 @@ export default {
     borderBottomColor: "#aaaaaa"
   },
   HeaderStyle: {
-    height:200,
+    height:150,
   },
   LeftStyle: {
     width: '100%',
@@ -143,7 +124,22 @@ export default {
   },
   ImageHeader: {
     width: deviceWidth,
-    height: 200,
+    height: 150,
     flexDirection:'column',
-  }
+  },
+  TongHeader: {
+    flex: 1,
+    marginBottom: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 10,
+  },
+  TongTitle: {
+
+  },
+  TongSub: {
+
+  },
 };

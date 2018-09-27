@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, StatusBar, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { createMaterialTopTabNavigator, createStackNavigator, Header, NavigationActions } from 'react-navigation';
+import { createMaterialTopTabNavigator, createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+
+import { Font,AppLoading } from 'expo';
 
 import Login from './Login';
 //import HomeStack from './Home';
@@ -14,10 +16,6 @@ import Some3 from './Something3';
 import Some1sub from './Something/sub1';
 
 import Home from "./Home/Home.js";
-import HomeDetail from "./Home/HomeDetail.js";
-import HomeFriends from "./Home/HomeFriends.js";
-import HomeNotice from "./Home/HomeNotice.js";
-import HomeReal from "./Home/HomeReal.js";
 
 import More from './More';
 
@@ -28,11 +26,31 @@ import Personal from './Mypage/Personal.js';
 import createTong from "./Home/createTong.js";
 
 import TongMain from "./Home/TongMain.js";
+import TongNotice from "./Home/TongNotice.js";
+import TongPeople from "./Home/TongPeople.js";
 
 const Logo  = require('../assets/images/headIcon.png');
 
 class MainScreen extends Component{
+  constructor(props) {
+    super(props);
+    this.state = { loading: true };
+  }
+
+  async componentWillMount() {
+    await Font.loadAsync({
+      Roboto: require("native-base/Fonts/Roboto.ttf"),
+      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
+    });
+    this.setState({ loading: false });
+  }
+
   render(){
+    if (this.state.loading) {
+      return (
+        <AppLoading />
+      )
+    }
     return (
       <AppStackNavigator />
     );
@@ -48,21 +66,41 @@ const MypageStackNavi = createStackNavigator({
   headerMode: 'null',
 });
 
-const HomeStackNavi = createStackNavigator({
-  HomeMain: { screen: Home },
-  HomeDetail: { screen: HomeDetail },
-  HomeFriends: { screen: HomeFriends },
-  HomeNotice: { screen: HomeNotice },
-  HomeReal: { screen: HomeReal },
-  createTong: { screen: createTong},
+const HomeTabNavi = createBottomTabNavigator({
+  TongMain: {
+    screen: TongMain,
+    navigationOptions: {
+      tabBarIcon: ({tintColor}) => <Icon name="home" size={25} color={tintColor} />,
+    },
+   },
+   TongNotice: {
+     screen: TongNotice,
+     navigationOptions: {
+       tabBarIcon: ({tintColor}) => <Icon name="home" size={25} color={tintColor} />,
+     },
+    },
+    TongPeople: {
+      screen: TongPeople,
+      navigationOptions: {
+        tabBarIcon: ({tintColor}) => <Icon name="home" size={25} color={tintColor} />,
+      },
+     },
 }, {
-  initialRouteName: "HomeMain",
-  headerMode: 'none',
+  initialRouteName: "TongMain",
+  tabBarOptions: {
+    activeTintColor: '#ff0',
+    inactiveTintColor: '#fff',
+    showLabel: false,
+    showIcon: true,
+    style: {
+      backgroundColor: '#cc0404',
+    },
+  },
 })
 
 const TabNavigator = createMaterialTopTabNavigator({
   Home: {
-    screen: HomeStackNavi,
+    screen: Home,
     navigationOptions: {
       tabBarIcon: ({tintColor}) => <Icon name="home" size={25} color={tintColor} />,
     },
@@ -112,8 +150,14 @@ const AppStackNavigator = createStackNavigator({
       headerLeft: null,
     }
   },
+  createTong: { screen: createTong},
   Mypage: { screen: MypageStackNavi },
-  TongMain: { screen: TongMain },
+  Home: {
+    screen: HomeTabNavi,
+    navigationOptions: {
+      header: null,
+    },
+  },
   }, {
   initialRouteName: "Login",
   navigationOptions: {

@@ -18,25 +18,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from './styles.js';
 
 class Some1 extends Component{
-  constructor(props) {
-    super(props);
-    this.state = { loading: true };
-  }
-
-  async componentWillMount() {
-    await Font.loadAsync({
-      Roboto: require("native-base/Fonts/Roboto.ttf"),
-      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
-    });
-    this.setState({ loading: false });
-  }
 
   render(){
-    if (this.state.loading) {
-      return (
-        <AppLoading />
-      )
-    }
     return (
       <Container>
         <Content>

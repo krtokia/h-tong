@@ -22,7 +22,7 @@ import {RkTextInput, RkText, RkTheme} from 'react-native-ui-kitten';
 
 import styles from "./styles";
 
-class TongMain extends Component{
+class TongPeople extends Component{
   render(){
     return (
       <Container>
@@ -62,4 +62,4 @@ class TongMain extends Component{
     );
   }
 }
-export default TongMain;
+export default TongPeople;

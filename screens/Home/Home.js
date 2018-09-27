@@ -5,10 +5,13 @@ import {
   Content,
   Text,
   Icon,
-  View
+  View,
+  Card,
+  CardItem,
+  Right,
+  Body,
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
-import { NavigationActions } from "react-navigation";
 import {RkCard, RkTheme} from 'react-native-ui-kitten';
 
 import styles from "./styles";
@@ -89,27 +92,33 @@ class Home extends Component{
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#fff" }}
         >
-          <View style={styles.container}>
-            <View style={styles.HomeList}>
-                {tongs}
-            </View>
-
-            <View style={styles.TextList}>
-              <Grid>
-                <Row style={styles.HomeItems}>
-                  <TouchableHighlight onPress={() => this.props.navigation.navigate("createTong")}>
-                    <Text>현장통 생성</Text>
-                  </TouchableHighlight>
-                </Row>
-                <Row style={styles.HomeItems}>
-                  <Text>현장통 찾기</Text>
-                </Row>
-                <Row style={styles.HomeItems}>
-                  <Text>현장통 가이드</Text>
-                </Row>
-              </Grid>
-            </View>
+          <View style={styles.HomeList}>
+              {tongs}
           </View>
+
+          <Card>
+            <CardItem bordered button onPress={() => alert("현장통 생성")}>
+              <Icon name="logo-googleplus" />
+              <Text>현장통 생성</Text>
+              <Right>
+                <Icon type="Ionicons" name="arrow-round-forward" style={{color:'black'}} />
+              </Right>
+            </CardItem>
+            <CardItem bordered button onPress={() => alert("현장통 찾기")}>
+              <Icon name="logo-googleplus" />
+              <Text>현장통 찾기</Text>
+              <Right>
+                <Icon type="Ionicons" name="arrow-round-forward" style={{color:'black'}} />
+              </Right>
+            </CardItem>
+            <CardItem bordered button onPress={() => alert("현장통 가이드")}>
+              <Icon name="logo-googleplus" />
+              <Text>현장통 가이드</Text>
+              <Right>
+                <Icon type="Ionicons" name="arrow-round-forward" style={{color:'black'}} />
+              </Right>
+            </CardItem>
+          </Card>
         </Content>
       </Container>
     );

@@ -44,13 +44,24 @@ class createTong extends Component{
               <Text style={{color:'#cc0404'}}>현장통 활용법 보기 <Icon name='angle-right' size={15} style={{color:'#cc0404'}} /></Text>
             </View>
             <View style={{marginTop:20,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-              <View style={{width:100,height:100,marginHorizontal:5,borderWidth:1}}></View>
-              <View style={{width:100,height:100,marginHorizontal:5,borderWidth:1}}></View>
-              <View style={{width:100,height:100,marginHorizontal:5,borderWidth:1}}></View>
+              <View style={{width:100,height:120,marginHorizontal:5,alignItems:'center'}}>
+                <Image style={{width:100,height:100}} source={require('../../assets/images/createTong1.png')} />
+                <Text>시공사</Text>
+              </View>
+              <View style={{width:100,height:120,marginHorizontal:5,alignItems:'center'}}>
+                <Image style={{width:100,height:100}} source={require('../../assets/images/createTong2.png')} />
+                <Text>감리</Text>
+              </View>
+              <View style={{width:100,height:120,marginHorizontal:5,alignItems:'center'}}>
+                <Image style={{width:100,height:100}} source={require('../../assets/images/createTong3.png')} />
+                <Text>협력사</Text>
+              </View>
             </View>
             <View style={{marginTop:50,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-              <Button iconLeft rounded style={{backgroundColor:'#cc0404',padding:10,alignItems:'center'}}
-                onPress={() => {this.props.navigation.navigate('createTong2')}}><Text style={{color:'#fff',fontSize:20}}><NBIcon name='add-circle' /> 직접 만들기</Text></Button>
+              <Button iconLeft rounded style={{backgroundColor:'#cc0404',padding:20,alignItems:'center'}}
+                onPress={() => {this.props.navigation.navigate('createTong2')}}>
+                <Image source={require('../../assets/images/addButton.png')} />
+                <Text style={{color:'#fff',fontSize:20}}> 직접 만들기</Text></Button>
             </View>
           </View>
         </Content>

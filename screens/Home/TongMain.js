@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ImageBackground, TouchableOpacity, Image } from 'react-native';
+import { ImageBackground, TouchableOpacity, Image, Modal, TouchableHighlight } from 'react-native';
 import {
   Container,
   Content,
@@ -11,6 +11,10 @@ import {
   Body,
   Button,
   H3,
+  Form,
+  Item,
+  Label,
+  Input
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { NavigationActions } from "react-navigation";
@@ -22,9 +26,50 @@ import {RkTextInput, RkText, RkTheme} from 'react-native-ui-kitten';
 import styles from "./styles";
 
 class TongMain extends Component{
+  state = {
+    addComment: false,
+  };
+
+  setAddComment(visible) {
+    this.setState({addComment: visible});
+  }
   render(){
     return (
       <Container>
+
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={this.state.addComment}
+        onRequestClose={() => {
+          this.setAddComment(!this.state.addComment);
+        }}>
+          <Header style={{backgroundColor:'#fff',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
+            <Left>
+              <TouchableHighlight
+                onPress={() => {
+                  this.setAddComment(!this.state.addComment);
+                }}>
+                <Icon name='times' size={25} />
+              </TouchableHighlight>
+            </Left>
+            <Body>
+              <Text style={{fontWeight:'bold',fontSize:20}}>글 쓰기</Text>
+            </Body>
+            <Right>
+              <Text style={{fontSize:13}} onPress={() => {this.setAddComment(!this.state.addComment)}}>완료</Text>
+            </Right>
+          </Header>
+          <View style={{paddingRight:10}}>
+            <Form>
+              <Item floatingLabel>
+                <Label>멤버들에게 전할 소식을 남기세요.</Label>
+                <Input />
+              </Item>
+            </Form>
+          </View>
+      </Modal>
+
       <Header style={styles.HeaderStyle}>
         <ImageBackground source={require('../../assets/images/testImages/4.jpg')} style={styles.ImageHeader} >
         <Left style={[styles.LeftStyle]}>
@@ -52,7 +97,7 @@ class TongMain extends Component{
               </View>
             </Left>
             <Right>
-              <Button small rounded style={{backgroundColor:'#cc0404'}}><Text>글쓰기</Text></Button>
+              <Button small rounded style={{backgroundColor:'#cc0404'}} onPress={() => {this.setAddComment(true)}}><Text>글쓰기</Text></Button>
             </Right>
           </View>
           <View style={styles.TongContentBox}>

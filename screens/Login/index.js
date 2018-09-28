@@ -15,7 +15,7 @@ import {
 import { Header } from 'react-navigation';
 
 const bg = require("../../assets/images/bg.png");
-const logo = require("../../assets/images/logo.png");
+const logo = require("../../assets/images/loginLogo.png");
 
 import styles from './styles.js'
 

@@ -127,5 +127,10 @@ export default {
   },
   ContentReply: {
     color: '#cc0404',
+  },
+  CreateTongLogo: {
+    resizeMode: 'contain',
+    width: 100,
+    height: 100
   }
 };

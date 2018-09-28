@@ -106,7 +106,7 @@ class Home extends Component{
           </View>
 
           <Card>
-            <CardItem bordered button onPress={() => alert("현장통 생성")}>
+            <CardItem bordered button onPress={() => {this.props.navigation.navigate('createTong')}}>
               <Icon name="add-circle" />
               <Text>현장통 생성</Text>
             </CardItem>

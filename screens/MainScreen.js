@@ -24,6 +24,7 @@ import Prepare from './Mypage/Prepare.js';
 import Personal from './Mypage/Personal.js';
 
 import createTong from "./Home/createTong.js";
+import createTong2 from "./Home/createTong2.js";
 
 import TongMain from "./Home/TongMain.js";
 import TongNotice from "./Home/TongNotice.js";
@@ -31,7 +32,7 @@ import TongPeople from "./Home/TongPeople.js";
 import TongETC1 from "./Home/TongETC1.js";
 import TongETC2 from "./Home/TongETC2.js";
 
-const Logo  = require('../assets/images/headIcon.png');
+const Logo  = require('../assets/images/headerLogo.png');
 
 class MainScreen extends Component{
   constructor(props) {
@@ -164,6 +165,7 @@ const AppStackNavigator = createStackNavigator({
     }
   },
   createTong: { screen: createTong},
+  createTong2: { screen: createTong2},
   Mypage: { screen: MypageStackNavi },
   HomeTab: {
     screen: HomeTabNavi,
@@ -186,13 +188,9 @@ const AppStackNavigator = createStackNavigator({
       <Image
         source={Logo}
         style={{
-          width:40,
-          height:40,
-          resizeMode:'contain',
           marginLeft:20,
         }}
       />
-      <Text style={{fontSize:20,fontWeight:'bold',alignSelf:'center'}}>현장통</Text>
       </View>
     ),
     headerRight: (

@@ -1,100 +1,33 @@
 import React, { Component } from 'react';
-import {Alert, Image, TextInput, ImageBackground, TouchableOpacity } from 'react-native';
+import {Alert, Image, TextInput, ImageBackground, TouchableOpacity, Text } from 'react-native';
 import {
   Container,
   Content,
-  Text,
-  Icon,
   View,
+  H1,
+  H3,
+  Button,
+  Icon as NBIcon
 } from "native-base";
-import { Grid, Col, Row } from "react-native-easy-grid";
-import { NavigationActions } from "react-navigation";
+
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 import { ImagePicker } from 'expo';
 import styles from "./styles";
 
-class HomeDetail extends Component{
-  constructor(props) {
-    super(props);
-    this.state = {
-      tongName: '',
-      imageSource: null,
+class createTong extends Component{
+  static navigationOptions = ({
+    headerTitle: null,
+    headerRight: null,
+    headerStyle: {
+      backgroundColor: '#fff',
+      shadowOpacity: 0,
+      shadowOffset: { width:0, height:0 },
+      shadowRadius: 0,
+      elevation: 0,
     }
-
-    //uploadImage.state = uploadImage.state.bind(this);
-    this.uploadImage = this.uploadImage.bind(this);
-  }
-
-    uploadImage() {
-
-    const {tongName, imageSource} = this.state;
-
-    let apiUrl = 'http://13.124.127.253/api/createTong.php';
-    let uri = imageSource;
-    let uriParts = uri.split('.');
-    let fileType = uriParts[uriParts.length - 1];
-
-    //constant varaibles that equal propertes in state
-
-
-    const formData = new FormData();
-    //Add your input data
-    formData.append('name', tongName);
-
-    //Add your photo
-    //this, retrive the file extension of your photo
-    /*
-    let localUri = result.uri;
-    let filename = localUri.split('/').pop();
-    */
-
-    formData.append('photo', {
-      uri,
-      name: `photo.${fileType}`,
-      type: `image/${fileType}`,
-    });
-
-    let options = {
-      method: 'POST',
-      body: formData,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-      },
-    };
-
-    return fetch(apiUrl, options).then((response) => response.json())
-      .then((responseJson)=> {
-        if(responseJson === 'data matched') {
-          console.log(responseJson);
-          this.props.navigation.navigate("Main");
-        } else {
-          //alert(responseJson);
-          Alert.alert(
-            '현장통',
-            responseJson
-          )
-        }
-      }).catch((error) => {
-        console.log(error)
-      });
-    }
-
-    _pickImage = async () => {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true,
-        aspect: [4, 3],
-      });
-
-      console.log(result);
-
-      if (!result.cancelled) {
-        this.setState({ imageSource: result.uri });
-      }
-    };
-
+  });
   render(){
-    let { imageSource } = this.state;
-
     return (
       <Container>
         <Content
@@ -102,25 +35,22 @@ class HomeDetail extends Component{
           style={{ backgroundColor: "#fff" }}
         >
           <View style={styles.container}>
-            <View>
-              <View>
-                <TextInput
-                style={styles.tongName}
-                placeholder="현장통 이름"
-                onChangeText = {TextInputValue=>this.setState({tongName:TextInputValue}) }
-                 />
-
-                 <Image style={styles.tongImage}
-                    source={{uri: imageSource}}
-
-                 />
-                 <TouchableOpacity onPress={this._pickImage}>
-                 <Text>사진 선택</Text>
-                 </TouchableOpacity>
-                 <TouchableOpacity onPress={this.uploadImage}>
-                 <Text>현장통 만들기</Text>
-                 </TouchableOpacity>
-              </View>
+            <Image source={require('../../assets/images/logo.png')} style={styles.CreateTongLogo} />
+            <View style={{marginTop:20,alignItems:'center'}}>
+              <H3>만들고 싶은 모임을 선택하세요.</H3>
+              <Text>현장직 동료들과 함께하는 공간</Text>
+            </View>
+            <View style={{marginTop:20,alignItems:'center',justifyContent:'center'}}>
+              <Text style={{color:'#cc0404'}}>현장통 활용법 보기 <Icon name='angle-right' size={15} style={{color:'#cc0404'}} /></Text>
+            </View>
+            <View style={{marginTop:20,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+              <View style={{width:100,height:100,marginHorizontal:5,borderWidth:1}}></View>
+              <View style={{width:100,height:100,marginHorizontal:5,borderWidth:1}}></View>
+              <View style={{width:100,height:100,marginHorizontal:5,borderWidth:1}}></View>
+            </View>
+            <View style={{marginTop:50,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+              <Button iconLeft rounded style={{backgroundColor:'#cc0404',padding:10,alignItems:'center'}}
+                onPress={() => {this.props.navigation.navigate('createTong2')}}><Text style={{color:'#fff',fontSize:20}}><NBIcon name='add-circle' /> 직접 만들기</Text></Button>
             </View>
           </View>
         </Content>
@@ -128,4 +58,4 @@ class HomeDetail extends Component{
     );
   }
 }
-export default HomeDetail;
+export default createTong;

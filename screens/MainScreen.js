@@ -28,6 +28,8 @@ import createTong from "./Home/createTong.js";
 import TongMain from "./Home/TongMain.js";
 import TongNotice from "./Home/TongNotice.js";
 import TongPeople from "./Home/TongPeople.js";
+import TongETC1 from "./Home/TongETC1.js";
+import TongETC2 from "./Home/TongETC2.js";
 
 const Logo  = require('../assets/images/headIcon.png');
 
@@ -76,24 +78,35 @@ const HomeTabNavi = createBottomTabNavigator({
    TongNotice: {
      screen: TongNotice,
      navigationOptions: {
-       tabBarIcon: ({tintColor}) => <Icon name="home" size={25} color={tintColor} />,
+       tabBarIcon: ({tintColor}) => <Icon name="clipboard" size={25} color={tintColor} />,
      },
     },
     TongPeople: {
       screen: TongPeople,
       navigationOptions: {
-        tabBarIcon: ({tintColor}) => <Icon name="home" size={25} color={tintColor} />,
+        tabBarIcon: ({tintColor}) => <Icon name="bell" size={25} color={tintColor} />,
       },
      },
+     TongETC1: {
+       screen: TongETC1,
+       navigationOptions: {
+         tabBarIcon: ({tintColor}) => <Icon name="check-square" size={25} color={tintColor} />,
+       },
+      },
+      TongETC2: {
+        screen: TongETC2,
+        navigationOptions: {
+          tabBarIcon: ({tintColor}) => <Icon name="bars" size={25} color={tintColor} />,
+        },
+       },
 }, {
-  initialRouteName: "TongMain",
   tabBarOptions: {
-    activeTintColor: '#ff0',
-    inactiveTintColor: '#fff',
+    activeTintColor: '#cc0404',
+    inactiveTintColor: '#999',
     showLabel: false,
     showIcon: true,
     style: {
-      backgroundColor: '#cc0404',
+      backgroundColor: '#f4f4f4',
     },
   },
 })
@@ -131,12 +144,12 @@ const TabNavigator = createMaterialTopTabNavigator({
   }
 }, {
   tabBarOptions: {
-    activeTintColor: '#ff0',
-    inactiveTintColor: '#fff',
+    activeTintColor: '#cc0404',
+    inactiveTintColor: '#999',
     showLabel: false,
     showIcon: true,
     style: {
-      backgroundColor: '#cc0404',
+      backgroundColor: '#f4f4f4',
     },
   },
 })
@@ -152,7 +165,7 @@ const AppStackNavigator = createStackNavigator({
   },
   createTong: { screen: createTong},
   Mypage: { screen: MypageStackNavi },
-  Home: {
+  HomeTab: {
     screen: HomeTabNavi,
     navigationOptions: {
       header: null,
@@ -162,13 +175,14 @@ const AppStackNavigator = createStackNavigator({
   initialRouteName: "Login",
   navigationOptions: {
     headerStyle: {
-      backgroundColor: '#cc0404',
+      backgroundColor: '#f4f4f4',
       shadowOpacity: 0,
       shadowOffset: { width:0, height:0 },
       shadowRadius: 0,
       elevation: 0,
     },
     headerTitle: (
+      <View style={{flexDirection:'row'}}>
       <Image
         source={Logo}
         style={{
@@ -178,6 +192,8 @@ const AppStackNavigator = createStackNavigator({
           marginLeft:20,
         }}
       />
+      <Text style={{fontSize:20,fontWeight:'bold',alignSelf:'center'}}>현장통</Text>
+      </View>
     ),
     headerRight: (
       <View style={{flexDirection:"row"}}>

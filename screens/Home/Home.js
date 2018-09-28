@@ -18,12 +18,14 @@ import styles from "./styles";
 
 RkTheme.setType('RkCard', 'tongView', {
 
-  img:{
-      height: 150,
-    },
   content: {
-    alignSelf: 'center',
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
     top: -10,
+    margin: 0,
+    borderWidth: 1,
   },
 });
 
@@ -74,16 +76,17 @@ class Home extends Component{
       )
     } else {
       let tongs = this.state.dataSource.map((val, key) => {
-        return <RkCard rkType='tongView' key={key} style={styles.tongView}>
+        return <View key={key} style={styles.tongView}>
                   <TouchableOpacity
-                          onPress = {() => this.props.navigation.navigate("TongMain")}
+                          onPress = {() => this.props.navigation.navigate("HomeTab")}
                   >
-                  <Image rkCardImg source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />
-                  </TouchableOpacity>
-                  <View rkCardContent>
-                    <Text rkType='small'>{val.tongTitle}</Text>
+                  <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />
+                  <View style={styles.tongContent}>
+                    <Text style={styles.tongName}>{val.tongTitle}</Text>
+                    <Text style={styles.tongNew}>NEW 1</Text>
                   </View>
-                </RkCard>
+                  </TouchableOpacity>
+                </View>
       });
 
     return (
@@ -92,31 +95,28 @@ class Home extends Component{
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#fff" }}
         >
+          <View style={styles.BoxTitle}>
+            <Text>내 현장통</Text>
+            <Text>편집</Text>
+          </View>
+
           <View style={styles.HomeList}>
+              {tongs}
               {tongs}
           </View>
 
           <Card>
             <CardItem bordered button onPress={() => alert("현장통 생성")}>
-              <Icon name="logo-googleplus" />
+              <Icon name="add-circle" />
               <Text>현장통 생성</Text>
-              <Right>
-                <Icon type="Ionicons" name="arrow-round-forward" style={{color:'black'}} />
-              </Right>
             </CardItem>
             <CardItem bordered button onPress={() => alert("현장통 찾기")}>
-              <Icon name="logo-googleplus" />
+              <Icon name="search" />
               <Text>현장통 찾기</Text>
-              <Right>
-                <Icon type="Ionicons" name="arrow-round-forward" style={{color:'black'}} />
-              </Right>
             </CardItem>
             <CardItem bordered button onPress={() => alert("현장통 가이드")}>
-              <Icon name="logo-googleplus" />
+              <Icon name="help" />
               <Text>현장통 가이드</Text>
-              <Right>
-                <Icon type="Ionicons" name="arrow-round-forward" style={{color:'black'}} />
-              </Right>
             </CardItem>
           </Card>
         </Content>

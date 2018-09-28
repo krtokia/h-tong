@@ -22,7 +22,7 @@ import {RkTextInput, RkText, RkTheme} from 'react-native-ui-kitten';
 
 import styles from "./styles";
 
-class TongNotice extends Component{
+class TongETC1 extends Component{
   render(){
     return (
       <Container>
@@ -58,4 +58,4 @@ class TongNotice extends Component{
     );
   }
 }
-export default TongNotice;
+export default TongETC1;

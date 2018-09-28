@@ -37,11 +37,7 @@ class TongPeople extends Component{
             <Icon active name="angle-left" size={25} />
           </Button>
         </Left>
-        <Body style={[styles.HeaderBody]}>
-          <View style={styles.HeaderLogo}>
-            <Text style={styles.HeaderText}>현장통 이름</Text>
-          </View>
-        </Body>
+        <Body />
         </ImageBackground>
       </Header>
         <Content

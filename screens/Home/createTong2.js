@@ -12,21 +12,32 @@ import { Grid, Col, Row } from "react-native-easy-grid";
 import { NavigationActions } from "react-navigation";
 import { ImagePicker } from 'expo';
 import styles from "./styles";
+import pickableImage from "../common.js"
 
-class createTong2 extends Component{
+const _this = null;
+
+class createTong2 extends pickableImage{
+
   constructor(props) {
     super(props);
     this.state = {
       tongName: '',
-      imageSource: null,
     }
     //uploadImage.state = uploadImage.state.bind(this);
     this.uploadImage = this.uploadImage.bind(this);
+
+    }
+
+    componentDidMount() {
+      _this = this;
+    }
+    _useCon() {
+    console.log(this.state.imageSource);
     }
 
   static navigationOptions = ({
     headerTitle: null,
-    headerRight: (<Text onPress={() => alert('완료')}>완료  </Text>),
+    headerRight: (<Text onPress={() => _this.uploadImage()}>완료e  </Text>),
     headerStyle: {
       backgroundColor: '#fff',
       shadowOpacity: 0,
@@ -43,38 +54,44 @@ class createTong2 extends Component{
     const {tongName, imageSource} = this.state;
 
     let apiUrl = 'http://13.124.127.253/api/createTong.php';
-    let uri = imageSource;
-    let uriParts = uri.split('.');
-    let fileType = uriParts[uriParts.length - 1];
+    let uri = null;
+    let fileType = null;
+    let options = null;
 
-    //constant varaibles that equal propertes in state
+    if (imageSource) {
+      uri = imageSource;
+      uriParts = uri.split('.');
+      fileType = uriParts[uriParts.length - 1];
 
 
-    const formData = new FormData();
-    //Add your input data
-    formData.append('name', tongName);
+      const formData = new FormData();
+      
+      formData.append('name', tongName);
+      formData.append('photo', {
+        uri,
+        name: `photo.${fileType}`,
+        type: `image/${fileType}`,
+      });
 
-    //Add your photo
-    //this, retrive the file extension of your photo
-    /*
-    let localUri = result.uri;
-    let filename = localUri.split('/').pop();
-    */
+      options = {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+    } else {
 
-    formData.append('photo', {
-      uri,
-      name: `photo.${fileType}`,
-      type: `image/${fileType}`,
-    });
+      options = {
+        method: 'POST',
+        body: JSON.stringify({
+          name: tongName,
+          type: "none",
+        })
+      }
 
-    let options = {
-      method: 'POST',
-      body: formData,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-      },
-    };
+    }
 
     return fetch(apiUrl, options).then((response) => response.json())
       .then((responseJson)=> {
@@ -92,19 +109,6 @@ class createTong2 extends Component{
         console.log(error)
       });
     }
-
-    _pickImage = async () => {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true,
-        aspect: [4, 3],
-      });
-
-      console.log(result);
-
-      if (!result.cancelled) {
-        this.setState({ imageSource: result.uri });
-      }
-    };
 
   render(){
     let { imageSource } = this.state;
@@ -126,11 +130,10 @@ class createTong2 extends Component{
                  />
             </View>
                  <Image style={styles.tongImage}
-                    source={{uri: imageSource}}
-
+                    source={{ uri: this.state.imageSource }}
                  />
             <View style={{marginTop:20,alignItems:'center',justifyContent:'center'}}>
-                 <TouchableOpacity onPress={this._pickImage}>
+                 <TouchableOpacity onPress={this._pickImage.bind(this)}>
                  <View style={{borderRadius:10,width:150,height:150,backgroundColor:'#eee',justifyContent:'center',alignItems:'center'}}>
                   <Icon name="camera" style={{fontSize:50,color:'#999'}} />
                   <Text style={{color:'#999',fontSize:15}}>현장통 사진 추가</Text>

@@ -30,17 +30,20 @@ class TongMain extends Component{
     super(props);
     this.state = {
         isLoading: true,
+        isLoading2: true,
         dataSource: null,
+        bbsData: null,
         addComment: false,
         tongSeq: 10,
         memId: 'SID',
         content: null,
+        tongTitle: null,
+        tongImage: null,
     }
+
   }
 
-  componentDidMount() {
-    //console.log("START componentDidMount");
-
+  getTong() {
     return fetch("http://13.124.127.253/api/results.php?page=tong&seq=10")
       .then((response) => response.json())
       .then((responseJson) => {
@@ -54,7 +57,28 @@ class TongMain extends Component{
       .catch((error) => {
         console.error(error);
       });
-    }
+  }
+
+  getBbs() {
+      return fetch("http://13.124.127.253/api/results.php?page=bbs&seq=10")
+            .then((response) => response.json())
+            .then((responseJson) => {
+              console.log(responseJson);
+              //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+              this.setState({
+                isLoading2: false,
+                bbsData: responseJson,
+              });
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+  }
+  componentDidMount() {
+    //console.log("START componentDidMount");
+    this.getTong();
+    this.getBbs();
+  }
 
   setAddComment(visible) {
     this.setState({addComment: visible});
@@ -97,15 +121,41 @@ class TongMain extends Component{
   }
 
   render(){
-    if (this.state.isLoading) {
+    if (this.state.isLoading2) {
       return (
         <View Style={{flex:1, paddingTop:20}}>
           <ActivityIndicator />
         </View>
       )
     } else {
-      let tongs = this.state.dataSource.map((val, key) => {
+      let tongTopImage = this.state.dataSource.map((val, key) => {
+        this.state.tongTitle = val.tongTitle;
+        this.state.tongImage = val.tongImage;
       });
+
+      let bbsList = this.state.bbsData.map((val, key) => {
+        return <View style={styles.TongContentBox} key={key}>
+                  <View style={styles.TongContentHeader}>
+                    <View style={{flexDirection: 'row'}}>
+                      <Image style={styles.ContentHeaderImg} source={require('../../assets/images/profile_no.png')} />
+                        <View style={{marginLeft:10}}>
+                          <Text style={{fontSize:14,fontWeight:'bold'}}>{val.author}</Text>
+                          <Text style={{fontSize:10,color:'#aaa'}}>{val.date}</Text>
+                          </View>
+                          </View>
+                          <Icon name='ellipsis-v' size={25} />
+                          </View>
+                          <View style={styles.TongContentImgs}>
+                          <Text>{val.content}</Text>
+                          </View>
+                          <View style={styles.TongContentReply}>
+                          <Text style={styles.ContentReply}>댓글달기 <Icon name='comment' /></Text>
+                      </View>
+                    </View>
+      })
+
+
+
 
     return (
       <Container>
@@ -144,18 +194,18 @@ class TongMain extends Component{
       </Modal>
 
       <Header style={styles.HeaderStyle}>
-        <ImageBackground source={require('../../assets/images/testImages/4.jpg')} style={styles.ImageHeader} >
-        <Left style={[styles.LeftStyle]}>
-          <Button
-            transparent
-            onPress={() => this.props.navigation.navigate('Main')}
-            styles={{width:20}}
-          >
-            <Icon active name="angle-left" size={25} />
-          </Button>
-        </Left>
-        <Body />
-        </ImageBackground>
+      <ImageBackground source={{uri: `http://13.124.127.253/images/tongHead/` + this.state.tongImage}} style={styles.ImageHeader} >
+      <Left style={[styles.LeftStyle]}>
+        <Button
+          transparent
+          onPress={() => this.props.navigation.navigate('Main')}
+          styles={{width:20}}
+        >
+          <Icon active name="angle-left" size={25} />
+        </Button>
+      </Left>
+      <Body />
+      </ImageBackground>
       </Header>
         <Content
           showsVerticalScrollIndicator={false}
@@ -163,7 +213,7 @@ class TongMain extends Component{
         >
           <View style={styles.TongHeader}>
             <Left>
-              <H3>현장통 이름</H3>
+              <H3>현장통 {this.state.tongTitle}</H3>
               <View style={styles.TongSubs}>
                 <Text style={{fontSize:14}}>멤버 1</Text>
                 <Text style={[styles.TongInvite,{fontSize:14}]}><Icon name="plus-circle" /> 멤버 초대</Text>
@@ -173,46 +223,9 @@ class TongMain extends Component{
               <Button small rounded style={{backgroundColor:'#cc0404'}} onPress={() => {this.setAddComment(true)}}><Text>글쓰기</Text></Button>
             </Right>
           </View>
-          <View style={styles.TongContentBox}>
-            <View style={styles.TongContentHeader}>
-              <View style={{flexDirection: 'row'}}>
-                <Image style={styles.ContentHeaderImg} source={require('../../assets/images/profile_no.png')} />
-                <View style={{marginLeft:10}}>
-                  <Text style={{fontSize:14,fontWeight:'bold'}}>이름</Text>
-                  <Text style={{fontSize:10,color:'#aaa'}}>2018년09월27일</Text>
-                </View>
-              </View>
-              <Icon name='ellipsis-v' size={25} />
-            </View>
-            <View style={styles.TongContentImgs}>
-              <Image style={styles.ContentImg} source={require('../../assets/images/testImages/1.jpg')} />
-              <Image style={styles.ContentImg} source={require('../../assets/images/testImages/2.jpg')} />
-              <Image style={styles.ContentImg} source={require('../../assets/images/testImages/3.jpg')} />
-              <Image style={styles.ContentImg} source={require('../../assets/images/testImages/4.jpg')} />
-            </View>
-            <View style={styles.TongContentReply}>
-              <Text style={styles.ContentReply}>댓글달기 <Icon name='comment' /></Text>
-            </View>
-          </View>
 
-          <View style={styles.TongContentBox}>
-            <View style={styles.TongContentHeader}>
-              <View style={{flexDirection: 'row'}}>
-                <Image style={styles.ContentHeaderImg} source={require('../../assets/images/profile_no.png')} />
-                <View style={{marginLeft:10}}>
-                  <Text style={{fontSize:14,fontWeight:'bold'}}>이름</Text>
-                  <Text style={{fontSize:10,color:'#aaa'}}>2018년09월27일</Text>
-                </View>
-              </View>
-              <Icon name='ellipsis-v' size={25} />
-            </View>
-            <View style={styles.TongContentImgs}>
-              <Image style={styles.ContentImg} source={require('../../assets/images/testImages/1.jpg')} />
-            </View>
-            <View style={styles.TongContentReply}>
-              <Text style={styles.ContentReply}>댓글달기 <Icon name='comment' /></Text>
-            </View>
-          </View>
+
+          {bbsList}
         </Content>
       </Container>
     );

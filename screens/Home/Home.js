@@ -25,7 +25,7 @@ class Home extends Component{
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     //console.log("START componentDidMount");
 
     return fetch("http://13.124.127.253/api/results.php?page=home")

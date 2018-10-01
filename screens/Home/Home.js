@@ -102,7 +102,7 @@ class Home extends Component{
 
           <View style={styles.HomeList}>
               {tongs}
-              
+
           </View>
 
           <Card>

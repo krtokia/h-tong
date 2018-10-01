@@ -16,19 +16,6 @@ import {RkCard, RkTheme} from 'react-native-ui-kitten';
 
 import styles from "./styles";
 
-RkTheme.setType('RkCard', 'tongView', {
-
-  content: {
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    top: -10,
-    margin: 0,
-    borderWidth: 1,
-  },
-});
-
 class Home extends Component{
   constructor(props) {
     super(props);
@@ -93,18 +80,19 @@ class Home extends Component{
       <Container>
         <Content
           showsVerticalScrollIndicator={false}
-          style={{ backgroundColor: "#fff" }}
+          style={{ backgroundColor: "#f4f4f4" }}
         >
-          <View style={styles.BoxTitle}>
-            <Text>내 현장통</Text>
-            <Text>편집</Text>
-          </View>
+          <View style={styles.Box}>
+            <View style={styles.BoxTitle}>
+              <Text>내 현장통</Text>
+              <Text>편집</Text>
+            </View>
 
-          <View style={styles.HomeList}>
-              {tongs}
-              
-          </View>
+            <View style={styles.HomeList}>
+                {tongs}
 
+            </View>
+          </View>
           <Card>
             <CardItem bordered button onPress={() => {this.props.navigation.navigate('createTong')}}>
               <Icon name="add-circle" />

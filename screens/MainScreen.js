@@ -107,7 +107,7 @@ const HomeTabNavi = createBottomTabNavigator({
     showLabel: false,
     showIcon: true,
     style: {
-      backgroundColor: '#f4f4f4',
+      backgroundColor: '#fff',
     },
   },
 })
@@ -150,7 +150,7 @@ const TabNavigator = createMaterialTopTabNavigator({
     showLabel: false,
     showIcon: true,
     style: {
-      backgroundColor: '#f4f4f4',
+      backgroundColor: '#fff',
     },
   },
 })
@@ -177,21 +177,22 @@ const AppStackNavigator = createStackNavigator({
   initialRouteName: "Login",
   navigationOptions: {
     headerStyle: {
-      backgroundColor: '#f4f4f4',
+      backgroundColor: '#fff',
       shadowOpacity: 0,
       shadowOffset: { width:0, height:0 },
       shadowRadius: 0,
       elevation: 0,
     },
     headerTitle: (
-      <View style={{flexDirection:'row'}}>
       <Image
         source={Logo}
         style={{
-          marginLeft:20,
+          marginLeft: 10,
+          width: 110,
+          height: 40,
+          resizeMode: 'contain',
         }}
       />
-      </View>
     ),
     headerRight: (
       <View style={{flexDirection:"row"}}>

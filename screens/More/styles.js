@@ -13,7 +13,7 @@ export default {
   },
   Box: {
     backgroundColor: '#fff',
-    width: deviceWidth - 20,
+    width: deviceWidth,
     marginTop: 10,
     alignItems: 'stretch',
     shadowOpacity: 5,
@@ -22,6 +22,14 @@ export default {
     elevation: 5,
     justifyContent: 'flex-start',
     padding: 10,
+  },
+  BoxTitle: {
+    marginTop: 5,
+    flexDirection: "row",
+    paddingLeft: 10,
+    paddingRight: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   MypageImg: {
     width: 50,
@@ -51,5 +59,38 @@ export default {
   TextBox: {
     fontSize: 20,
     marginLeft:20,
-  }
+  },
+  tongContent : {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  tongName: {
+    fontSize: 14,
+    fontWeight: 'bold'
+  },
+  tongNew: {
+    color: '#cc0404',
+    fontSize: 10,
+    alignSelf: 'center',
+    textDecorationLine:'underline'
+  },
+  tongImage : {
+    height: 150,
+    width: deviceWidth / 2 - 20,
+    borderRadius: 20,
+  },
+  tongView: {
+    marginTop: 10,
+    height: 180,
+    flexBasis: '50%',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  HomeList: {
+    width: '100%',
+    flexWrap: 'wrap',
+    flexDirection: "row",
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
 }

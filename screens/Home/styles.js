@@ -38,7 +38,7 @@ export default {
     alignItems: 'center',
   },
   BoxTitle: {
-    marginTop: 30,
+    marginTop: 20,
     flexDirection: "row",
     paddingLeft: 10,
     paddingRight: 10,
@@ -132,5 +132,17 @@ export default {
     resizeMode: 'contain',
     width: 100,
     height: 100
-  }
+  },
+  Box: {
+    backgroundColor: '#fff',
+    width: deviceWidth,
+    marginBottom: 5,
+    alignItems: 'stretch',
+    shadowOpacity: 5,
+    shadowOffset: { width:5, height:5 },
+    shadowRadius: 5,
+    elevation: 5,
+    justifyContent: 'flex-start',
+    padding: 10,
+  },
 };

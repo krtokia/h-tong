@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ImageBackground, TouchableOpacity, Image, Modal, TouchableHighlight } from 'react-native';
+import { ImageBackground, TouchableOpacity, Image, Modal, TouchableHighlight, Alert, ActivityIndicator } from 'react-native';
 import {
   Container,
   Content,
@@ -26,14 +26,87 @@ import {RkTextInput, RkText, RkTheme} from 'react-native-ui-kitten';
 import styles from "./styles";
 
 class TongMain extends Component{
-  state = {
-    addComment: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+        isLoading: true,
+        dataSource: null,
+        addComment: false,
+        tongSeq: 10,
+        memId: 'SID',
+        content: null,
+    }
+  }
+
+  componentDidMount() {
+    //console.log("START componentDidMount");
+
+    return fetch("http://13.124.127.253/api/results.php?page=tong&seq=10")
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson);
+        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.setState({
+          isLoading: false,
+          dataSource: responseJson,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    }
 
   setAddComment(visible) {
     this.setState({addComment: visible});
   }
+
+  write() {
+
+    const {tongSeq, memId, content} = this.state;
+
+    let apiUrl = 'http://13.124.127.253/api/write.php';
+
+    options = {
+      method: 'POST',
+      headers: {
+        'Accept' : 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        seq : tongSeq,
+        id: memId,
+        content: content,
+      })
+    }
+
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          console.log(responseJson);
+          this.props.navigation.navigate("Main");
+        } else {
+          //alert(responseJson);
+          Alert.alert(
+            '현장통',
+            responseJson
+          )
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
+  }
+
   render(){
+    if (this.state.isLoading) {
+      return (
+        <View Style={{flex:1, paddingTop:20}}>
+          <ActivityIndicator />
+        </View>
+      )
+    } else {
+      let tongs = this.state.dataSource.map((val, key) => {
+      });
+
     return (
       <Container>
 
@@ -57,14 +130,14 @@ class TongMain extends Component{
               <Text style={{fontWeight:'bold',fontSize:20}}>글 쓰기</Text>
             </Body>
             <Right>
-              <Text style={{fontSize:13}} onPress={() => {this.setAddComment(!this.state.addComment)}}>완료</Text>
+              <Text style={{fontSize:13}} onPress={() => {this.write()}}>완료</Text>
             </Right>
           </Header>
           <View style={{paddingRight:10}}>
             <Form>
               <Item floatingLabel>
                 <Label>멤버들에게 전할 소식을 남기세요.</Label>
-                <Input />
+                <Input onChangeText={(content) => this.setState({ content })} />
               </Item>
             </Form>
           </View>
@@ -143,6 +216,7 @@ class TongMain extends Component{
         </Content>
       </Container>
     );
+  }
   }
 }
 export default TongMain;

@@ -88,10 +88,6 @@ class Home extends Component{
               <Text>편집</Text>
             </View>
 
-            <View style={styles.HomeList}>
-                {tongs}
-
-            </View>
           </View>
           <Card>
             <CardItem bordered button onPress={() => {this.props.navigation.navigate('createTong')}}>

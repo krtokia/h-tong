@@ -43,7 +43,7 @@ class TongMain extends Component{
 
   }
 
-  getTong() {
+  getTong = async() => {
     return fetch("http://13.124.127.253/api/results.php?page=tong&seq=10")
       .then((response) => response.json())
       .then((responseJson) => {
@@ -59,7 +59,7 @@ class TongMain extends Component{
       });
   }
 
-  getBbs() {
+  getBbs = async() => {
       return fetch("http://13.124.127.253/api/results.php?page=bbs&seq=10")
             .then((response) => response.json())
             .then((responseJson) => {
@@ -213,7 +213,7 @@ class TongMain extends Component{
         >
           <View style={styles.TongHeader}>
             <Left>
-              <H3>현장통 {this.state.tongTitle}</H3>
+              <H3>{this.state.tongTitle}</H3>
               <View style={styles.TongSubs}>
                 <Text style={{fontSize:14}}>멤버 1</Text>
                 <Text style={[styles.TongInvite,{fontSize:14}]}><Icon name="plus-circle" /> 멤버 초대</Text>

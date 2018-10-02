@@ -189,14 +189,25 @@ class TongMain extends Component{
               <Text style={{fontSize:13}} onPress={() => {this.write()}}>완료</Text>
             </Right>
           </Header>
-          <View style={{paddingRight:10}}>
+          <Content style={{padding:10}}>
             <Form>
-              <Item floatingLabel>
-                <Label>멤버들에게 전할 소식을 남기세요.</Label>
-                <Input onChangeText={(content) => this.setState({ content })} />
-              </Item>
+              <ImageBackground source={require('../../assets/images/backgroundLogo.png')} style={{width:'100%'}}>
+              <Textarea onChangeText={(content) => this.setState({ content })} rowSpan={20} />
+              </ImageBackground>
             </Form>
-          </View>
+          </Content>
+          <Footer>
+            <FooterTab style={{backgroundColor:'#fff'}}>
+              <Button>
+                <NBIcon type='FontAwesome' name='camera' style={{color:'#999'}} />
+                <Text style={{color:'#ccc'}}>사진</Text>
+              </Button>
+              <Button>
+                <NBIcon type='FontAwesome' name='video-camera' style={{color:'#999'}} />
+                <Text style={{color:'#ccc'}}>동영상</Text>
+              </Button>
+            </FooterTab>
+          </Footer>
       </Modal>
 
       <Header style={styles.HeaderStyle}>

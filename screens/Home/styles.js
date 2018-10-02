@@ -145,4 +145,15 @@ export default {
     justifyContent: 'flex-start',
     padding: 10,
   },
+  InviteText: {
+    marginLeft: 20,
+    marginRight:'auto',
+    fontSize: 20,
+  },
+  contentHeader: {
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10
+  }
 };

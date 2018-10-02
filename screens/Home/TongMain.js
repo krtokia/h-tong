@@ -14,7 +14,11 @@ import {
   Form,
   Item,
   Label,
-  Input
+  Input,
+  Textarea,
+  FooterTab,
+  Footer,
+  Icon as NBIcon
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { NavigationActions } from "react-navigation";
@@ -226,9 +230,9 @@ class TongMain extends Component{
       </Header>
         <Content
           showsVerticalScrollIndicator={false}
-          style={{ backgroundColor: "#ccc" }}
+          style={{ backgroundColor: "#f4f4f4" }}
         >
-          <View style={styles.TongHeader}>
+          <View style={[styles.Box,styles.TongHeader]}>
             <Left>
               <H3>{this.state.tongTitle}</H3>
               <View style={styles.TongSubs}>

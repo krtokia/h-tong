@@ -121,7 +121,13 @@ class TongMain extends Component{
   }
 
   render(){
-    if (this.state.isLoading2) {
+    if (this.state.isLoading) {
+      return (
+        <View Style={{flex:1, paddingTop:20}}>
+          <ActivityIndicator />
+        </View>
+      )
+    } else if (this.state.isLoading2) {
       return (
         <View Style={{flex:1, paddingTop:20}}>
           <ActivityIndicator />

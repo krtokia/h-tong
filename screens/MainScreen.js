@@ -152,6 +152,10 @@ const TabNavigator = createMaterialTopTabNavigator({
     style: {
       backgroundColor: '#fff',
     },
+    indicatorStyle: {
+      borderBottomWidth: 2,
+      borderBottomColor: '#cc0404'
+    }
   },
 })
 

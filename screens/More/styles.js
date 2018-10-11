@@ -23,6 +23,17 @@ export default {
     justifyContent: 'flex-start',
     padding: 10,
   },
+  Box2: {
+    backgroundColor: '#fff',
+    width: deviceWidth,
+    alignItems: 'stretch',
+    shadowOpacity: 2,
+    shadowOffset: { width:2, height:2 },
+    shadowRadius: 2,
+    elevation: 2,
+    justifyContent: 'flex-start',
+    padding: 10,
+  },
   BoxTitle: {
     marginTop: 5,
     flexDirection: "row",
@@ -39,12 +50,12 @@ export default {
 
   },
   ColBox: {
-    width: (deviceWidth - 40) / 4,
-    height: (deviceWidth - 40) / 4,
+    width: (deviceWidth - 20) / 4,
+    height: 80,
     padding: 5,
     justifyContent:'flex-start',
     flexDirection:'column',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   MoreItems: {
     borderBottomWidth: 1,
@@ -92,5 +103,23 @@ export default {
     flexDirection: "row",
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
+  },
+  dateBox: {
+    width:'90%',
+    height:40,
+    borderWidth:1,
+    borderColor:'#e9e9e9',
+    borderRadius:50,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10
+  },
+  contentFooterBox: {
+    flex:1,
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems:'center',
+    paddingVertical:5,
   },
 }

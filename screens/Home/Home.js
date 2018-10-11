@@ -80,9 +80,9 @@ class Home extends Component{
       <Container>
         <Content
           showsVerticalScrollIndicator={false}
-          style={{ backgroundColor: "#f4f4f4" }}
+          style={{ backgroundColor: "#f9f9f9" }}
         >
-          <View style={styles.Box}>
+          <View style={[styles.Box,{marginTop:10}]}>
             <View style={styles.BoxTitle}>
               <Text>내 현장통</Text>
               <Text>편집</Text>
@@ -92,15 +92,15 @@ class Home extends Component{
             </View>
           </View>
           <Card>
-            <CardItem bordered button onPress={() => {this.props.navigation.navigate('createTong')}}>
+            <CardItem button onPress={() => {this.props.navigation.navigate('createTong')}}>
               <Icon name="add-circle" />
               <Text>현장통 생성</Text>
             </CardItem>
-            <CardItem bordered button onPress={() => alert("현장통 찾기")}>
+            <CardItem button onPress={() => alert("현장통 찾기")}>
               <Icon name="search" />
               <Text>현장통 찾기</Text>
             </CardItem>
-            <CardItem bordered button onPress={() => alert("현장통 가이드")}>
+            <CardItem button onPress={() => alert("현장통 가이드")}>
               <Icon name="help" />
               <Text>현장통 가이드</Text>
             </CardItem>

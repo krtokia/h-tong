@@ -53,15 +53,13 @@ class createTong extends Component{
                 <Text>커뮤니티 생성</Text>
               </View>
             </View>
-            {/*
             <View style={{marginTop:50,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-              <Button iconLeft rounded style={{backgroundColor:'#cc0404',padding:20,alignItems:'center'}}
+              <Button iconLeft rounded style={{backgroundColor:'#cc0404',paddingHorizontal:50,paddingVertical:20,alignItems:'center'}}
                 onPress={() => {this.props.navigation.navigate('createTong2')}}>
                 <Image source={require('../../assets/images/addButton.png')} />
-                <Text style={{color:'#fff',fontSize:20}}> 직접 만들기</Text>
+                <Text style={{color:'#fff',fontSize:20}}> 만들기</Text>
               </Button>
             </View>
-            */}
           </View>
         </Content>
       </Container>

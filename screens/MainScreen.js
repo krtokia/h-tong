@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, StatusBar, Platform } from 'react-native';
+import { StyleSheet, View, Image, StatusBar, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Text } from 'native-base';
 import { createMaterialTopTabNavigator, createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import { Font,AppLoading } from 'expo';
@@ -8,20 +9,23 @@ import { Font,AppLoading } from 'expo';
 import Login from './Login';
 //import HomeStack from './Home';
 import Signup from './Signup';
-import Some1 from './Something';
-import Some2 from './Something2';
+
 import Some3 from './Something3';
 
+import Chat from './Chat';
+import ChatRoom from './Chat/ChatRoom.js';
 
-import Some1sub from './Something/sub1';
+import Friends from './Friends';
+import FriendDetail from './Friends/FriendDetail.js';
 
 import Home from "./Home/Home.js";
 
 import More from './More';
-
-import Mypage from './Mypage';
-import Prepare from './Mypage/Prepare.js';
-import Personal from './Mypage/Personal.js';
+import Notice from './More/Notice.js';
+import Mypage from './More/Mypage.js';
+import WorkHistory from './More/WorkHistory.js';
+import Bookmark from './More/Bookmark.js';
+import Settings from './More/Settings.js';
 
 import createTong from "./Home/createTong.js";
 import createTong2 from "./Home/createTong2.js";
@@ -43,7 +47,8 @@ class MainScreen extends Component{
   async componentWillMount() {
     await Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
-      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
+      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
+      nanum_gothic: require('../assets/fonts/NanumGothic.ttf')
     });
     this.setState({ loading: false });
   }
@@ -61,10 +66,27 @@ class MainScreen extends Component{
 }
 export default MainScreen;
 
-const MypageStackNavi = createStackNavigator({
-  MypageMain: { screen: Mypage },
-  Prepare: { screen: Prepare },
-  Personal: { screen: Personal },
+const ChatStackNavi = createStackNavigator({
+  Chat: { screen: Chat },
+  ChatRoom: { screen: ChatRoom },
+},{
+  headerMode: 'null',
+});
+
+const MoreStackNavi = createStackNavigator({
+  More: { screen: More },
+  Notice: { screen: Notice },
+  Mypage: { screen: Mypage },
+  WorkHistory: { screen: WorkHistory },
+  Bookmark: { screen: Bookmark },
+  Settings: { screen: Settings },
+},{
+  headerMode: 'null',
+});
+
+const FriendsStackNavi = createStackNavigator({
+  Friends: { screen: Friends },
+  FriendDetail: { screen: FriendDetail },
 },{
   headerMode: 'null',
 });
@@ -102,7 +124,7 @@ const HomeTabNavi = createBottomTabNavigator({
        },
 }, {
   tabBarOptions: {
-    activeTintColor: '#cc0404',
+    activeTintColor: '#db3928',
     inactiveTintColor: '#999',
     showLabel: false,
     showIcon: true,
@@ -116,36 +138,36 @@ const TabNavigator = createMaterialTopTabNavigator({
   Home: {
     screen: Home,
     navigationOptions: {
-      tabBarIcon: ({tintColor}) => <Icon name="home" size={25} color={tintColor} />,
+      tabBarIcon: ({tintColor}) => <Icon name="home" size={20} color={tintColor} />,
     },
   },
-  Some1: {
-    screen: Some1,
+  FriendsStackNavi: {
+    screen: FriendsStackNavi,
     navigationOptions: {
-      tabBarIcon: ({tintColor}) => <Icon name="bell" size={25} color={tintColor}  />,
+      tabBarIcon: ({tintColor}) => <Icon name="address-book-o" size={20} color={tintColor}  />,
     },
   },
-  Some2: {
-    screen: Some2,
+  ChatStackNavi: {
+    screen: ChatStackNavi,
     navigationOptions: {
-      tabBarIcon: ({tintColor}) => <Icon name="comments" size={25} color={tintColor}  />,
-    },
+    tabBarIcon: ({tintColor}) => <Icon name="file-text-o" size={20} color={tintColor}  />,
+    }
   },
   Some3: {
     screen: Some3,
     navigationOptions: {
-    tabBarIcon: ({tintColor}) => <Icon name="user" size={25} color={tintColor}  />,
-    }
+      tabBarIcon: ({tintColor}) => <Icon name="commenting-o" size={20} color={tintColor}  />,
+    },
   },
-  More: {
-    screen: More,
+  MoreStackNavi: {
+    screen: MoreStackNavi,
     navigationOptions: {
-      tabBarIcon: ({tintColor}) => <Icon name="ellipsis-v" size={25} color={tintColor}  />,
+      tabBarIcon: ({tintColor}) => <Icon name="user-circle" size={25} color={tintColor}  />,
     }
   }
 }, {
   tabBarOptions: {
-    activeTintColor: '#cc0404',
+    activeTintColor: '#db3928',
     inactiveTintColor: '#999',
     showLabel: false,
     showIcon: true,
@@ -154,7 +176,7 @@ const TabNavigator = createMaterialTopTabNavigator({
     },
     indicatorStyle: {
       borderBottomWidth: 2,
-      borderBottomColor: '#cc0404'
+      borderBottomColor: '#db3928'
     }
   },
 })
@@ -170,7 +192,6 @@ const AppStackNavigator = createStackNavigator({
   },
   createTong: { screen: createTong},
   createTong2: { screen: createTong2},
-  Mypage: { screen: MypageStackNavi },
   HomeTab: {
     screen: HomeTabNavi,
     navigationOptions: {

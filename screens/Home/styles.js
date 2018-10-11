@@ -20,7 +20,7 @@ export default {
     fontWeight: 'bold'
   },
   tongNew: {
-    color: '#cc0404',
+    color: '#db3928',
     fontSize: 10,
     alignSelf: 'center',
     textDecorationLine:'underline'
@@ -81,7 +81,7 @@ export default {
     flexWrap: 'nowrap'
   },
   TongInvite: {
-    color: '#cc0404'
+    color: '#db3928'
   },
   TongContentBox: {
     width: deviceWidth,
@@ -126,7 +126,7 @@ export default {
     justifyContent: 'center',
   },
   ContentReply: {
-    color: '#cc0404',
+    color: '#db3928',
   },
   CreateTongLogo: {
     resizeMode: 'contain',

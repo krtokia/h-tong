@@ -72,36 +72,36 @@ class More extends Component{
           </View>
 
           <View style={[styles.Box,{flexDirection:'row',flexWrap:'wrap',justifyContent:'center'}]}>
-            <TouchableOpacity style={styles.ColBox}>
-              <Icon name='bullhorn' size={30} />
-              <Text style={{fontSize:13,marginTop:5}}>공지사항</Text>
+            <TouchableOpacity style={styles.ColBox} onPress={() => this.props.navigation.navigate('Notice')}>
+              <Icon name='bullhorn' size={23} color='grey' />
+              <Text style={{fontSize:13,marginTop:5,}}>공지사항</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.ColBox}>
-              <Icon name='binoculars' size={30} />
+              <Icon name='binoculars' size={23} color='grey' />
               <Text style={{fontSize:13,marginTop:5,}}>초대장 찾기</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.ColBox} onPress={() => this.props.navigation.navigate('Personal')}>
-              <Icon name='address-card' size={30} />
+            <TouchableOpacity style={styles.ColBox} onPress={() => this.props.navigation.navigate('Mypage')}>
+              <Icon name='address-card' size={23} color='grey' />
               <Text style={{fontSize:13,marginTop:5,}}>마이페이지</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.ColBox} onPress={() => this.props.navigation.navigate('Prepare')}>
-              <Icon name='cogs' size={30} />
+            <TouchableOpacity style={styles.ColBox} onPress={() => this.props.navigation.navigate('Settings')}>
+              <Icon name='cogs' size={23} color='grey' />
               <Text style={{fontSize:13,marginTop:5,}}>설정</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.ColBox}>
-              <Icon name='book' size={30} />
+              <Icon name='book' size={23} color='grey' />
               <Text style={{fontSize:13,marginTop:5,}}>수금장부</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.ColBox}>
-              <Icon name='calendar-check-o' size={30} />
+            <TouchableOpacity style={styles.ColBox} onPress={() => this.props.navigation.navigate('WorkHistory')}>
+              <Icon name='calendar-check-o' size={23} color='grey' />
               <Text style={{fontSize:13,marginTop:5,}}>근로이력</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.ColBox}>
-              <Icon name='bookmark' size={30} />
+            <TouchableOpacity style={styles.ColBox} onPress={() => this.props.navigation.navigate('Bookmark')}>
+              <Icon name='bookmark' size={23} color='grey' />
               <Text style={{fontSize:13,marginTop:5,}}>북마크</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.ColBox}>
-              <Icon name='calendar' size={30} />
+              <Icon name='calendar' size={23} color='grey' />
               <Text style={{fontSize:13,marginTop:5,}}>일정</Text>
             </TouchableOpacity>
           </View>

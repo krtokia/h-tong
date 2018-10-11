@@ -1,14 +1,20 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { createStackNavigator, Header } from 'react-navigation';
+import getTheme from './native-base-theme/components';
+import { StyleProvider } from 'native-base';
+import { Font } from 'expo';
 
 import MainScreen from './screens/MainScreen.js';
 
 export default class App extends React.Component {
+
   render() {
     global.self = global;
     return (
+      <StyleProvider style={getTheme()}>
       <MainScreen />
+      </StyleProvider>
     );
 
   }

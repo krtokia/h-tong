@@ -5,7 +5,7 @@ class Some3 extends Component{
   render(){
     return (
       <View style={style.container}>
-        <Text>Some3</Text>
+        <Text>Some2</Text>
       </View>
     );
   }

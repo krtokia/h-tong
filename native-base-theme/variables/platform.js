@@ -32,7 +32,7 @@ export default {
   badgePadding: platform === "ios" ? 3 : 0,
 
   // Button
-  btnFontFamily: platform === "ios" ? "System" : "Roboto_medium",
+  btnFontFamily: platform === "ios" ? "nanum_gothic" : "nanum_gothic",
   btnDisabledBg: "#b5b5b5",
   buttonPadding: 6,
   get btnPrimaryBg() {
@@ -120,7 +120,7 @@ export default {
 
   // Font
   DefaultFontSize: 16,
-  fontFamily: platform === "ios" ? "System" : "Roboto",
+  fontFamily: platform === "ios" ? "nanum_gothic" : "nanum_gothic",
   fontSizeBase: 15,
   get fontSizeH1() {
     return this.fontSizeBase * 1.8;
@@ -238,7 +238,7 @@ export default {
   tabFontSize: 15,
 
   // Text
-  textColor: "#000",
+  textColor: "#030303",
   inverseTextColor: "#fff",
   noteFontSize: 14,
   get defaultTextColor() {
@@ -246,7 +246,7 @@ export default {
   },
 
   // Title
-  titleFontfamily: platform === "ios" ? "System" : "Roboto_medium",
+  titleFontfamily: platform === "ios" ? "nanum_gothic" : "nanum_gothic",
   titleFontSize: platform === "ios" ? 17 : 19,
   subTitleFontSize: platform === "ios" ? 11 : 14,
   subtitleColor: platform === "ios" ? "#8e8e93" : "#FFF",

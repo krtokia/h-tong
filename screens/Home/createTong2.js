@@ -37,7 +37,7 @@ class createTong2 extends pickableImage{
 
   static navigationOptions = ({
     headerTitle: null,
-    headerRight: (<Text onPress={() => _this.uploadImage()}>완료e  </Text>),
+    headerRight: (<Text onPress={() => _this.uploadImage()}>완료  </Text>),
     headerStyle: {
       backgroundColor: '#fff',
       shadowOpacity: 0,
@@ -65,7 +65,7 @@ class createTong2 extends pickableImage{
 
 
       const formData = new FormData();
-      
+
       formData.append('name', tongName);
       formData.append('photo', {
         uri,
@@ -142,7 +142,7 @@ class createTong2 extends pickableImage{
             </View>
             <View style={{marginTop:20,alignItems:'center',justifyContent:'center'}}>
                  <TouchableOpacity onPress={this.uploadImage}>
-                 <Text style={{fontSize:15,color:'#cc0404'}}>현장통 공개 타입을 설정하세요. <Icon name='cog' style={{color:'#cc0404',fontSize:20,alignSelf:'center'}} /></Text>
+                 <Text style={{fontSize:15,color:'#db3928'}}>현장통 공개 타입을 설정하세요. <Icon name='cogs' type="FontAwesome" style={{color:'#db3928',fontSize:20,alignSelf:'center'}} /></Text>
                  </TouchableOpacity>
             </View>
           </View>

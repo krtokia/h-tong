@@ -67,7 +67,7 @@ export default {
     marginBottom: 15,
   },
   chatContent: {
-    fontSize: 13,
+    fontSize: 11,
     color: '#555',
     flexWrap: 'wrap',
     flex: 1

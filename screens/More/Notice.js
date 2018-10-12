@@ -52,7 +52,7 @@ class Notice extends Component{
           </View>
           <Accordion dataArray={dataArray}
             headerStyle={{backgroundColor:'#fff',borderBottomWidth:1,borderBottomColor:'#eee'}}
-            contentStyle={{backgroundColor:'#eee',borderBottomWidth:1,borderBottomColor:'#eee',padding:10}}
+            contentStyle={{backgroundColor:'#eee',borderBottomWidth:1,borderBottomColor:'#eee',fontSize:11}}
           />
         </Content>
       </Container>

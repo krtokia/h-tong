@@ -122,4 +122,22 @@ export default {
     alignItems:'center',
     paddingVertical:5,
   },
+  inviteItem: {
+    flexBasis:'50%',
+    height:deviceHeight / 5 + 20,
+    paddingHorizontal:5,
+  },
+  inviteImg: {
+    width:'100%',
+    height: '95%',
+    resizeMode:'contain',
+    borderRadius: 10,
+  },
+  inviteTextBox: {
+    height:20,
+    width:'100%',
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center'
+  }
 }

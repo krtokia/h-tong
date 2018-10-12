@@ -26,6 +26,7 @@ import Mypage from './More/Mypage.js';
 import WorkHistory from './More/WorkHistory.js';
 import Bookmark from './More/Bookmark.js';
 import Settings from './More/Settings.js';
+import Invite from './More/Invite.js';
 
 import createTong from "./Home/createTong.js";
 import createTong2 from "./Home/createTong2.js";
@@ -36,6 +37,7 @@ import TongPeople from "./Home/TongPeople.js";
 import TongETC1 from "./Home/TongETC1.js";
 import TongETC2 from "./Home/TongETC2.js";
 
+const platform = Platform.OS;
 const Logo  = require('../assets/images/headerLogo.png');
 
 class MainScreen extends Component{
@@ -80,6 +82,7 @@ const MoreStackNavi = createStackNavigator({
   WorkHistory: { screen: WorkHistory },
   Bookmark: { screen: Bookmark },
   Settings: { screen: Settings },
+  Invite: { screen: Invite },
 },{
   headerMode: 'null',
 });
@@ -188,6 +191,10 @@ const AppStackNavigator = createStackNavigator({
     screen: TabNavigator,
     navigationOptions: {
       headerLeft: null,
+      headerTitleContainerStyle: {
+        marginLeft: platform === "ios" ? -60 : 0,
+        marginTop: platform === "ios" ? 10 : 0,
+      }
     }
   },
   createTong: { screen: createTong},
@@ -204,21 +211,28 @@ const AppStackNavigator = createStackNavigator({
     headerStyle: {
       backgroundColor: '#fff',
       shadowOpacity: 0,
-      shadowOffset: { width:0, height:0 },
+      shadowColor: 'transparent',
+      shadowOffset: { height:0 },
       shadowRadius: 0,
       elevation: 0,
+      borderBottomWidth: 0,
     },
     headerTitle: (
       <Image
         source={Logo}
         style={{
           marginLeft: 10,
+          marginRight: 'auto',
           width: 110,
           height: 40,
           resizeMode: 'contain',
         }}
       />
     ),
+    headerTitleStyle: {
+      marginLeft:-50,
+      marginRight: 'auto'
+    },
     headerRight: (
       <View style={{flexDirection:"row"}}>
         <Icon name="search" size={25} style={{color:'#999',marginRight:20}} onPress={() => navigate('Some4')} />

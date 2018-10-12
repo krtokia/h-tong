@@ -41,9 +41,11 @@ class createTong2 extends pickableImage{
     headerStyle: {
       backgroundColor: '#fff',
       shadowOpacity: 0,
-      shadowOffset: { width:0, height:0 },
+      shadowColor: 'transparent',
+      shadowOffset: { height:0 },
       shadowRadius: 0,
       elevation: 0,
+      borderBottomWidth: 0,
     }
   });
 

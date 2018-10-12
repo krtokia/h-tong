@@ -29,9 +29,9 @@ class ChatRoom extends Component{
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#fff",flexDirection:'column-reverse',flex:1}}
         >
-            <GetDisplay name="홍길동" info="" time="오후 5:18"
+            <GetDisplay name="홍길동" info="1" time="오후 5:18"
               content={`식사는 하셨나요?`} />
-            <SendDisplay info="" time="오후 5:18"
+            <SendDisplay info="1" time="오후 5:18"
               content={`식사는 하셨나요?`} />
         </Content>
         <Footer>
@@ -67,8 +67,8 @@ class GetDisplay extends Component{
             </View>
           </View>
           <View style={{marginLeft:10,width:'15%',justifyContent:'flex-end',height:'100%'}}>
-            <Text style={{fontSize:12,color:'yellow'}}>{this.props.info}</Text>
-            <Text style={{fontSize:12,color:'#aaa',marginTop:10}}>{this.props.time}</Text>
+            <Text style={{fontSize:10,color:'#db3928'}}>{this.props.info}</Text>
+            <Text style={{fontSize:10,color:'#aaa'}}>{this.props.time}</Text>
           </View>
         </View>
     )
@@ -83,7 +83,8 @@ class SendDisplay extends Component{
             <Text style={styles.chatContent}>{this.props.content}</Text>
           </View>
           <View style={{marginRight:10,width:'15%',justifyContent:'flex-end',height:'100%'}}>
-            <Text style={{fontSize:12,color:'#aaa',marginTop:10}}>{this.props.time}</Text>
+            <Text style={{fontSize:10,color:'#db3928',textAlign:'right'}}>{this.props.info}</Text>
+            <Text style={{fontSize:10,color:'#aaa',textAlign:'right'}}>{this.props.time}</Text>
           </View>
         </View>
     )

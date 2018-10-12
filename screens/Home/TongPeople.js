@@ -35,7 +35,6 @@ class TongPeople extends Component{
           <Button
             transparent
             onPress={() => this.props.navigation.goBack()}
-            styles={{width:20}}
           >
             <Icon active name="angle-left" size={25} />
           </Button>

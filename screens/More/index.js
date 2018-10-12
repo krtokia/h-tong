@@ -76,7 +76,7 @@ class More extends Component{
               <Icon name='bullhorn' size={23} color='grey' />
               <Text style={{fontSize:13,marginTop:5,}}>공지사항</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.ColBox}>
+            <TouchableOpacity style={styles.ColBox} onPress={() => this.props.navigation.navigate('Invite')}>
               <Icon name='binoculars' size={23} color='grey' />
               <Text style={{fontSize:13,marginTop:5,}}>초대장 찾기</Text>
             </TouchableOpacity>

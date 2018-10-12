@@ -227,7 +227,6 @@ class TongMain extends Component{
         <Button
           transparent
           onPress={() => this.props.navigation.navigate('Main')}
-          styles={{width:20}}
         >
           <Icon active name="angle-left" size={25} />
         </Button>

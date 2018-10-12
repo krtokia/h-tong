@@ -7,7 +7,11 @@ import {
   H1,
   H3,
   Button,
-  Icon as NBIcon
+  Icon as NBIcon,
+  Header,
+  Left,
+  Body,
+  Right
 } from "native-base";
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -17,33 +21,32 @@ import styles from "./styles";
 
 class createTong extends Component{
   static navigationOptions = ({
-    headerTitle: null,
-    headerRight: null,
-    headerStyle: {
-      backgroundColor: '#fff',
-      shadowOpacity: 0,
-      shadowColor: 'transparent',
-      shadowOffset: { height:0 },
-      shadowRadius: 0,
-      elevation: 0,
-      borderBottomWidth: 0,
-    }
+    header: null
   });
   render(){
     return (
       <Container>
+        <Header style={{backgroundColor:'#db3928'}}>
+          <Left />
+          <Body />
+          <Right style={{alignSelf:'flex-end'}}>
+            <Button transparent rounded onPress={() => {this.props.navigation.navigate('Main')}}>
+              <NBIcon name="close" style={{color:'#fff'}} />
+            </Button>
+          </Right>
+        </Header>
         <Content
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#fff" }}
         >
-          <View style={styles.container}>
+          <View style={[styles.container,{marginTop:70}]}>
             <Image source={require('../../assets/images/logo.png')} style={styles.CreateTongLogo} />
             <View style={{marginTop:20,alignItems:'center'}}>
               <H3>만들고 싶은 모임을 선택하세요.</H3>
               <Text>현장직 동료들과 함께하는 공간</Text>
             </View>
             <View style={{marginTop:20,alignItems:'center',justifyContent:'center'}}>
-              <Text style={{color:'#cc0404'}}>현장통 활용법 보기 <Icon name='angle-right' size={15} style={{color:'#cc0404'}} /></Text>
+              <Text style={{color:'#db3928'}}>현장통 활용법 보기 <Icon name='angle-right' size={15} style={{color:'#cc0404'}} /></Text>
             </View>
             <View style={{marginTop:20,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
               <View style={{width:100,height:120,marginHorizontal:10,alignItems:'center'}}>
@@ -56,7 +59,7 @@ class createTong extends Component{
               </View>
             </View>
             <View style={{marginTop:50,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-              <Button iconLeft rounded style={{backgroundColor:'#cc0404',paddingHorizontal:50,paddingVertical:20,alignItems:'center'}}
+              <Button iconLeft rounded style={{backgroundColor:'#db3928',paddingHorizontal:50,paddingVertical:20,alignItems:'center'}}
                 onPress={() => {this.props.navigation.navigate('createTong2')}}>
                 <Image source={require('../../assets/images/addButton.png')} />
                 <Text style={{color:'#fff',fontSize:20}}> 만들기</Text>

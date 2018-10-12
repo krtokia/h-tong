@@ -8,7 +8,6 @@ export default {
   container: {
     flex: 1,
     alignItems: 'center',
-//    justifyContent: 'center',
     marginBottom: 20,
   },
   Box: {
@@ -139,5 +138,22 @@ export default {
     flexDirection:'row',
     justifyContent:'space-between',
     alignItems:'center'
+  },
+  myIcon: {
+    fontSize: 20,
+    color: '#555',
+    marginBottom: 5,
+    marginHorizontal: 'auto'
+  },
+  detailImage: {
+    flex:1,
+    marginHorizontal:3,
+    height:70,
+    resizeMode:'contain',
+  },
+  paperItems: {
+    flexBasis:'50%',
+    height: deviceHeight / 5 + 20,
+    padding:5,
   }
 }

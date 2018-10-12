@@ -7,6 +7,7 @@ import {
   Container,
   List,
   ListItem,
+  Header,
   Left,
   Body,
   Right,
@@ -21,10 +22,23 @@ import {
 import styles from './styles.js';
 
 class ChatRoom extends Component{
-
+  static navigationOptions = ({
+    header: null
+  });
   render(){
     return (
       <Container>
+        <Header style={{backgroundColor:'#db3928',justifyContent:'space-between'}}>
+          <Left style={{flex:1}} />
+          <Body style={{justifyContent:'center',alignItems:'center',alignSelf:'flex-end',paddingBottom:10}}>
+            <Text style={{fontSize:20,color:'#fff'}}>홍길동</Text>
+          </Body>
+          <Right style={{alignSelf:'flex-end',flex:1}}>
+            <Button transparent rounded onPress={() => {this.props.navigation.navigate('Main')}}>
+              <Icon name="close" style={{color:'#fff'}} />
+            </Button>
+          </Right>
+        </Header>
         <Content
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#fff",flexDirection:'column-reverse',flex:1}}

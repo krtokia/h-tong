@@ -27,6 +27,8 @@ import WorkHistory from './More/WorkHistory.js';
 import Bookmark from './More/Bookmark.js';
 import Settings from './More/Settings.js';
 import Invite from './More/Invite.js';
+import Papers from './More/Papers.js';
+import Signature from './More/Signature.js';
 
 import createTong from "./Home/createTong.js";
 import createTong2 from "./Home/createTong2.js";
@@ -68,28 +70,14 @@ class MainScreen extends Component{
 }
 export default MainScreen;
 
-const ChatStackNavi = createStackNavigator({
-  Chat: { screen: Chat },
-  ChatRoom: { screen: ChatRoom },
-},{
-  headerMode: 'null',
-});
-
 const MoreStackNavi = createStackNavigator({
   More: { screen: More },
   Notice: { screen: Notice },
   Mypage: { screen: Mypage },
   WorkHistory: { screen: WorkHistory },
   Bookmark: { screen: Bookmark },
-  Settings: { screen: Settings },
-  Invite: { screen: Invite },
-},{
-  headerMode: 'null',
-});
 
-const FriendsStackNavi = createStackNavigator({
-  Friends: { screen: Friends },
-  FriendDetail: { screen: FriendDetail },
+  Invite: { screen: Invite },
 },{
   headerMode: 'null',
 });
@@ -144,14 +132,14 @@ const TabNavigator = createMaterialTopTabNavigator({
       tabBarIcon: ({tintColor}) => <Icon name="home" size={20} color={tintColor} />,
     },
   },
-  FriendsStackNavi: {
-    screen: FriendsStackNavi,
+  Friends: {
+    screen: Friends,
     navigationOptions: {
       tabBarIcon: ({tintColor}) => <Icon name="address-book-o" size={20} color={tintColor}  />,
     },
   },
-  ChatStackNavi: {
-    screen: ChatStackNavi,
+  Chat: {
+    screen: Chat,
     navigationOptions: {
     tabBarIcon: ({tintColor}) => <Icon name="file-text-o" size={20} color={tintColor}  />,
     }
@@ -199,6 +187,11 @@ const AppStackNavigator = createStackNavigator({
   },
   createTong: { screen: createTong},
   createTong2: { screen: createTong2},
+  FriendDetail: { screen: FriendDetail },
+  Papers: { screen: Papers },
+  Signature: { screen: Signature },
+  ChatRoom: { screen: ChatRoom },
+  Settings: { screen: Settings },
   HomeTab: {
     screen: HomeTabNavi,
     navigationOptions: {

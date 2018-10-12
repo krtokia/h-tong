@@ -56,7 +56,7 @@ export default {
     marginLeft: 'auto'
   },
   friendChat: {
-    color: '#aaa',
+    color: '#555',
   },
   detailImage: {
     flex:1,

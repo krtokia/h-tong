@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
-import {Alert, Image, TextInput, ImageBackground, TouchableOpacity } from 'react-native';
+import {Alert, Image, TextInput, ImageBackground, TouchableOpacity, Text as RNText } from 'react-native';
 import {
   Container,
   Content,
   Text,
-  Icon,
+  Icon as NBIcon,
   View,
   H3,
+  Header,
+  Left,
+  Body,
+  Right,
+  Button
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { NavigationActions } from "react-navigation";
@@ -36,6 +41,7 @@ class createTong2 extends pickableImage{
     }
 
   static navigationOptions = ({
+    header:null,
     headerTitle: null,
     headerRight: (<Text onPress={() => _this.uploadImage()}>완료  </Text>),
     headerStyle: {
@@ -117,11 +123,24 @@ class createTong2 extends pickableImage{
 
     return (
       <Container>
+        <Header style={{backgroundColor:'#db3928'}}>
+          <Left style={{alignSelf:'flex-end'}}>
+            <Button transparent rounded onPress={() => {this.props.navigation.goBack()}}>
+              <NBIcon name="ios-arrow-back" style={{color:'#fff'}} />
+            </Button>
+          </Left>
+          <Body />
+          <Right style={{alignSelf:'flex-end'}}>
+            <Button transparent rounded onPress={() => {this.props.navigation.navigate('Main')}}>
+              <NBIcon name="close" style={{color:'#fff'}} />
+            </Button>
+          </Right>
+        </Header>
         <Content
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#fff" }}
         >
-          <View style={styles.container}>
+          <View style={[styles.container,{marginTop:70}]}>
             <Image source={require('../../assets/images/logo.png')} style={styles.CreateTongLogo} />
             <View style={{marginTop:20,alignItems:'center',justifyContent:'center'}}>
                 <TextInput
@@ -137,15 +156,21 @@ class createTong2 extends pickableImage{
             <View style={{marginTop:20,alignItems:'center',justifyContent:'center'}}>
                  <TouchableOpacity onPress={this._pickImage.bind(this)}>
                  <View style={{borderRadius:10,width:150,height:150,backgroundColor:'#eee',justifyContent:'center',alignItems:'center'}}>
-                  <Icon name="camera" style={{fontSize:50,color:'#999'}} />
+                  <NBIcon name="camera" style={{fontSize:50,color:'#999'}} />
                   <Text style={{color:'#999',fontSize:15}}>현장통 사진 추가</Text>
                  </View>
                  </TouchableOpacity>
             </View>
             <View style={{marginTop:20,alignItems:'center',justifyContent:'center'}}>
                  <TouchableOpacity onPress={this.uploadImage}>
-                 <Text style={{fontSize:15,color:'#db3928'}}>현장통 공개 타입을 설정하세요. <Icon name='cogs' type="FontAwesome" style={{color:'#db3928',fontSize:20,alignSelf:'center'}} /></Text>
+                 <Text style={{fontSize:15,color:'#db3928'}}>현장통 공개 타입을 설정하세요. <NBIcon name='cogs' type="FontAwesome" style={{color:'#db3928',fontSize:20,alignSelf:'center'}} /></Text>
                  </TouchableOpacity>
+            </View>
+            <View style={{marginTop:50,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+              <Button iconLeft rounded style={{backgroundColor:'#db3928',paddingHorizontal:50,paddingVertical:20}} onPress={() => _this.uploadImage()}>
+                <Image source={require('../../assets/images/addButton.png')} />
+                <RNText style={{color:'#fff',fontSize:20}}> 완료</RNText>
+              </Button>
             </View>
           </View>
         </Content>

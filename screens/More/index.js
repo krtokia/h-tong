@@ -5,17 +5,23 @@ import {
   TouchableOpacity,
  } from 'react-native';
  import {
-   Container,
-   Content,
-   Text,
    View,
-   Card,
-   CardItem,
-   Right,
+   Button,
+   Content,
+   Container,
+   List,
+   ListItem,
+   Header,
+   Left,
    Body,
+   Right,
+   Thumbnail,
+   Text,
+   Item,
+   Input,
+   Icon,
  } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 import styles from './styles.js';
 
@@ -56,83 +62,68 @@ class More extends Component{
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#f4f4f4" }}
         >
-          <View style={styles.Box}>
-            <TouchableOpacity style={{margin:0,padding:0,flexDirection:'row'}}>
-              <View style={styles.MypageImg}>
-                <Image source={require('../../assets/images/profile_no.png')} style={{width:'100%',height:'100%',resizeMode:'cover',borderRadius:50,}} />
+          <View style={[styles.Box,{marginTop:0}]}>
+            <View style={{flexDirection:'row',borderColor:'#e9e9e9',borderBottomWidth:1}}>
+              <View style={{marginBottom:10,alignSelf:'center',alignItems:'center'}}>
+                <Image source={require('../../assets/images/profile_no.png')} style={{width:130,height:130,resizeMode:'cover',borderRadius:500}} />
               </View>
-              <View style={{marginRight:'auto',marginLeft:20,}}>
-                <Text style={{fontSize:20}}>{this.state.id}</Text>
-                <Text>현장 3 · 다가오는 일정 0 · 북마크 0</Text>
+              <View style={{justifyContent:'flex-end',padding:20}}>
+                <View style={{flexDirection:'row',alignItems:'center'}}>
+                  <Text style={{fontWeight:'bold',fontSize:23,marginBottom:8}}>{this.state.id} </Text>
+                  <TouchableOpacity>
+                  <Icon name="edit" type="FontAwesome" style={{fontSize:18,color:'#db3928'}} />
+                  </TouchableOpacity>
+                </View>
+                <Text style={{fontSize:13,color:'grey',marginBottom:8}}>협력2건설 / 미장</Text>
+                <Text style={{fontSize:15}}>010-1234-5678</Text>
               </View>
-              <View style={{marginRight:5}}>
-                <Icon name="ellipsis-v" size={25} />
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          <View style={[styles.Box,{flexDirection:'row',flexWrap:'wrap',justifyContent:'center'}]}>
-            <TouchableOpacity style={styles.ColBox} onPress={() => this.props.navigation.navigate('Notice')}>
-              <Icon name='bullhorn' size={23} color='grey' />
-              <Text style={{fontSize:13,marginTop:5,}}>공지사항</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.ColBox} onPress={() => this.props.navigation.navigate('Invite')}>
-              <Icon name='binoculars' size={23} color='grey' />
-              <Text style={{fontSize:13,marginTop:5,}}>초대장 찾기</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.ColBox} onPress={() => this.props.navigation.navigate('Mypage')}>
-              <Icon name='address-card' size={23} color='grey' />
-              <Text style={{fontSize:13,marginTop:5,}}>마이페이지</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.ColBox} onPress={() => this.props.navigation.navigate('Settings')}>
-              <Icon name='cogs' size={23} color='grey' />
-              <Text style={{fontSize:13,marginTop:5,}}>설정</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.ColBox}>
-              <Icon name='book' size={23} color='grey' />
-              <Text style={{fontSize:13,marginTop:5,}}>수금장부</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.ColBox} onPress={() => this.props.navigation.navigate('WorkHistory')}>
-              <Icon name='calendar-check-o' size={23} color='grey' />
-              <Text style={{fontSize:13,marginTop:5,}}>근로이력</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.ColBox} onPress={() => this.props.navigation.navigate('Bookmark')}>
-              <Icon name='bookmark' size={23} color='grey' />
-              <Text style={{fontSize:13,marginTop:5,}}>북마크</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.ColBox}>
-              <Icon name='calendar' size={23} color='grey' />
-              <Text style={{fontSize:13,marginTop:5,}}>일정</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={[styles.Box]}>
-            <View style={styles.BoxTitle}>
-              <Text>내 현장통</Text>
-              <Text>편집</Text>
             </View>
 
-            <View style={styles.HomeList}>
-              <View style={styles.tongView}>
-                <TouchableOpacity
-                        onPress = {() => this.props.navigation.navigate("HomeTab")}
-                >
-                <Image resizeMode={'cover'} style={styles.tongImage} source={require('../../assets/images/testImages/1.jpg')} />
-                <View style={styles.tongContent}>
-                  <Text style={styles.tongName}>현장통</Text>
-                  <Text style={styles.tongNew}>NEW 1</Text>
-                </View>
+            <View style={{flexDirection:'row',paddingTop:10,paddingHorizontal:5,alignItems:'center'}}>
+              <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                <TouchableOpacity style={{justifyContent:'center',alignItems:'center'}} onPress={() => {this.props.navigation.navigate('Papers')}}>
+                  <Icon name="heart" type="FontAwesome" style={styles.myIcon} />
+                  <Text style={{fontSize:13,color:"#555"}}>서류 등록</Text>
                 </TouchableOpacity>
               </View>
-              <View style={styles.tongView}>
-                <TouchableOpacity
-                        onPress = {() => this.props.navigation.navigate("HomeTab")}
-                >
-                <Image resizeMode={'cover'} style={styles.tongImage} source={require('../../assets/images/testImages/1.jpg')} />
-                <View style={styles.tongContent}>
-                  <Text style={styles.tongName}>현장통</Text>
-                  <Text style={styles.tongNew}>NEW 1</Text>
-                </View>
+              <View style={{flex:1,justifyContent:'center',alignItems:'center',borderRightWidth:1,borderLeftWidth:1,borderColor:'#e9e9e9'}}>
+                <TouchableOpacity style={{justifyContent:'center',alignItems:'center'}} onPress={() => {this.props.navigation.navigate('Signature')}}>
+                  <Icon name="comments-o" type="FontAwesome" style={styles.myIcon} />
+                  <Text style={{fontSize:13,color:"#555"}}>전자 서명</Text>
                 </TouchableOpacity>
+              </View>
+              <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                <TouchableOpacity style={{justifyContent:'center',alignItems:'center'}} onPress={() => {this.props.navigation.navigate('Settings')}}>
+                  <Icon name="folder-open" type="FontAwesome" style={styles.myIcon} />
+                  <Text style={{fontSize:13,color:"#555"}}>설정</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.Box}>
+            <View style={{alignItems:'flex-start',paddingBottom:10,borderBottomWidth:1,borderBottomColor:'#f4f4f4'}}>
+              <Text style={{color:'#aaa',fontSize:13}}>대표사진</Text>
+              <View style={{flexDirection:'row',marginTop:5,}}>
+                <Image style={styles.detailImage} source={require('../../assets/images/noImage.png')} />
+                <Image style={styles.detailImage} source={require('../../assets/images/noImage.png')} />
+                <Image style={styles.detailImage} source={require('../../assets/images/noImage.png')} />
+                <Image style={styles.detailImage} source={require('../../assets/images/noImage.png')} />
+              </View>
+            </View>
+            <View style={{flexDirection:'row',alignItems:'flex-start',marginTop:10}}>
+              <Text style={{color:'#aaa',fontSize:13}}>경력</Text>
+              <View style={{marginLeft:10}}>
+                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
+                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
+                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
+                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
+                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
+                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
+                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
+                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
+                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
+                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
               </View>
             </View>
           </View>
@@ -142,6 +133,21 @@ class More extends Component{
   }
 }
 export default More;
+
+class CareerList extends Component{
+  render() {
+    return(
+      <View style={{flexDirection:'row',marginBottom:12,}}>
+        <View style={{width:"30%"}}>
+          <Text style={{fontSize:13}}>{this.props.dateVal}</Text>
+        </View>
+        <View style={{width:"70%"}}>
+          <Text style={{fontSize:13}}>{this.props.infoVal}</Text>
+        </View>
+      </View>
+    )
+  }
+}
 
 const style = StyleSheet.create({
 

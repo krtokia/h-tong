@@ -51,16 +51,7 @@ class Friends extends Component{
                 </Button>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {this.props.navigation.navigate('FriendDetail')}}>
-              <View style={styles.friendList}>
-                <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
-                <Text style={styles.friendName}>안민웅</Text>
-                <Text style={styles.friendInfo}>직종</Text>
-                <Button transparent style={styles.friendChatBtn}>
-                  <Icon name="commenting-o" type="FontAwesome" style={styles.friendChat} />
-                </Button>
-              </View>
-            </TouchableOpacity>
+
           </View>
         </Content>
       </Container>

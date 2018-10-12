@@ -65,7 +65,9 @@ class Home extends Component{
       let tongs = this.state.dataSource.map((val, key) => {
         return <View key={key} style={styles.tongView}>
                   <TouchableOpacity
-                          onPress = {() => this.props.navigation.navigate("HomeTab")}
+                          onPress = {() => this.props.navigation.navigate("HomeTab", {
+                            itemID: val.tongSeq,
+                          })}
                   >
                   <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />
                   <View style={styles.tongContent}>

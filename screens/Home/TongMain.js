@@ -28,8 +28,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {RkTextInput, RkText, RkTheme} from 'react-native-ui-kitten';
 
 import styles from "./styles";
+import tong from "../common.js";
+
 
 class TongMain extends Component{
+
   constructor(props) {
     super(props);
     this.state = {
@@ -45,10 +48,14 @@ class TongMain extends Component{
         tongImage: null,
     }
 
+
   }
 
   getTong = async() => {
-    return fetch("http://13.124.127.253/api/results.php?page=tong&seq=10")
+    const { navigation } = this.props;
+    const itemID = navigation.getParam('itemID');
+
+    return fetch("http://13.124.127.253/api/results.php?page=tong&seq=" + itemID)
       .then((response) => response.json())
       .then((responseJson) => {
         console.log(responseJson);

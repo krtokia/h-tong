@@ -29,7 +29,7 @@ class Friends extends Component{
       <Container>
         <Content
           showsVerticalScrollIndicator={false}
-          style={{ backgroundColor: "#f9f9f9" }}
+          style={{ backgroundColor: "#f9f9f9",}}
         >
           <View style={{width:'100%',padding:10,}}>
             <Item rounded style={{alignSelf:'center',width:'90%',height:40,backgroundColor:'rgba(0,0,0,0.1)'}}>
@@ -38,24 +38,57 @@ class Friends extends Component{
                 <Icon name="search" />
               </Button>
             </Item>
-            <Text style={{marginTop:10,fontSize:13}}>내 동료 (159)</Text>
           </View>
-          <View style={[styles.Box,{marginTop:0,paddingTop:0}]}>
-            <TouchableOpacity onPress={() => {this.props.navigation.navigate('FriendDetail')}}>
-              <View style={styles.friendList}>
-                <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
-                <Text style={styles.friendName}>안민웅</Text>
-                <Text style={styles.friendInfo}>직종</Text>
-                <Button transparent style={styles.friendChatBtn}>
-                  <Icon name="commenting-o" type="FontAwesome" style={styles.friendChat} />
-                </Button>
-              </View>
-            </TouchableOpacity>
-
+          <Text style={{marginTop:10,marginLeft:10,fontSize:13}}>검색 동료 (159)</Text>
+          <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
+            <FriendList
+              name="안민웅"
+              type="직종"
+              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+            />
+          </View>
+          <Text style={{marginLeft:10,fontSize:13}}>내 동료 (159)</Text>
+          <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
+            <FriendList
+              name="안민웅"
+              type="직종"
+              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+            />
+            <FriendList
+              name="안민웅"
+              type="직종"
+              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+            />
+            <FriendList
+              name="안민웅"
+              type="직종"
+              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+            />
           </View>
         </Content>
       </Container>
     );
+  }
+}
+
+class FriendList extends Component{
+  render() {
+    return(
+      <TouchableOpacity onPress={this.props.detailHref}>
+        <View style={styles.friendList}>
+          <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
+          <Text style={styles.friendName}>{this.props.name}</Text>
+          <Text style={styles.friendInfo}>{this.props.type}</Text>
+          <Button transparent style={styles.friendChatBtn} onPress={this.props.chat}>
+            <Icon name="commenting-o" type="FontAwesome" style={styles.friendChat} />
+          </Button>
+        </View>
+      </TouchableOpacity>
+    )
   }
 }
 export default Friends;

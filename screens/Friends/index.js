@@ -48,7 +48,7 @@ class Friends extends Component{
               chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
             />
           </View>
-          <Text style={{marginLeft:10,fontSize:13}}>내 동료 (159)</Text>
+          <Text style={{marginTop:10,marginLeft:10,fontSize:13}}>내 동료 (159)</Text>
           <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
             <FriendList
               name="안민웅"

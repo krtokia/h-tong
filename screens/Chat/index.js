@@ -37,22 +37,41 @@ class Chat extends Component{
               </Button>
             </Item>
           </View>
-          <View style={[styles.Box,{marginTop:0,paddingTop:0}]}>
-            <TouchableOpacity onPress={() => {this.props.navigation.navigate('ChatRoom')}}>
-              <ChatList />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {this.props.navigation.navigate('ChatRoom')}}>
-              <ChatList />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {this.props.navigation.navigate('ChatRoom')}}>
-              <ChatList />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {this.props.navigation.navigate('ChatRoom')}}>
-              <ChatList />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {this.props.navigation.navigate('ChatRoom')}}>
-              <ChatList />
-            </TouchableOpacity>
+          <Text style={{marginTop:10,marginLeft:10,fontSize:13}}>검색 채팅 (159)</Text>
+          <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
+            <ChatList
+              name="안민웅"
+              recent="식사는 하셨나요?"
+              time="오후 5:18"
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+            />
+          </View>
+          <Text style={{marginTop:10,marginLeft:10,fontSize:13}}>채팅 목록 (159)</Text>
+          <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
+            <ChatList
+              name="안민웅"
+              recent="식사는 하셨나요?"
+              time="오후 5:18"
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+            />
+            <ChatList
+              name="안민웅"
+              recent="식사는 하셨나요?"
+              time="오후 5:18"
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+            />
+            <ChatList
+              name="안민웅"
+              recent="식사는 하셨나요?"
+              time="오후 5:18"
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+            />
+            <ChatList
+              name="안민웅"
+              recent="식사는 하셨나요?"
+              time="오후 5:18"
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+            />
           </View>
         </Content>
       </Container>
@@ -64,16 +83,18 @@ export default Chat;
 class ChatList extends Component{
   render() {
     return(
+      <TouchableOpacity onPress={this.props.chatHref}>
         <View style={styles.chatList}>
           <Image source={require('../../assets/images/profile_no.png')} style={styles.chatThumbnail} />
           <View style={{marginLeft: 15}}>
-            <Text style={styles.chatName}>안민웅</Text>
-            <Text style={styles.chatInfo}>식사는 하셨나요?</Text>
+            <Text style={styles.chatName}>{this.props.name}</Text>
+            <Text style={styles.chatInfo}>{this.props.recent}</Text>
           </View>
           <View style={styles.chatTime}>
-            <Text style={styles.chatInfo}>오후 5:18</Text>
+            <Text style={styles.chatInfo}>{this.props.time}</Text>
           </View>
         </View>
+      </TouchableOpacity>
     )
   }
 }

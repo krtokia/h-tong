@@ -58,7 +58,6 @@ class TongMain extends Component{
     return fetch("http://13.124.127.253/api/results.php?page=tong&seq=" + itemID)
       .then((response) => response.json())
       .then((responseJson) => {
-        console.log(responseJson);
         //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.setState({
           isLoading: false,
@@ -74,7 +73,6 @@ class TongMain extends Component{
       return fetch("http://13.124.127.253/api/results.php?page=bbs&seq=10")
             .then((response) => response.json())
             .then((responseJson) => {
-              console.log(responseJson);
               //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
               this.setState({
                 isLoading2: false,

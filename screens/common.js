@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { ImagePicker } from 'expo';
 
-class pickableImage extends Component{
+class tong extends Component{
   constructor(props) {
     super(props);
     this.state = {
       imageSource: '../../assets/images/robot-prod.png',
+      data: null,
     }
     this._pickImage = this._pickImage.bind(this);
   }
@@ -26,9 +27,24 @@ class pickableImage extends Component{
     }
   };
 
+
+  getData = async(seq) => {
+        return fetch("http://13.124.127.253/api/results.php?page=bbs&seq=" + seq)
+              .then((response) => response.json())
+              .then((responseJson) => {
+                //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+                this.setState({
+                  data: responseJson,
+                });
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+  }
+
   render(){
       return null
   }
 }
 
-export default pickableImage;
+export default tong;

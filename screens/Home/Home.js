@@ -72,7 +72,7 @@ class Home extends Component{
                   <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />
                   <View style={styles.tongContent}>
                     <Text style={styles.tongName}>{val.tongTitle}</Text>
-                    <Text style={styles.tongNew}>NEW 1</Text>
+                    
                   </View>
                   </TouchableOpacity>
                 </View>

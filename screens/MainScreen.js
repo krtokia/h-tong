@@ -10,7 +10,7 @@ import Login from './Login';
 //import HomeStack from './Home';
 import Signup from './Signup';
 
-import Some3 from './Something3';
+import Works from './Works';
 
 import Chat from './Chat';
 import ChatRoom from './Chat/ChatRoom.js';
@@ -39,6 +39,11 @@ import TongInfo from "./Home/TongInfo.js";
 import TongPaper from "./Home/TongPaper.js";
 import TongETC2 from "./Home/TongETC2.js";
 import TongPeople from "./Home/TongPeople.js";
+
+import CommunityMain from "./Home/CommunityMain.js";
+import CommunityNotice from "./Home/CommunityNotice.js";
+import CommunityPeople from "./Home/CommunityPeople.js";
+import CommunitySetting from "./Home/CommunitySetting.js";
 
 const platform = Platform.OS;
 const Logo  = require('../assets/images/headerLogo.png');
@@ -76,6 +81,55 @@ const TongStackNavi = createStackNavigator({
   TongPeople: { screen: TongPeople },
 })
 
+const CommunityStackNavi = createStackNavigator({
+  CommunityMain: { screen: CommunityMain },
+})
+
+
+const CommunityTabNavi = createBottomTabNavigator({
+  CommunityStackNavi: {
+    screen: CommunityStackNavi,
+    navigationOptions: {
+      tabBarIcon: ({tintColor}) => <Icon name="home" size={20} color={tintColor} />,
+    },
+   },
+   CommunityNotice: {
+     screen: CommunityNotice,
+     navigationOptions: {
+       tabBarIcon: ({tintColor}) => <Icon name="bullhorn" size={20} color={tintColor} />,
+     },
+    },
+  CommunityPeople: {
+    screen: CommunityPeople,
+    navigationOptions: {
+      tabBarIcon: ({tintColor}) => <Icon name="info-circle" size={20} color={tintColor} />,
+    },
+   },
+   CommunitySetting: {
+    screen: CommunitySetting,
+    navigationOptions: {
+       tabBarIcon: ({tintColor}) => <Icon name="cog" size={20} color={tintColor} />,
+    },
+  },
+  CommunityMore: {
+    screen: More,
+    navigationOptions: {
+      tabBarIcon: ({tintColor}) => <Icon name="user-circle" size={30} color={tintColor} />,
+    },
+  },
+}, {
+  tabBarOptions: {
+    activeTintColor: '#db3928',
+    inactiveTintColor: '#999',
+    showLabel: false,
+    showIcon: true,
+    style: {
+      backgroundColor: '#fff',
+    },
+  },
+})
+
+
 const HomeTabNavi = createBottomTabNavigator({
   TongStackNavi: {
     screen: TongStackNavi,
@@ -101,7 +155,7 @@ const HomeTabNavi = createBottomTabNavigator({
        tabBarIcon: ({tintColor}) => <Icon name="folder-open" size={20} color={tintColor} />,
     },
   },
-  TongETC2: {
+  TongMore: {
     screen: More,
     navigationOptions: {
       tabBarIcon: ({tintColor}) => <Icon name="user-circle" size={30} color={tintColor} />,
@@ -138,13 +192,13 @@ const TabNavigator = createMaterialTopTabNavigator({
     tabBarIcon: ({tintColor}) => <Icon name="file-text-o" size={20} color={tintColor}  />,
     }
   },
-  Some3: {
-    screen: Some3,
+  Works: {
+    screen: Works,
     navigationOptions: {
       tabBarIcon: ({tintColor}) => <Icon name="commenting-o" size={20} color={tintColor}  />,
     },
   },
-  More: {
+  HomeMore: {
     screen: More,
     navigationOptions: {
       tabBarIcon: ({tintColor}) => <Icon name="user-circle" size={30} color={tintColor}  />,
@@ -189,8 +243,15 @@ const AppStackNavigator = createStackNavigator({
   ChatRoom: { screen: ChatRoom },
   Settings: { screen: Settings },
   Notice: { screen: Notice },
+  More: { screen: More },
   HomeTab: {
     screen: HomeTabNavi,
+    navigationOptions: {
+      header: null,
+    },
+  },
+  CommunityTab: {
+    screen: CommunityTabNavi,
     navigationOptions: {
       header: null,
     },

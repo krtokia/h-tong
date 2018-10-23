@@ -31,7 +31,7 @@ import styles from "./styles";
 import tong from "../common.js";
 
 
-class TongMain extends Component{
+class CommunityMain extends Component{
   static navigationOptions = ({
     header: null
   });
@@ -57,7 +57,6 @@ class TongMain extends Component{
   getTong = async() => {
     const { navigation } = this.props;
     const itemID = navigation.getParam('itemID');
-    
     return fetch("http://13.124.127.253/api/results.php?page=tong&seq=" + itemID)
       .then((response) => response.json())
       .then((responseJson) => {
@@ -240,11 +239,10 @@ class TongMain extends Component{
             <H3>{this.state.tongTitle}</H3>
             <View style={styles.TongSubs}>
               <TouchableOpacity onPress={() => {this.props.navigation.navigate('TongPeople')}}>
-                <Text style={{fontSize:13}}>현장동료 17</Text>
+                <Text style={{fontSize:13}}>커뮤니티동료 17</Text>
               </TouchableOpacity>
               <View style={{flexDirection:'row'}}>
               <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="plus-circle" /> 동료초대</Text>
-              <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="plus-circle" /> 현장위치</Text>
               </View>
             </View>
           </Left>
@@ -269,4 +267,4 @@ class TongMain extends Component{
   }
   }
 }
-export default TongMain;
+export default CommunityMain;

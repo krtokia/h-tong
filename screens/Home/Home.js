@@ -77,6 +77,22 @@ class Home extends Component{
                   </TouchableOpacity>
                 </View>
       });
+      let communities = this.state.dataSource.map((val, key) => {
+        return <View key={key} style={styles.tongView}>
+                  <TouchableOpacity
+                          onPress = {() => this.props.navigation.navigate("CommunityMain", {
+                            itemID: val.tongSeq,
+                          })}
+                  >
+                  <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />
+                  <View style={styles.tongContent}>
+                    <Text style={styles.tongName}>{val.tongTitle}</Text>
+
+                  </View>
+                  </TouchableOpacity>
+                </View>
+      });
+
 
     return (
       <Container>
@@ -108,7 +124,7 @@ class Home extends Component{
             </View>
             <ScrollView horizontal={true}>
             <View style={styles.HomeList}>
-              {tongs}
+              {communities}
             </View>
             </ScrollView>
           </View>

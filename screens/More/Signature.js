@@ -21,11 +21,33 @@ import Icon  from 'react-native-vector-icons/FontAwesome';
 import { ImagePicker } from 'expo';
 import styles from "./styles";
 
+var SignaturePad = require('react-native-signature-pad');
+
 class Signature extends Component{
   static navigationOptions = ({
     header: null
   });
+
   render(){
+    const onChange = async ({ width, height}) => {
+      for (let line of this.sketch.lines) {
+          console.log(line.points)
+        };
+      const options = {
+        format: 'png',
+        quality: 0.1,
+        result:'file',
+        height,
+        width
+      };
+    }
+    _signaturePadError = (error) => {
+      console.error(error);
+    };
+
+    _signaturePadChange = ({base64DataUrl}) => {
+      console.log("Got new signature: " + base64DataUrl);
+    };
     return (
       <Container>
         <Header style={{backgroundColor:'#db3928',justifyContent:'space-between'}}>
@@ -45,8 +67,11 @@ class Signature extends Component{
         >
           <View style={[styles.container,{marginTop:10,padding:20}]}>
             <View style={{flex:5,width:'100%',borderWidth:5,borderColor:'#ccc',borderRadius:10}}>
-
+            <SignaturePad onError={this._signaturePadError}
+                          onChange={this._signaturePadChange}
+                          style={{flex: 1, backgroundColor: 'white'}}/>
             </View>
+
             <View style={{alignItems:'flex-end',width:'100%',flex:1,justifyContent:'flex-end'}}>
               <View style={{borderBottomWidth:1,borderBottomColor:'#db3928',flexDirection:'row',alignItems:'flex-end'}}>
                 <NBIcon name="edit" type="FontAwesome" style={{color:'#db3928',fontSize:15}} />

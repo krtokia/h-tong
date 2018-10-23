@@ -35,9 +35,10 @@ import createTong2 from "./Home/createTong2.js";
 
 import TongMain from "./Home/TongMain.js";
 import TongNotice from "./Home/TongNotice.js";
-import TongPeople from "./Home/TongPeople.js";
-import TongETC1 from "./Home/TongETC1.js";
+import TongInfo from "./Home/TongInfo.js";
+import TongPaper from "./Home/TongPaper.js";
 import TongETC2 from "./Home/TongETC2.js";
+import TongPeople from "./Home/TongPeople.js";
 
 const platform = Platform.OS;
 const Logo  = require('../assets/images/headerLogo.png');
@@ -70,49 +71,42 @@ class MainScreen extends Component{
 }
 export default MainScreen;
 
-const MoreStackNavi = createStackNavigator({
-  More: { screen: More },
-  Notice: { screen: Notice },
-  Mypage: { screen: Mypage },
-  WorkHistory: { screen: WorkHistory },
-  Bookmark: { screen: Bookmark },
-
-  Invite: { screen: Invite },
-},{
-  headerMode: 'null',
-});
+const TongStackNavi = createStackNavigator({
+  TongMain: { screen: TongMain },
+  TongPeople: { screen: TongPeople },
+})
 
 const HomeTabNavi = createBottomTabNavigator({
-  TongMain: {
-    screen: TongMain,
+  TongStackNavi: {
+    screen: TongStackNavi,
     navigationOptions: {
-      tabBarIcon: ({tintColor}) => <Icon name="home" size={25} color={tintColor} />,
+      tabBarIcon: ({tintColor}) => <Icon name="home" size={20} color={tintColor} />,
     },
    },
    TongNotice: {
      screen: TongNotice,
      navigationOptions: {
-       tabBarIcon: ({tintColor}) => <Icon name="clipboard" size={25} color={tintColor} />,
+       tabBarIcon: ({tintColor}) => <Icon name="bullhorn" size={20} color={tintColor} />,
      },
     },
-    TongPeople: {
-      screen: TongPeople,
-      navigationOptions: {
-        tabBarIcon: ({tintColor}) => <Icon name="bell" size={25} color={tintColor} />,
-      },
-     },
-     TongETC1: {
-       screen: TongETC1,
-       navigationOptions: {
-         tabBarIcon: ({tintColor}) => <Icon name="check-square" size={25} color={tintColor} />,
-       },
-      },
-      TongETC2: {
-        screen: TongETC2,
-        navigationOptions: {
-          tabBarIcon: ({tintColor}) => <Icon name="bars" size={25} color={tintColor} />,
-        },
-       },
+  TongInfo: {
+    screen: TongInfo,
+    navigationOptions: {
+      tabBarIcon: ({tintColor}) => <Icon name="info-circle" size={20} color={tintColor} />,
+    },
+   },
+   TongPaper: {
+    screen: TongPaper,
+    navigationOptions: {
+       tabBarIcon: ({tintColor}) => <Icon name="folder-open" size={20} color={tintColor} />,
+    },
+  },
+  TongETC2: {
+    screen: More,
+    navigationOptions: {
+      tabBarIcon: ({tintColor}) => <Icon name="user-circle" size={30} color={tintColor} />,
+    },
+  },
 }, {
   tabBarOptions: {
     activeTintColor: '#db3928',
@@ -150,11 +144,11 @@ const TabNavigator = createMaterialTopTabNavigator({
       tabBarIcon: ({tintColor}) => <Icon name="commenting-o" size={20} color={tintColor}  />,
     },
   },
-  MoreStackNavi: {
-    screen: MoreStackNavi,
+  More: {
+    screen: More,
     navigationOptions: {
-      tabBarIcon: ({tintColor}) => <Icon name="user-circle" size={25} color={tintColor}  />,
-    }
+      tabBarIcon: ({tintColor}) => <Icon name="user-circle" size={30} color={tintColor}  />,
+    },
   }
 }, {
   tabBarOptions: {
@@ -165,6 +159,8 @@ const TabNavigator = createMaterialTopTabNavigator({
     style: {
       backgroundColor: '#fff',
     },
+    tabStyle: { padding: 0 },
+    iconStyle: { width: 40, height: 40 },
     indicatorStyle: {
       borderBottomWidth: 2,
       borderBottomColor: '#db3928'
@@ -192,6 +188,7 @@ const AppStackNavigator = createStackNavigator({
   Signature: { screen: Signature },
   ChatRoom: { screen: ChatRoom },
   Settings: { screen: Settings },
+  Notice: { screen: Notice },
   HomeTab: {
     screen: HomeTabNavi,
     navigationOptions: {

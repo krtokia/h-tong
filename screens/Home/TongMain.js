@@ -32,6 +32,9 @@ import tong from "../common.js";
 
 
 class TongMain extends Component{
+  static navigationOptions = ({
+    header: null
+  });
 
   constructor(props) {
     super(props);
@@ -182,20 +185,20 @@ class TongMain extends Component{
         onRequestClose={() => {
           this.setAddComment(!this.state.addComment);
         }}>
-          <Header style={{backgroundColor:'#fff',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
-            <Left>
+          <Header style={{height:50,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
+            <Left style={{flex:1}}>
               <TouchableHighlight
                 onPress={() => {
                   this.setAddComment(!this.state.addComment);
                 }}>
-                <Icon name='times' size={25} />
+                <Icon name='times' color={'#fff'} size={25} />
               </TouchableHighlight>
             </Left>
-            <Body>
-              <Text style={{fontWeight:'bold',fontSize:20}}>글 쓰기</Text>
+            <Body style={{flex:1,alignItems:'center'}}>
+              <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>글쓰기</Text>
             </Body>
-            <Right>
-              <Text style={{fontSize:13}} onPress={() => {this.write()}}>완료</Text>
+            <Right  style={{flex:1}}>
+              <Text style={{fontSize:13,color:'#fff'}} onPress={() => {this.write()}}>완료</Text>
             </Right>
           </Header>
           <Content style={{padding:10}}>
@@ -224,32 +227,41 @@ class TongMain extends Component{
       <Left style={[styles.LeftStyle]}>
         <Button
           transparent
+          rounded
+          style={{backgroundColor:'#fff5',height:25,width:25}}
           onPress={() => this.props.navigation.navigate('Main')}
         >
           <Icon active name="angle-left" size={25} />
         </Button>
       </Left>
-      <Body />
+      <Body style={styles.BodyStyle}>
+        <View style={[styles.TongHeader]}>
+          <Left style={{flex:3}}>
+            <H3>{this.state.tongTitle}</H3>
+            <View style={styles.TongSubs}>
+              <TouchableOpacity onPress={() => {this.props.navigation.navigate('TongPeople')}}>
+                <Text style={{fontSize:13}}>현장동료 17</Text>
+              </TouchableOpacity>
+              <View style={{flexDirection:'row'}}>
+              <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="plus-circle" /> 동료초대</Text>
+              <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="plus-circle" /> 현장위치</Text>
+              </View>
+            </View>
+          </Left>
+          <Right style={{flex:1}}>
+            <Button small rounded style={{backgroundColor:'#cc0404'}} onPress={() => {this.setAddComment(true)}}><Text>글쓰기</Text></Button>
+          </Right>
+        </View>
+      </Body>
       </ImageBackground>
       </Header>
         <Content
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#f4f4f4" }}
         >
-          <View style={[styles.Box,styles.TongHeader]}>
-            <Left>
-              <H3>{this.state.tongTitle}</H3>
-              <View style={styles.TongSubs}>
-                <Text style={{fontSize:14}}>멤버 1</Text>
-                <Text style={[styles.TongInvite,{fontSize:14}]}><Icon name="plus-circle" /> 멤버 초대</Text>
-              </View>
-            </Left>
-            <Right>
-              <Button small rounded style={{backgroundColor:'#cc0404'}} onPress={() => {this.setAddComment(true)}}><Text>글쓰기</Text></Button>
-            </Right>
+          <View style={[styles.Box,{height:60,marginVertical:10}]}>
+            <Text>날씨</Text>
           </View>
-
-
           {bbsList}
         </Content>
       </Container>

@@ -1,117 +1,119 @@
 import React, { Component } from 'react';
-import { ImageBackground, TouchableOpacity } from 'react-native';
+import { StyleSheet,Image,TouchableOpacity } from 'react-native';
 import {
-  Container,
-  Content,
-  Text,
   View,
-  Image,
-  Header,
-  Left,
-  Right,
-  Body,
   Button,
-  H3,
+  Content,
+  Container,
   List,
   ListItem,
+  Header,
+  Left,
+  Body,
+  Right,
   Thumbnail,
-} from "native-base";
-import { Grid, Col, Row } from "react-native-easy-grid";
-import { NavigationActions } from "react-navigation";
-
-import Icon from 'react-native-vector-icons/FontAwesome';
-
-import {RkTextInput, RkText, RkTheme} from 'react-native-ui-kitten';
+  Text,
+  Item,
+  Input,
+  Icon,
+} from 'native-base';
 
 import styles from "./styles";
 
 class TongPeople extends Component{
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      searchTxt: null,
+    }
+  }
+
+  getFriend = async() => {
+    console.log("getFiend: " + this.state.userId );
+    /*
+    return fetch("http://13.124.127.253/api/results.php?page=friend&seq=")
+      .then((response) => response.json())
+      .then((responseJson) => {
+        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.setState({
+          isLoading: false,
+          dataSource: responseJson,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+      */
+  }
+
   render(){
     return (
       <Container>
-      <Header style={styles.HeaderStyle}>
-        <ImageBackground source={require('../../assets/images/testImages/4.jpg')} style={styles.ImageHeader} >
-        <Left style={[styles.LeftStyle]}>
-          <Button
-            transparent
-            onPress={() => this.props.navigation.goBack()}
-          >
-            <Icon active name="angle-left" size={25} />
-          </Button>
-        </Left>
-        <Body />
-        </ImageBackground>
-      </Header>
+        <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
+          <Left style={{flex:1}}>
+          </Left>
+          <Body style={{flex:1,alignItems:'center'}}>
+            <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>전체동료</Text>
+          </Body>
+          <Right  style={{flex:1}}>
+          </Right>
+        </Header>
         <Content
-          showsVerticalScrollIndicator={false}
-          style={{ backgroundColor: "#f4f4f4" }}
+          contentContainerStyle={{ flex: 1 }}
+          style={{ backgroundColor: "#f9f9f9" }}
         >
-
-        <View style={styles.Box}>
-          <Button
-            block
-            transparent
-            style={{justifyContent:'space-between'}}
-            onPress={() => alert('동료 추가하기')}
-          >
-            <Icon name='user-plus' size={25} style={{marginLeft:10}} />
-            <Text style={styles.InviteText}>동료 추가하기</Text>
-            <Icon name='angle-right' size={25} style={{marginRight:10}} />
-          </Button>
-        </View>
-        <View style={styles.Box}>
-          <View style={styles.contentHeader}>
-            <Text>멤버</Text>
-            <Text>이름 순 <Icon name="angle-down" /></Text>
+          <View style={{width:'100%',padding:10,}}>
+            <Item rounded style={{alignSelf:'center',width:'90%',height:40,backgroundColor:'rgba(0,0,0,0.1)'}}>
+              <Input placeholder='동료 검색' style={{paddingLeft:30}}  onChangeText={(searchTxt) => this.setState({ searchTxt })}/>
+              <Button style={{width:'25%',height:'100%',borderTopRightRadius:50,borderBottomRightRadius:50,justifyContent:'center',backgroundColor:'#db3928'}}>
+                <Icon name="search" onPress={this.getFriend} />
+              </Button>
+            </Item>
           </View>
-          <List>
-            <ListItem thumbnail style={{marginLeft:0}}>
-              <Left>
-                <Thumbnail circle source={require('../../assets/images/profile_no.png')} />
-              </Left>
-              <Body>
-                <Text>이름</Text>
-                <Text note numberOfLines={1}>설명</Text>
-              </Body>
-              <Right>
-                <Button transparent>
-                  <Icon name='cog' size={25} style={{color:'#aaa'}}/>
-                </Button>
-              </Right>
-            </ListItem>
-            <ListItem thumbnail style={{marginLeft:0}}>
-              <Left>
-                <Thumbnail circle source={require('../../assets/images/profile_no.png')} />
-              </Left>
-              <Body>
-                <Text>이름</Text>
-                <Text note numberOfLines={1}>설명</Text>
-              </Body>
-              <Right>
-                <Button transparent>
-                  <Icon name='cog' size={25} style={{color:'#aaa'}}/>
-                </Button>
-              </Right>
-            </ListItem>
-            <ListItem thumbnail style={{marginLeft:0}}>
-              <Left>
-                <Thumbnail circle source={require('../../assets/images/profile_no.png')} />
-              </Left>
-              <Body>
-                <Text>이름</Text>
-                <Text note numberOfLines={1}>설명</Text>
-              </Body>
-              <Right>
-                <Button transparent>
-                  <Icon name='cog' size={25} style={{color:'#aaa'}}/>
-                </Button>
-              </Right>
-            </ListItem>
-          </List>
-        </View>
+          <Text style={{marginVertical:10,marginLeft:10,fontSize:13}}>검색 된 동료 (159)</Text>
+          <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
+            <TongFriendList
+              name="안민웅"
+              type="직종"
+              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+            />
+          </View>
+          <Text style={{marginVertical:10,marginLeft:10,fontSize:13}}>내 동료 (159)</Text>
+          <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
+            <TongFriendList
+              name="안민웅"
+              type="직종"
+              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+            />
+            <TongFriendList
+              name="안민웅"
+              type="직종"
+              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+            />
+          </View>
         </Content>
       </Container>
     );
+  }
+}
+class TongFriendList extends Component{
+  render() {
+    return(
+      <TouchableOpacity onPress={this.props.detailHref}>
+        <View style={styles.friendList}>
+          <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
+          <Text style={styles.friendName}>{this.props.name}</Text>
+          <Text style={styles.friendInfo}>{this.props.type}</Text>
+          <Button transparent style={styles.friendChatBtn} onPress={this.props.chatHref}>
+            <Icon name="commenting-o" type="FontAwesome" style={styles.friendChat} />
+          </Button>
+        </View>
+      </TouchableOpacity>
+    )
   }
 }
 export default TongPeople;

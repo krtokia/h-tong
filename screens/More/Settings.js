@@ -44,25 +44,31 @@ class Settings extends Component{
         >
         <View style={{paddingBottom:10}}>
           <View style={[styles.Box2,{paddingVertical:0}]}>
-            <ListItem name="현장통 공지사항" />
-            <ListItem name="공개범위 설정" />
+            <ListItem
+              name="현장통 공지사항"
+              href={() => {this.props.navigation.navigate('Notice')}}
+            />
+            <ListItem
+              name="공개범위 설정"
+              href={() => {this.props.navigation.navigate('Notice')}}
+            />
           </View>
           <View style={{justifyContent:'center',paddingLeft:20,height:40}}>
             <Text>알림 설정</Text>
           </View>
           <View style={[styles.Box2,{paddingVertical:0}]}>
-            <ListItem name="알림" />
-            <ListItem name="현장통별 알림" />
-            <ListItem name="알림 문제 확인" />
-            <ListItem name="이메일 알림" />
+            <ListItem name="알림" href={() => {this.props.navigation.navigate('Notice')}} />
+            <ListItem name="현장통별 알림" href={() => {this.props.navigation.navigate('Notice')}} />
+            <ListItem name="알림 문제 확인" href={() => {this.props.navigation.navigate('Notice')}} />
+            <ListItem name="이메일 알림" href={() => {this.props.navigation.navigate('Notice')}} />
           </View>
           <View style={{justifyContent:'center',paddingLeft:20,height:40}}>
             <Text>일반</Text>
           </View>
           <View style={[styles.Box2,{paddingVertical:0}]}>
-            <ListItem name="피드관리" />
-            <ListItem name="번역 설정" />
-            <ListItem name="글씨 크기" />
+            <ListItem name="피드관리" href={() => {this.props.navigation.navigate('Notice')}} />
+            <ListItem name="번역 설정" href={() => {this.props.navigation.navigate('Notice')}} />
+            <ListItem name="글씨 크기" href={() => {this.props.navigation.navigate('Notice')}} />
           </View>
       </View>
         </Content>
@@ -75,7 +81,7 @@ export default Settings;
 class ListItem extends Component{
   render(){
     return (
-      <TouchableOpacity>
+      <TouchableOpacity onPress={this.props.href}>
       <View style={{flexDirection:'row',backgroundColor:'#fff',height:40,borderBottomWidth:1,borderBottomColor:'#e9e9e9',paddingVertical:5,paddingHorizontal:10}}>
         <Left>
           <Text style={{fontSize:14}}>{this.props.name}</Text>

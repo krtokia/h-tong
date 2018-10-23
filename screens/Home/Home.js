@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, AppRegistry, ListView, ImageBackground, TouchableOpacity, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { StatusBar, Image, AppRegistry, ListView, ImageBackground, TouchableOpacity, TouchableHighlight, ActivityIndicator, ScrollView } from 'react-native';
 import {
   Container,
   Content,
@@ -65,14 +65,14 @@ class Home extends Component{
       let tongs = this.state.dataSource.map((val, key) => {
         return <View key={key} style={styles.tongView}>
                   <TouchableOpacity
-                          onPress = {() => this.props.navigation.navigate("HomeTab", {
+                          onPress = {() => this.props.navigation.navigate("TongMain", {
                             itemID: val.tongSeq,
                           })}
                   >
                   <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />
                   <View style={styles.tongContent}>
                     <Text style={styles.tongName}>{val.tongTitle}</Text>
-                    
+
                   </View>
                   </TouchableOpacity>
                 </View>
@@ -86,12 +86,31 @@ class Home extends Component{
         >
           <View style={[styles.Box,{marginTop:10}]}>
             <View style={styles.BoxTitle}>
-              <Text>내 현장통</Text>
-              <Text>편집</Text>
+              <View style={{flexDirection: 'row'}}>
+                <Icon name='primitive-dot' type='Octicons' style={{color:'red',fontSize:13,alignSelf:'flex-start'}} />
+                <Text style={{fontWeight:'bold'}}>내 현장통</Text>
+              </View>
+              <Text style={{fontSize:13}}>편집</Text>
             </View>
+            <ScrollView horizontal={true}>
             <View style={styles.HomeList}>
               {tongs}
             </View>
+            </ScrollView>
+          </View>
+          <View style={[styles.Box,{marginTop:10}]}>
+            <View style={styles.BoxTitle}>
+              <View style={{flexDirection:'row'}}>
+                <Icon name='primitive-dot' type='Octicons' style={{color:'green',fontSize:13,alignSelf:'flex-start'}} />
+                <Text style={{fontWeight:'bold'}}>내 커뮤니티통</Text>
+              </View>
+              <Text style={{fontSize:13}}>편집</Text>
+            </View>
+            <ScrollView horizontal={true}>
+            <View style={styles.HomeList}>
+              {tongs}
+            </View>
+            </ScrollView>
           </View>
           <Card>
             <CardItem button onPress={() => {this.props.navigation.navigate('createTong')}}>

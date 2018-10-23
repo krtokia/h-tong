@@ -26,16 +26,17 @@ export default {
     textDecorationLine:'underline'
   },
   tongImage : {
-    height: 150,
-    width: deviceWidth / 2 - 20,
+    height: 140,
+    width: 150,
     borderRadius: 20,
   },
   tongView: {
     marginTop: 10,
-    height: 180,
-    flexBasis: '50%',
+    height: 160,
+    flexBasis: '40%',
     flexDirection: 'column',
     alignItems: 'center',
+    marginRight: 10,
   },
   BoxTitle: {
     marginTop: 20,
@@ -47,22 +48,30 @@ export default {
   },
   HomeList: {
     width: '100%',
-    flexWrap: 'wrap',
     flexDirection: "row",
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
   },
   HeaderStyle: {
-    height:170,
+    height: deviceHeight / 3,
+    shadowOpacity: 5,
+    shadowOffset: { width:5, height:5 },
+    shadowRadius: 5,
+    elevation: 5,
   },
   LeftStyle: {
     width: '100%',
-    paddingTop: 25,
+    paddingTop: 35,
     paddingLeft: 10,
+    flex: 3,
+  },
+  BodyStyle: {
+    flex: 2,
+    backgroundColor: '#fff8',
   },
   ImageHeader: {
     width: deviceWidth,
-    height: 170,
+    height: deviceHeight / 3,
     flexDirection:'column',
   },
   TongHeader: {
@@ -70,18 +79,18 @@ export default {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 10,
+    paddingHorizontal: 10,
   },
   TongSubs: {
-    marginTop:5,
+    marginTop:10,
     width: '100%',
     flexDirection:'row',
     justifyContent:'space-between',
     flexWrap: 'nowrap'
   },
   TongInvite: {
-    color: '#db3928'
+    color: '#db3928',
+    marginLeft: 10,
   },
   TongContentBox: {
     width: deviceWidth,
@@ -155,5 +164,47 @@ export default {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10
+  },
+  friendList: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: deviceWidth,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    paddingVertical: 5,
+    paddingLeft: 10,
+  },
+  friendThumbnail: {
+    width: 40,
+    height: 40,
+    resizeMode: 'contain',
+    borderRadius: 50,
+  },
+  friendName: {
+    fontWeight: 'bold',
+    marginHorizontal: 10,
+  },
+  friendInfo: {
+    fontSize: 12,
+    color: '#aaa',
+  },
+  friendChatBtn: {
+    marginRight: 30,
+    marginLeft: 'auto'
+  },
+  friendChat: {
+    color: '#555',
+  },
+  detailImage: {
+    flex:1,
+    marginHorizontal:3,
+    height:70,
+    resizeMode:'contain',
+  },
+  friendIcon: {
+    fontSize: 20,
+    color: '#555',
+    marginBottom: 5
   }
 };

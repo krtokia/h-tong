@@ -34,7 +34,7 @@ class ChatRoom extends Component{
             <Text style={{fontSize:20,color:'#fff'}}>홍길동</Text>
           </Body>
           <Right style={{alignSelf:'flex-end',flex:1}}>
-            <Button transparent rounded onPress={() => {this.props.navigation.navigate('Main')}}>
+            <Button transparent rounded onPress={() => {this.props.navigation.goBack()}}>
               <Icon name="close" style={{color:'#fff'}} />
             </Button>
           </Right>

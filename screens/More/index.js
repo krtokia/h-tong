@@ -62,7 +62,7 @@ class More extends Component{
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#f4f4f4" }}
         >
-          <View style={[styles.Box,{marginTop:0}]}>
+          <View style={[styles.Box,{marginTop:0,paddingTop:30}]}>
             <View style={{flexDirection:'row',borderColor:'#e9e9e9',borderBottomWidth:1}}>
               <View style={{marginBottom:10,alignSelf:'center',alignItems:'center'}}>
                 <Image source={require('../../assets/images/profile_no.png')} style={{width:130,height:130,resizeMode:'cover',borderRadius:500}} />
@@ -82,13 +82,13 @@ class More extends Component{
             <View style={{flexDirection:'row',paddingTop:10,paddingHorizontal:5,alignItems:'center'}}>
               <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
                 <TouchableOpacity style={{justifyContent:'center',alignItems:'center'}} onPress={() => {this.props.navigation.navigate('Papers')}}>
-                  <Icon name="heart" type="FontAwesome" style={styles.myIcon} />
+                  <Icon name="upload" type="FontAwesome" style={styles.myIcon} />
                   <Text style={{fontSize:13,color:"#555"}}>서류 등록</Text>
                 </TouchableOpacity>
               </View>
               <View style={{flex:1,justifyContent:'center',alignItems:'center',borderRightWidth:1,borderLeftWidth:1,borderColor:'#e9e9e9'}}>
                 <TouchableOpacity style={{justifyContent:'center',alignItems:'center'}} onPress={() => {this.props.navigation.navigate('Signature')}}>
-                  <Icon name="comments-o" type="FontAwesome" style={styles.myIcon} />
+                  <Icon name="pencil-square-o" type="FontAwesome" style={styles.myIcon} />
                   <Text style={{fontSize:13,color:"#555"}}>전자 서명</Text>
                 </TouchableOpacity>
               </View>

@@ -1,57 +1,61 @@
 import React, { Component } from 'react';
-import { ImageBackground, TouchableOpacity } from 'react-native';
 import {
-  Container,
-  Content,
-  Text,
-  View,
+  StyleSheet,
   Image,
-  Header,
-  Left,
-  Right,
-  Body,
-  Button,
-  H3,
-} from "native-base";
+  TouchableOpacity,
+ } from 'react-native';
+ import {
+   Container,
+   Content,
+   Text,
+   View,
+   Button,
+   Icon,
+   Accordion,
+   Header,
+   Left,
+   Right,
+   Body
+ } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
-import { NavigationActions } from "react-navigation";
 
-import Icon from 'react-native-vector-icons/FontAwesome';
+import styles from './styles.js';
 
-import {RkTextInput, RkText, RkTheme} from 'react-native-ui-kitten';
-
-import styles from "./styles";
+const dataArray = [
+  { title: "공지사항1", content: "공지사항1 내용" },
+  { title: "공지사항2", content: "공지사항2 내용" },
+  { title: "공지사항3", content: "공지사항3 내용" },
+  { title: "공지사항4", content: "공지사항4 내용" },
+  { title: "공지사항5", content: "공지사항5 내용" },
+  { title: "공지사항6", content: "공지사항6 내용" },
+  { title: "공지사항7", content: "공지사항7 내용" },
+  { title: "공지사항8", content: "공지사항8 내용" },
+  { title: "공지사항9", content: "공지사항9 내용" },
+  { title: "공지사항10", content: "공지사항10 내용" },
+  { title: "공지사항11", content: "공지사항11 내용" },
+  { title: "공지사항12", content: "공지사항12 내용" },
+];
 
 class TongNotice extends Component{
   render(){
     return (
       <Container>
-      <Header style={styles.HeaderStyle}>
-        <ImageBackground source={require('../../assets/images/testImages/4.jpg')} style={styles.ImageHeader} >
-        <Left style={[styles.LeftStyle]}>
-          <Button
-            transparent
-            onPress={() => this.props.navigation.goBack()}
-          >
-            <Icon active name="angle-left" size={25} />
-          </Button>
-        </Left>
-        <Body />
-        </ImageBackground>
-      </Header>
+        <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
+          <Left style={{flex:1}}>
+          </Left>
+          <Body style={{flex:1,alignItems:'center'}}>
+            <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>공지사항</Text>
+          </Body>
+          <Right  style={{flex:1}}>
+          </Right>
+        </Header>
         <Content
-          showsVerticalScrollIndicator={false}
-          style={{ backgroundColor: "#ccc" }}
-        >
-          <View style={styles.TongHeader}>
-            <Left>
-              <H3>현장통 이름</H3>
-              <Text style={{fontSize:15,textDecorationLine:'underline'}}>맴버 1 초대</Text>
-            </Left>
-            <Right>
-              <Button small rounded success><Text>글쓰기</Text></Button>
-            </Right>
-          </View>
+         style={{backgroundColor:'#f9f9f9'}}
+         contentContainerStyle={{ flex: 1 }}>
+           <Accordion dataArray={dataArray}
+             headerStyle={{backgroundColor:'#fff',borderBottomWidth:1,borderBottomColor:'#eee'}}
+             contentStyle={{backgroundColor:'#eee',borderBottomWidth:1,borderBottomColor:'#eee',fontSize:11}}
+           />
         </Content>
       </Container>
     );

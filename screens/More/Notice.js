@@ -11,6 +11,8 @@ import {
    View,
    Card,
    CardItem,
+   Header,
+   Left,
    Right,
    Body,
    Button,
@@ -37,9 +39,24 @@ const dataArray = [
 ];
 
 class Notice extends Component{
+  static navigationOptions = ({
+      header: null
+    });
+    
   render(){
     return (
       <Container>
+        <Header style={{backgroundColor:'#db3928',justifyContent:'space-between'}}>
+          <Left style={{flex:1}} />
+          <Body style={{justifyContent:'center',alignItems:'center',alignSelf:'flex-end',paddingBottom:10}}>
+            <Text style={{fontSize:20,color:'#fff'}}>설정</Text>
+          </Body>
+          <Right style={{alignSelf:'flex-end',flex:1}}>
+            <Button transparent rounded onPress={() => {this.props.navigation.navigate('Main')}}>
+              <Icon name="close" style={{color:'#fff'}} />
+            </Button>
+          </Right>
+        </Header>
         <Content
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#f9f9f9" }}

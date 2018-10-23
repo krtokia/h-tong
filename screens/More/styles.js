@@ -10,6 +10,10 @@ export default {
     alignItems: 'center',
     marginBottom: 20,
   },
+  sketch: {
+    width:200,
+    height:200,
+  },
   Box: {
     backgroundColor: '#fff',
     width: deviceWidth,

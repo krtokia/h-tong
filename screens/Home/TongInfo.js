@@ -22,14 +22,18 @@ import styles from './styles.js';
 
 
 class TongInfo extends Component{
+
   render(){
     return (
       <Container>
         <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
           <Left style={{flex:1}}>
+            <Button rounded transparent onPress={() => {this.props.navigation.goBack()}}>
+              <Icon name="angle-left" type="FontAwesome" />
+            </Button>
           </Left>
           <Body style={{flex:1,alignItems:'center'}}>
-            <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>현장정보</Text>
+            <Text style={{textAlign:'center',color:'#fff',fontSize:15}}>현장정보</Text>
           </Body>
           <Right  style={{flex:1}}>
           </Right>

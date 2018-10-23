@@ -32,9 +32,6 @@ import tong from "../common.js";
 
 
 class TongMain extends Component{
-  static navigationOptions = ({
-    header: null
-  });
 
   constructor(props) {
     super(props);
@@ -57,7 +54,7 @@ class TongMain extends Component{
   getTong = async() => {
     const { navigation } = this.props;
     const itemID = navigation.getParam('itemID');
-    
+
     return fetch("http://13.124.127.253/api/results.php?page=tong&seq=" + itemID)
       .then((response) => response.json())
       .then((responseJson) => {
@@ -133,6 +130,8 @@ class TongMain extends Component{
   }
 
   render(){
+    const TongType = this.props.navigation.getParam('tongType');
+
     if (this.state.isLoading) {
       return (
         <View Style={{flex:1, paddingTop:20}}>
@@ -240,11 +239,17 @@ class TongMain extends Component{
             <H3>{this.state.tongTitle}</H3>
             <View style={styles.TongSubs}>
               <TouchableOpacity onPress={() => {this.props.navigation.navigate('TongPeople')}}>
-                <Text style={{fontSize:13}}>현장동료 17</Text>
+                <Text style={{fontSize:13}}>{TongType === 'T' ? '현장' : '커뮤니티'}동료 17</Text>
               </TouchableOpacity>
               <View style={{flexDirection:'row'}}>
-              <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="plus-circle" /> 동료초대</Text>
-              <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="plus-circle" /> 현장위치</Text>
+              <TouchableOpacity onPress={() => {this.props.navigation.navigate('TongPeople')}}>
+                <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="plus-circle" /> 동료초대</Text>
+              </TouchableOpacity>
+              {TongType === 'T' &&
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('TongInfo')}>
+                  <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="map-marker" /> 현장위치</Text>
+                </TouchableOpacity>
+              }
               </View>
             </View>
           </Left>

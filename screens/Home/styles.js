@@ -83,7 +83,7 @@ export default {
   },
   TongSubs: {
     marginTop:10,
-    width: '100%',
+    width: '95%',
     flexDirection:'row',
     justifyContent:'space-between',
     flexWrap: 'nowrap'

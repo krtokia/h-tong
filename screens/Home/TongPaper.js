@@ -11,6 +11,7 @@ import {
   Body,
   Button,
   H3,
+  Icon as NBIcon
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { NavigationActions } from "react-navigation";
@@ -22,11 +23,17 @@ import {RkTextInput, RkText, RkTheme} from 'react-native-ui-kitten';
 import styles from "./styles";
 
 class TongPaper extends Component{
+  static navigationOptions = {
+    header: null
+  }
   render(){
     return (
       <Container>
         <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
           <Left style={{flex:1}}>
+            <Button rounded transparent onPress={() => {this.props.navigation.goBack()}}>
+              <NBIcon name="angle-left" type="FontAwesome" />
+            </Button>
           </Left>
           <Body style={{flex:1,alignItems:'center'}}>
             <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>서류</Text>

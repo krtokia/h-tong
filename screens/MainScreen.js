@@ -39,6 +39,7 @@ import TongInfo from "./Home/TongInfo.js";
 import TongPaper from "./Home/TongPaper.js";
 import TongETC2 from "./Home/TongETC2.js";
 import TongPeople from "./Home/TongPeople.js";
+import TongSetting from "./Home/TongSetting.js";
 
 import CommunityMain from "./Home/CommunityMain.js";
 import CommunityNotice from "./Home/CommunityNotice.js";
@@ -78,7 +79,11 @@ export default MainScreen;
 
 const TongStackNavi = createStackNavigator({
   TongMain: { screen: TongMain },
-  TongPeople: { screen: TongPeople },
+  TongInfo: { screen: TongInfo },
+},{
+  navigationOptions: {
+    header: null
+  }
 })
 
 const CommunityStackNavi = createStackNavigator({
@@ -143,16 +148,16 @@ const HomeTabNavi = createBottomTabNavigator({
        tabBarIcon: ({tintColor}) => <Icon name="bullhorn" size={20} color={tintColor} />,
      },
     },
-  TongInfo: {
-    screen: TongInfo,
+  TongPeople: {
+    screen: TongPeople,
     navigationOptions: {
-      tabBarIcon: ({tintColor}) => <Icon name="info-circle" size={20} color={tintColor} />,
+      tabBarIcon: ({tintColor}) => <Icon name="address-book-o" size={20} color={tintColor} />,
     },
    },
-   TongPaper: {
-    screen: TongPaper,
+   TongSetting: {
+    screen: TongSetting,
     navigationOptions: {
-       tabBarIcon: ({tintColor}) => <Icon name="folder-open" size={20} color={tintColor} />,
+       tabBarIcon: ({tintColor}) => <Icon name="cog" size={20} color={tintColor} />,
     },
   },
   TongMore: {
@@ -189,13 +194,13 @@ const TabNavigator = createMaterialTopTabNavigator({
   Chat: {
     screen: Chat,
     navigationOptions: {
-    tabBarIcon: ({tintColor}) => <Icon name="file-text-o" size={20} color={tintColor}  />,
+    tabBarIcon: ({tintColor}) => <Icon name="commenting-o" size={20} color={tintColor}  />,
     }
   },
   Works: {
     screen: Works,
     navigationOptions: {
-      tabBarIcon: ({tintColor}) => <Icon name="commenting-o" size={20} color={tintColor}  />,
+      tabBarIcon: ({tintColor}) => <Icon name="file-text-o" size={20} color={tintColor}  />,
     },
   },
   HomeMore: {
@@ -244,6 +249,7 @@ const AppStackNavigator = createStackNavigator({
   Settings: { screen: Settings },
   Notice: { screen: Notice },
   More: { screen: More },
+  TongPaper: { screen: TongPaper },
   HomeTab: {
     screen: HomeTabNavi,
     navigationOptions: {

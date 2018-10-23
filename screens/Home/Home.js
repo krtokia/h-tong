@@ -67,6 +67,7 @@ class Home extends Component{
                   <TouchableOpacity
                           onPress = {() => this.props.navigation.navigate("TongMain", {
                             itemID: val.tongSeq,
+                            tongType: 'T',
                           })}
                   >
                   <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />
@@ -80,8 +81,9 @@ class Home extends Component{
       let communities = this.state.dataSource.map((val, key) => {
         return <View key={key} style={styles.tongView}>
                   <TouchableOpacity
-                          onPress = {() => this.props.navigation.navigate("CommunityMain", {
+                          onPress = {() => this.props.navigation.navigate("TongMain", {
                             itemID: val.tongSeq,
+                            tongType: 'C',
                           })}
                   >
                   <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />

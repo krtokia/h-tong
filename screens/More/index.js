@@ -70,8 +70,11 @@ class More extends Component{
               <View style={{justifyContent:'flex-end',padding:20}}>
                 <View style={{flexDirection:'row',alignItems:'center'}}>
                   <Text style={{fontWeight:'bold',fontSize:23,marginBottom:8}}>{this.state.id} </Text>
-                  <TouchableOpacity>
-                  <Icon name="edit" type="FontAwesome" style={{fontSize:18,color:'#db3928'}} />
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate('Mypage')}>
+                  <View style={{flexDirection:'row'}}>
+                  <Icon name="edit" type="FontAwesome" style={{fontSize:13,color:'#db3928'}} />
+                  <Text style={{fontSize:13,color:'#db3928'}}> 수정</Text>
+                  </View>
                   </TouchableOpacity>
                 </View>
                 <Text style={{fontSize:13,color:'grey',marginBottom:8}}>협력2건설 / 미장</Text>

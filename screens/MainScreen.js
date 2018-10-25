@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Image, StatusBar, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Text } from 'native-base';
+import { Text, Root } from 'native-base';
 import { createMaterialTopTabNavigator, createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import { Font,AppLoading } from 'expo';
@@ -22,7 +22,7 @@ import Home from "./Home/Home.js";
 
 import More from './More';
 import Notice from './More/Notice.js';
-import Mypage from './More/Mypage.js';
+import Mypage2 from './More/Mypage2.js';
 import WorkHistory from './More/WorkHistory.js';
 import Bookmark from './More/Bookmark.js';
 import Settings from './More/Settings.js';
@@ -45,6 +45,9 @@ import CommunityMain from "./Home/CommunityMain.js";
 import CommunityNotice from "./Home/CommunityNotice.js";
 import CommunityPeople from "./Home/CommunityPeople.js";
 import CommunitySetting from "./Home/CommunitySetting.js";
+
+import Mypage from './Mypage';
+import MyInfo from './Mypage/MyInfo.js';
 
 const platform = Platform.OS;
 const Logo  = require('../assets/images/headerLogo.png');
@@ -71,7 +74,9 @@ class MainScreen extends Component{
       )
     }
     return (
+      <Root>
       <AppStackNavigator />
+      </Root>
     );
   }
 }
@@ -250,6 +255,8 @@ const AppStackNavigator = createStackNavigator({
   Notice: { screen: Notice },
   More: { screen: More },
   TongPaper: { screen: TongPaper },
+  Mypage: { screen: Mypage },
+  MyInfo: { screen: MyInfo },
   HomeTab: {
     screen: HomeTabNavi,
     navigationOptions: {

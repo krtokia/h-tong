@@ -19,7 +19,7 @@ import { Grid, Col, Row } from "react-native-easy-grid";
 
 import styles from './styles.js';
 
-class Mypage extends Component{
+class Mypage2 extends Component{
 
   constructor(props) {
     super(props);
@@ -141,7 +141,7 @@ class Mypage extends Component{
     );
   }
 }
-export default Mypage;
+export default Mypage2;
 
 const style = StyleSheet.create({
 

@@ -30,7 +30,7 @@ class Chat extends Component{
           style={{ backgroundColor: "#f9f9f9" }}
         >
           <View style={{width:'100%',padding:10,}}>
-            <Item rounded style={{alignSelf:'center',width:'90%',height:40,backgroundColor:'rgba(0,0,0,0.1)'}}>
+            <Item rounded style={{alignSelf:'center',width:'90%',height:40,backgroundColor:'#aaa1'}}>
               <Input placeholder='채팅 검색' style={{paddingLeft:30}} />
               <Button style={{width:'25%',height:'100%',borderTopRightRadius:50,borderBottomRightRadius:50,justifyContent:'center',backgroundColor:'#db3928'}}>
                 <Icon name="search" />

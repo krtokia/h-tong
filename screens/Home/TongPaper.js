@@ -11,12 +11,10 @@ import {
   Body,
   Button,
   H3,
-  Icon as NBIcon
+  Icon
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { NavigationActions } from "react-navigation";
-
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {RkTextInput, RkText, RkTheme} from 'react-native-ui-kitten';
 
@@ -32,11 +30,11 @@ class TongPaper extends Component{
         <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
           <Left style={{flex:1}}>
             <Button rounded transparent onPress={() => {this.props.navigation.goBack()}}>
-              <NBIcon name="angle-left" type="FontAwesome" />
+              <Icon name="angle-left" type="FontAwesome" />
             </Button>
           </Left>
-          <Body style={{flex:1,alignItems:'center'}}>
-            <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>서류</Text>
+          <Body style={{flex:5,alignItems:'center'}}>
+            <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>신규채용자서류</Text>
           </Body>
           <Right  style={{flex:1}}>
           </Right>
@@ -44,29 +42,28 @@ class TongPaper extends Component{
         <Content
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#fff" }}
+          contentContainerStyle={{flex:1}}
         >
-          <View style={[styles.container,{marginTop:70}]}>
-            <Image source={require('../../assets/images/logo.png')} style={styles.CreateTongLogo} />
-            <View style={{marginTop:20,alignItems:'center'}}>
-              <H3>현장 서류를 확인하세요</H3>
-            </View>
-            <View style={{marginTop:20,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-              <View style={{width:100,height:120,marginHorizontal:10,alignItems:'center'}}>
-                <Image style={{width:100,height:100}} source={require('../../assets/images/createTong1.png')} />
-                <Text>채용자 서류</Text>
-              </View>
-              <View style={{width:100,height:120,marginHorizontal:10,alignItems:'center'}}>
-                <Image style={{width:100,height:100}} source={require('../../assets/images/createTong2.png')} />
-                <Text>개인제출서류</Text>
-              </View>
-            </View>
-            <View style={{marginTop:50,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-              <Button iconLeft rounded style={{backgroundColor:'#db3928',paddingHorizontal:50,paddingVertical:20,alignItems:'center'}}
-                onPress={() => {this.props.navigation.navigate('createTong2')}}>
-                <Image source={require('../../assets/images/addButton.png')} />
-                <Text style={{color:'#fff',fontSize:20}}> 만들기</Text>
-              </Button>
-            </View>
+          <View style={[styles.Box,{marginTop:3,paddingBottom:0}]}>
+            <PaperList
+              paperName="안전관리 서약서"
+              paperStatus={true}
+              Href={() => {this.props.navigation.navigate('TongPaperSafe')}}
+            />
+            <PaperList
+              paperName="개인정보 수립 이용동의서"
+              paperStatus={true}
+              Href={() => {this.props.navigation.navigate('TongPaperAgree')}}
+            />
+            <PaperList
+              paperName="교육이수 및 보호구 수령확인서"
+              paperStatus={false}
+            />
+            <PaperList
+              paperName="건강문진표"
+              paperStatus={false}
+              Href={() => {this.props.navigation.navigate('TongPaperHealth')}}
+            />
           </View>
         </Content>
       </Container>
@@ -74,3 +71,30 @@ class TongPaper extends Component{
   }
 }
 export default TongPaper;
+
+class PaperList extends Component{
+  render(){
+    var fontColor;
+    var content;
+    if(this.props.paperStatus) {
+      fontColor = '#777';
+      content = "완료";
+    } else {
+      fontColor = '#db3928';
+      content = "미완료"
+    };
+    return(
+      <TouchableOpacity onPress={this.props.Href}>
+      <View style={styles.paperListBox}>
+        <View style={{flexDirection:'row'}}>
+          <Icon name="file-text-o" type="FontAwesome" style={{fontSize:13}} />
+          <Text style={{fontSize:12,marginLeft:5}}>{this.props.paperName}</Text>
+        </View>
+        <View>
+          <Text style={[{fontSize:11,color:fontColor}]}>{content}</Text>
+        </View>
+      </View>
+      </TouchableOpacity>
+    )
+  }
+}

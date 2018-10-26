@@ -206,5 +206,22 @@ export default {
     fontSize: 20,
     color: '#555',
     marginBottom: 5
+  },
+  paperListBox: {
+    borderBottomWidth:1,
+    borderColor:'#e9e9e9',
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center',
+    padding:15,
+  },
+  grayBottom: {
+    borderBottomWidth:1,
+    borderColor: '#e9e9e9'
+  },
+  Row: {
+    flexDirection:'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   }
 };

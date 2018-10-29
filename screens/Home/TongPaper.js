@@ -58,6 +58,7 @@ class TongPaper extends Component{
             <PaperList
               paperName="교육이수 및 보호구 수령확인서"
               paperStatus={false}
+              Href={() => {this.props.navigation.navigate('TongPaperArmor')}}
             />
             <PaperList
               paperName="건강문진표"

@@ -47,7 +47,8 @@ class TongSetting extends Component{
         <View style={{paddingBottom:10}}>
         {TongType === 'T' &&
           <View style={[styles.Box2,{paddingVertical:0,marginTop:10}]}>
-            <ListItem name="서류등록" href={() => {this.props.navigation.navigate('TongPaper')}} />
+            <ListItem name="신규채용자 서류" href={() => {this.props.navigation.navigate('TongPaper')}} />
+            <ListItem name="개인제출 서류" href={() => {this.props.navigation.navigate('TongPaper2')}} />
           </View>
         }
           <View style={{justifyContent:'center',paddingLeft:20,height:40}}>

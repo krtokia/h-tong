@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image, StatusBar, Platform } from 'react-native';
+import { StyleSheet, View, Image, StatusBar, Platform, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Text, Root } from 'native-base';
 import { createMaterialTopTabNavigator, createStackNavigator, createBottomTabNavigator } from 'react-navigation';
@@ -37,12 +37,14 @@ import TongMain from "./Home/TongMain.js";
 import TongNotice from "./Home/TongNotice.js";
 import TongInfo from "./Home/TongInfo.js";
 import TongPaper from "./Home/TongPaper.js";
+import TongPaper2 from "./Home/TongPaper2.js";
 import TongETC2 from "./Home/TongETC2.js";
 import TongPeople from "./Home/TongPeople.js";
 import TongSetting from "./Home/TongSetting.js";
 import TongPaperAgree from "./Home/TongPaperAgree.js";
 import TongPaperSafe from "./Home/TongPaperSafe.js";
 import TongPaperHealth from "./Home/TongPaperHealth.js";
+import TongPaperArmor from "./Home/TongPaperArmor.js";
 
 import CommunityMain from "./Home/CommunityMain.js";
 import CommunityNotice from "./Home/CommunityNotice.js";
@@ -263,6 +265,8 @@ const AppStackNavigator = createStackNavigator({
   TongPaperAgree: { screen: TongPaperAgree },
   TongPaperSafe: { screen: TongPaperSafe },
   TongPaperHealth: { screen: TongPaperHealth },
+  TongPaperArmor: { screen: TongPaperArmor },
+  TongPaper2: { screen: TongPaper2 },
   HomeTab: {
     screen: HomeTabNavi,
     navigationOptions: {
@@ -305,8 +309,9 @@ const AppStackNavigator = createStackNavigator({
     },
     headerRight: (
       <View style={{flexDirection:"row"}}>
-        <Icon name="search" size={25} style={{color:'#999',marginRight:20}} onPress={() => navigate('Some4')} />
-        <Icon name="plus" size={28} style={{color:'#999',marginRight:10}} />
+        <TouchableOpacity>
+          <Icon name="shopping-cart" size={28} style={{color:'#999',marginRight:10}} />
+        </TouchableOpacity>
       </View>
     ),
   }

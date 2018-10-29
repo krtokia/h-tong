@@ -49,21 +49,22 @@ class createTong extends Component{
               <Text style={{color:'#db3928'}}>현장통 활용법 보기 <Icon name='angle-right' size={15} style={{color:'#cc0404'}} /></Text>
             </View>
             <View style={{marginTop:20,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+              <TouchableOpacity
+                onPress={() => {this.props.navigation.navigate('createTong2', {tongType: 'T'})}}
+              >
               <View style={{width:100,height:120,marginHorizontal:10,alignItems:'center'}}>
                 <Image style={{width:100,height:100}} source={require('../../assets/images/createTong1.png')} />
                 <Text>현장통 생성</Text>
               </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {this.props.navigation.navigate('createTong2', {tongType: 'C'})}}
+              >
               <View style={{width:100,height:120,marginHorizontal:10,alignItems:'center'}}>
                 <Image style={{width:100,height:100}} source={require('../../assets/images/createTong2.png')} />
                 <Text>커뮤니티 생성</Text>
               </View>
-            </View>
-            <View style={{marginTop:50,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-              <Button iconLeft rounded style={{backgroundColor:'#db3928',paddingHorizontal:50,paddingVertical:20,alignItems:'center'}}
-                onPress={() => {this.props.navigation.navigate('createTong2')}}>
-                <Image source={require('../../assets/images/addButton.png')} />
-                <Text style={{color:'#fff',fontSize:20}}> 만들기</Text>
-              </Button>
+              </TouchableOpacity>
             </View>
           </View>
         </Content>

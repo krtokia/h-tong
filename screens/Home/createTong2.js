@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Alert, Image, TextInput, ImageBackground, TouchableOpacity, Text as RNText } from 'react-native';
+import {Alert, Image, TextInput, ImageBackground, TouchableOpacity, Text as RNText, Modal, TouchableHighlight } from 'react-native';
 import {
   Container,
   Content,
@@ -11,7 +11,14 @@ import {
   Left,
   Body,
   Right,
-  Button
+  Button,
+  Footer,
+  FooterTab,
+  Form,
+  Textarea,
+  Item,
+  Label,
+  Input
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { NavigationActions } from "react-navigation";
@@ -22,11 +29,11 @@ import pickableImage from "../common.js"
 const _this = null;
 
 class createTong2 extends pickableImage{
-
   constructor(props) {
     super(props);
     this.state = {
       tongName: '',
+      modal: false,
     }
     //uploadImage.state = uploadImage.state.bind(this);
     this.uploadImage = this.uploadImage.bind(this);
@@ -43,7 +50,7 @@ class createTong2 extends pickableImage{
   static navigationOptions = ({
     header:null,
     headerTitle: null,
-    headerRight: (<Text onPress={() => _this.uploadImage()}>완료  </Text>),
+    headerRight: (<Text onPress={() => _this.division()}>완료  </Text>),
     headerStyle: {
       backgroundColor: '#fff',
       shadowOpacity: 0,
@@ -55,6 +62,17 @@ class createTong2 extends pickableImage{
     }
   });
 
+    division(tongType) {
+      if(tongType === 'T') {
+        this.setState({modal: true});
+      } else {
+        Alert.alert('커뮤니티통 생성 기능');
+      }
+    }
+    modalComplate() {
+      Alert.alert('현장통 생성 기능')
+      this.setState({modal: false});
+    }
 
 
     uploadImage() {
@@ -119,10 +137,75 @@ class createTong2 extends pickableImage{
     }
 
   render(){
+    var modalFontSize = 11;
+
     let { imageSource } = this.state;
+    const tongType = this.props.navigation.getParam('tongType');
+    const tongDiv = tongType === 'T' ? "현장" : "커뮤니티";
 
     return (
       <Container>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modal}
+          onRequestClose={() => {
+            this.setState({modal: false});
+          }}>
+            <Header style={{height:50,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
+              <Left style={{flex:1}}>
+                <TouchableHighlight
+                  onPress={() => {
+                    this.setState({modal: false});
+                  }}>
+                  <NBIcon name='close' type="FontAwesome" style={{color:'#fff'}} />
+                </TouchableHighlight>
+              </Left>
+              <Body style={{flex:4,alignItems:'center'}}>
+                <Text style={{textAlign:'center',color:'#fff',fontSize:18}}>현장통 세부 설정</Text>
+              </Body>
+              <Right  style={{flex:1}}>
+                <Text style={{fontSize:13,color:'#fff'}} onPress={() => {this.modalComplate(!this.state.modal)}}>완료</Text>
+              </Right>
+            </Header>
+            <Content style={{padding:10}}>
+              <Form>
+                <ImageBackground source={require('../../assets/images/backgroundLogo.png')} style={{width:'100%'}}>
+                  <View style={[styles.Row]}>
+                    <View style={styles.createModalStyleLeft}>
+                      <Text style={{fontSize:modalFontSize}}>공사명</Text>
+                      <Text style={{fontSize:modalFontSize}}>건축허가번호</Text>
+                      <Text style={{fontSize:modalFontSize}}>공사 시공자</Text>
+                      <Text style={{fontSize:modalFontSize}}>공사 감리자</Text>
+                      <Text style={{fontSize:modalFontSize}}>발주자</Text>
+                      <Text style={{fontSize:modalFontSize}}>현장 연락처</Text>
+                      <Text style={{fontSize:modalFontSize}}>공가기간</Text>
+                      <Text style={{fontSize:modalFontSize}}>공사규모</Text>
+                      <Text style={{fontSize:modalFontSize}}>현장주소</Text>
+                    </View>
+                    <View style={[styles.createModalStyleRight]}>
+                      <TextInput placeholder="공사명을 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
+                      <TextInput placeholder="건축허가번호를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
+                      <TextInput placeholder="공사 시공자를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
+                      <TextInput placeholder="공사 감리자를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
+                      <TextInput placeholder="발주자를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
+                      <TextInput placeholder="현장 연락처를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
+                      <TextInput placeholder="공가기간을 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
+                      <TextInput placeholder="공사규모를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
+                      <TextInput placeholder="현장주소를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
+                    </View>
+                  </View>
+                </ImageBackground>
+              </Form>
+              <View style={{width:150,alignSelf:'center',padding:10,marginTop:30}}>
+                <Button transparent rounded block style={{backgroundColor:'#db3928'}}
+                  onPress={() => {this.modalComplate()}}
+                >
+                  <Text style={{color:'#fff'}}>완료</Text>
+                </Button>
+              </View>
+            </Content>
+        </Modal>
         <Header style={{backgroundColor:'#db3928'}}>
           <Left style={{alignSelf:'flex-end'}}>
             <Button transparent rounded onPress={() => {this.props.navigation.goBack()}}>
@@ -145,7 +228,7 @@ class createTong2 extends pickableImage{
             <View style={{marginTop:20,alignItems:'center',justifyContent:'center'}}>
                 <TextInput
                 style={{fontSize:20,width:250,textAlign:'center'}}
-                placeholder="현장통 이름 입력"
+                placeholder= '이름 입력'
                 underlineColorAndroid='rgba(0,0,0,0)'
                 onChangeText = {TextInputValue=>this.setState({tongName:TextInputValue}) }
                  />
@@ -157,17 +240,17 @@ class createTong2 extends pickableImage{
                  <TouchableOpacity onPress={this._pickImage.bind(this)}>
                  <View style={{borderRadius:10,width:150,height:150,backgroundColor:'#eee',justifyContent:'center',alignItems:'center'}}>
                   <NBIcon name="camera" style={{fontSize:50,color:'#999'}} />
-                  <Text style={{color:'#999',fontSize:15}}>현장통 사진 추가</Text>
+                  <Text style={{color:'#999',fontSize:15}}>{tongDiv}통 사진 추가</Text>
                  </View>
                  </TouchableOpacity>
             </View>
             <View style={{marginTop:20,alignItems:'center',justifyContent:'center'}}>
                  <TouchableOpacity onPress={this.uploadImage}>
-                 <Text style={{fontSize:15,color:'#db3928'}}>현장통 공개 타입을 설정하세요. <NBIcon name='cogs' type="FontAwesome" style={{color:'#db3928',fontSize:20,alignSelf:'center'}} /></Text>
+                 <Text style={{fontSize:15,color:'#db3928'}}>{tongDiv}통 공개 타입을 설정하세요. <NBIcon name='cogs' type="FontAwesome" style={{color:'#db3928',fontSize:20,alignSelf:'center'}} /></Text>
                  </TouchableOpacity>
             </View>
             <View style={{marginTop:50,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-              <Button iconLeft rounded style={{backgroundColor:'#db3928',paddingHorizontal:50,paddingVertical:20}} onPress={() => _this.uploadImage()}>
+              <Button iconLeft rounded style={{backgroundColor:'#db3928',paddingHorizontal:50,paddingVertical:20}} onPress={() => _this.division(tongType)}>
                 <Image source={require('../../assets/images/addButton.png')} />
                 <RNText style={{color:'#fff',fontSize:20}}> 완료</RNText>
               </Button>

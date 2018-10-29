@@ -223,5 +223,25 @@ export default {
     flexDirection:'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  createModalStyleLeft: {
+    flex:1,
+    backgroundColor:'#5553',
+    alignItems:'flex-end',
+    padding:10,
+    marginRight:10,
+    justifyContent:'space-between',
+    height: deviceHeight / 2
+  },
+  createModalStyleRight: {
+    flex:3,
+    backgroundColor:'#0000',
+    alignItems:'flex-start',
+    justifyContent:'space-between',
+    height: deviceHeight / 2,
+  },
+  modalInput: {
+    width: '100%',
+    fontSize: 11
   }
 };

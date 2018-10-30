@@ -50,15 +50,38 @@ class TongNotice extends Component{
           </Right>
         </Header>
         <Content
-         style={{backgroundColor:'#f9f9f9'}}
-         contentContainerStyle={{ flex: 1 }}>
-           <Accordion dataArray={dataArray}
-             headerStyle={{backgroundColor:'#fff',borderBottomWidth:1,borderBottomColor:'#eee'}}
-             contentStyle={{backgroundColor:'#eee',borderBottomWidth:1,borderBottomColor:'#eee',fontSize:11}}
-           />
+         style={{backgroundColor:'#f9f9f9',paddingBottom:10,}}
+        >
+          <View style={{paddingBottom:20}}>
+            <NoticeList />
+            <NoticeList />
+            <NoticeList />
+            <NoticeList />
+          </View>
         </Content>
       </Container>
     );
   }
 }
 export default TongNotice;
+
+class NoticeList extends Component{
+  render() {
+    return(
+      <View style={[styles.TongContentBox]}>
+       <View style={styles.TongContentHeader}>
+         <View style={{flexDirection: 'row'}}>
+           <Image style={styles.ContentHeaderImg} source={require('../../assets/images/profile_no.png')} />
+           <View style={{marginLeft:10}}>
+             <Text style={{fontSize:14,fontWeight:'bold'}}>관리자</Text>
+             <Text style={{fontSize:10,color:'#aaa'}}>관리자</Text>
+           </View>
+         </View>
+       </View>
+       <View style={styles.TongContents}>
+         <Text style={{fontSize:13}}>공지사항</Text>
+       </View>
+     </View>
+    )
+  }
+}

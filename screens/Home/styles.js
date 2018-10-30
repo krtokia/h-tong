@@ -32,8 +32,6 @@ export default {
   },
   tongView: {
     marginTop: 10,
-    height: 160,
-    flexBasis: '40%',
     flexDirection: 'column',
     alignItems: 'center',
     marginRight: 10,
@@ -53,7 +51,6 @@ export default {
     alignItems: 'flex-start',
   },
   HeaderStyle: {
-    height: deviceHeight / 3,
     shadowOpacity: 5,
     shadowOffset: { width:5, height:5 },
     shadowRadius: 5,
@@ -94,7 +91,6 @@ export default {
   },
   TongContentBox: {
     width: deviceWidth,
-    height: deviceHeight / 4,
     marginTop: 8,
     flexDirection: 'column',
     justifyContent: 'space-between',
@@ -104,6 +100,9 @@ export default {
     shadowOffset: { width:5, height:5 },
     shadowRadius: 5,
     elevation: 5,
+  },
+  TongContents: {
+    paddingTop:10,
   },
   TongContentHeader: {
     flex: 1,
@@ -118,7 +117,6 @@ export default {
     borderRadius: 50,
   },
   TongContentImgs: {
-    flex: 2,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -129,13 +127,21 @@ export default {
     marginLeft: 3,
     marginRight: 3,
   },
-  TongContentReply: {
-    flex: 0.5,
-    flexDirection: 'row',
-    justifyContent: 'center',
+  TongContentImgList: {
+    width: 70,
+    height: 70,
+    marginRight: 3,
   },
-  ContentReply: {
+  TongContentReply: {
+    marginTop:10
+  },
+  ContentReplyF: {
     color: '#db3928',
+    fontSize:13
+  },
+  ContentReplyT: {
+    color: '#999',
+    fontSize:13
   },
   CreateTongLogo: {
     resizeMode: 'contain',
@@ -243,5 +249,13 @@ export default {
   modalInput: {
     width: '100%',
     fontSize: 11
+  },
+  header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#db3928',
+    overflow: 'hidden',
   }
 };

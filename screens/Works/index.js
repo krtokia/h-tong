@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet,Image,TouchableOpacity } from 'react-native';
+import { StyleSheet,Image,TouchableOpacity,TouchableHighlight,Modal,TextInput, Picker } from 'react-native';
 import {
   View,
   Button,
@@ -15,7 +15,7 @@ import {
   Text,
   Item,
   Input,
-  Icon,
+  Icon
 } from 'native-base';
 
 import {Calendar} from 'react-native-calendars';
@@ -23,9 +23,78 @@ import {Calendar} from 'react-native-calendars';
 import styles from './styles.js';
 
 class Works extends Component{
+  state = {
+    modal: false,
+    modalItem: null,
+    modalDate: null,
+  }
+
+  modalSet(day) {
+    var date=`${day.year}년${day.month}월${day.day}일`;
+    this.setState({modal:true,modalDate:date})
+  }
+  modalExit() {
+    this.setState({modalDate:null,modal:false})
+  }
+
   render(){
     return (
       <Container>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modal}
+          onRequestClose={() => {
+            this.modalExit();
+          }}>
+          <View style={{flex:1,alignItems:'center',backgroundColor:'#0009'}}>
+            <TouchableOpacity style={{flex:1,width:'100%'}}
+            onPress={() => {this.modalExit();}} />
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <View style={{flex:1}} />
+                <View style={{flex:4,justifyContent:'center',alignItems:'center'}}>
+                  <Text style={{color:'#fff'}}>{this.state.modalDate}</Text>
+                </View>
+                <View style={{flex:1}}>
+                  <TouchableOpacity style={{width:'100%',height:'100%',alignItems:'center',justifyContent:'center'}}
+                    onPress={() => {this.modalExit();}}
+                  >
+                    <Icon name="close" type="FontAwesome" style={{fontSize:18,color:'#fff'}} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.modalInner}>
+                <View style={[styles.grayUnderline,{width:'100%'}]}>
+                  <Text style={{fontSize:13,marginLeft:20,marginBottom:5,}}>제목</Text>
+                  <TextInput placeholder="입력" style={{width:'80%',fontSize:13}} underlineColorAndroid="#0000" />
+                </View>
+                <View style={[styles.grayUnderline,{width:'100%'}]}>
+                  <Text style={{fontSize:13,marginLeft:20,marginBottom:5,}}>제목</Text>
+                  <TextInput placeholder="입력" style={{width:'80%',fontSize:13}} underlineColorAndroid="#0000" />
+                </View>
+                <View style={[styles.grayUnderline,{width:'100%'}]}>
+                  <Text style={{fontSize:13,marginLeft:20,marginBottom:5,}}>제목</Text>
+                  <Picker
+                    selectedValue={this.state.modalItem}
+                    style={{width:'90%',height:30}}
+                    onValueChange={(itemValue, itemIndex) => this.setState({modalItem: itemValue})}
+                  >
+                    <Picker.Item label="선택1" value="1" />
+                    <Picker.Item label="선택2" value="2" />
+                  </Picker>
+                </View>
+                <View style={{width:150,marginTop:30}}>
+                <Button rounded block small transparent style={{backgroundColor:'#db3928'}}>
+                  <Text style={{color:'#fff',fontSize:13}}>완료</Text>
+                </Button>
+                </View>
+              </View>
+            </View>
+            <TouchableOpacity style={{flex:1,width:'100%'}}
+            onPress={() => {this.modalExit();}} />
+          </View>
+        </Modal>
         <Content
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#f9f9f9"}}
@@ -45,6 +114,7 @@ class Works extends Component{
                   base: { width:25,height:25,alignItems:'center' },
                 }
               }}
+              onDayPress={(day) => {this.modalSet(day)}}
               markedDates={{
                 '2018-10-01':{selected:true},
                 '2018-10-12':{selected:true},

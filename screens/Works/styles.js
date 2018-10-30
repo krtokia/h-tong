@@ -26,5 +26,44 @@ export default {
   },
   blue: {
     color: 'blue'
+  },
+  modalContainer: {
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center',
+    backgroundColor:'#0003'
+  },
+  modalOther: {
+    flex: 1,
+    width: deviceWidth,
+  },
+  modalContent: {
+    flex:4,
+    width: deviceWidth / 1.5,
+    backgroundColor:'#fff'
+  },
+  modalHeader: {
+    height: 30,
+    backgroundColor: '#db3928',
+    flexDirection:'row',
+    shadowOpacity: 5,
+    shadowOffset: { width:5, height:5 },
+    shadowRadius: 5,
+    elevation: 5,
+    alignItems:'center'
+  },
+  modalInner: {
+    flex:1,
+    backgroundColor:'#fff',
+    alignItems: 'center',
+    padding:10,
+  },
+  Row: {
+    flexDirection:'row'
+  },
+  grayUnderline: {
+    borderBottomWidth: 1,
+    borderColor: '#e9e9e9',
+    marginBottom: 10,
   }
 }

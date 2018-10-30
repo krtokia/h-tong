@@ -19,6 +19,7 @@ import Friends from './Friends';
 import FriendDetail from './Friends/FriendDetail.js';
 
 import Home from "./Home/Home.js";
+import TongSearch from "./Home/TongSearch.js";
 
 import More from './More';
 import Notice from './More/Notice.js';
@@ -29,6 +30,7 @@ import Settings from './More/Settings.js';
 import Invite from './More/Invite.js';
 import Papers from './More/Papers.js';
 import Signature from './More/Signature.js';
+
 
 import createTong from "./Home/createTong.js";
 import createTong2 from "./Home/createTong2.js";
@@ -53,6 +55,8 @@ import CommunitySetting from "./Home/CommunitySetting.js";
 
 import Mypage from './Mypage';
 import MyInfo from './Mypage/MyInfo.js';
+
+import Test from './Home/Test.js';
 
 const platform = Platform.OS;
 const Logo  = require('../assets/images/headerLogo.png');
@@ -267,6 +271,8 @@ const AppStackNavigator = createStackNavigator({
   TongPaperHealth: { screen: TongPaperHealth },
   TongPaperArmor: { screen: TongPaperArmor },
   TongPaper2: { screen: TongPaper2 },
+  TongSearch: { screen: TongSearch },
+  Test: { screen: Test },
   HomeTab: {
     screen: HomeTabNavi,
     navigationOptions: {

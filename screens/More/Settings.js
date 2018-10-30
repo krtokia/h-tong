@@ -69,6 +69,16 @@ class Settings extends Component{
             <ListItem name="피드관리" href={() => {this.props.navigation.navigate('Notice')}} />
             <ListItem name="번역 설정" href={() => {this.props.navigation.navigate('Notice')}} />
             <ListItem name="글씨 크기" href={() => {this.props.navigation.navigate('Notice')}} />
+            <TouchableOpacity onPress={() => {this.props.navigation.navigate('Login')}}>
+              <View style={{flexDirection:'row',backgroundColor:'#fff',height:40,borderBottomWidth:1,borderBottomColor:'#e9e9e9',paddingVertical:5,paddingHorizontal:10}}>
+                <Left>
+                  <Text style={{fontSize:14,color:'#db3928'}}>로그아웃</Text>
+                </Left>
+                <Right>
+                  <Icon name="sign-out" type="FontAwesome" style={{color:'#db3928'}} />
+                </Right>
+              </View>
+            </TouchableOpacity>
           </View>
       </View>
         </Content>

@@ -135,7 +135,7 @@ class Home extends Component{
               <Icon name="add-circle" />
               <Text>현장통 생성</Text>
             </CardItem>
-            <CardItem button onPress={() => alert("현장통 찾기")}>
+            <CardItem button onPress={() => {this.props.navigation.navigate('TongSearch')}}>
               <Icon name="search" />
               <Text>현장통 찾기</Text>
             </CardItem>

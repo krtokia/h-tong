@@ -102,7 +102,7 @@ export default {
     elevation: 5,
   },
   TongContents: {
-    paddingTop:10,
+    paddingVertical:10,
   },
   TongContentHeader: {
     flex: 1,
@@ -133,7 +133,7 @@ export default {
     marginRight: 3,
   },
   TongContentReply: {
-    marginTop:10
+    marginTop:5
   },
   ContentReplyF: {
     color: '#db3928',
@@ -173,7 +173,7 @@ export default {
   },
   friendList: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     alignItems: 'center',
     width: deviceWidth,
     borderBottomWidth: 1,
@@ -195,12 +195,11 @@ export default {
     fontSize: 12,
     color: '#aaa',
   },
-  friendChatBtn: {
-    marginRight: 30,
-    marginLeft: 'auto'
-  },
   friendChat: {
     color: '#555',
+  },
+  friendChatBtn: {
+
   },
   detailImage: {
     flex:1,

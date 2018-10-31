@@ -30,11 +30,17 @@ import {RkTextInput, RkText, RkTheme} from 'react-native-ui-kitten';
 import styles from "./styles";
 import tong from "../common.js";
 
+var variable = "123";
 
 class TongMain extends Component{
 
   constructor(props) {
     super(props);
+
+    this.setModify = this.setModify.bind(this);
+    this.setDelete = this.setDelete.bind(this);
+    this.writeReply = this.writeReply.bind(this);
+
     this.state = {
         isLoading: true,
         isLoading2: true,
@@ -47,10 +53,12 @@ class TongMain extends Component{
         tongTitle: null,
         tongImage: null,
         scrollY: new Animated.Value(0),
+        isModify: false,
     }
 
 
   }
+
 
   getTong = async() => {
     const { navigation } = this.props;
@@ -91,7 +99,38 @@ class TongMain extends Component{
   }
 
   setAddComment(visible) {
-    this.setState({addComment: visible});
+    this.setState({addComment: visible,isModify:false});
+  }
+
+  setModify(modifyVal) {
+    console.log("modifyVal",modifyVal)
+    this.setState({addComment: true,isModify: true});
+  }
+  setDelete(deleteVal) {
+    console.log("setDelte");
+    this.delete(deleteVal);
+  }
+
+  division(mode) {
+    this.setState({isModify:false})
+    if(mode) {
+      this.modify();
+    } else {
+      this.write();
+    }
+  }
+
+  modify(modifyVal) {
+    this.setState({addComment:false,isModify:false})
+    console.log("modify complete",modifyVal);
+  }
+
+  delete(args) {
+    console.log("delete complete",args);
+  }
+
+  writeReply(args) {
+    console.log("writeReply complete",args);
   }
 
   write() {
@@ -112,7 +151,6 @@ class TongMain extends Component{
         content: content,
       })
     }
-
     return fetch(apiUrl, options).then((response) => response.json())
       .then((responseJson)=> {
         if(responseJson === 'succed') {
@@ -130,8 +168,48 @@ class TongMain extends Component{
       });
   }
 
+  createWeather() {
+    const area = "서울";
+    const temperature = 28;
+    const areaStatus = "rainy";
+    const microDust = "좋음";
+    let status;
+    if (areaStatus === "sunny") {
+      status = "weather-sunny";
+    } else if (areaStatus === "cloudy") {
+      status = "weather-cloudy";
+    } else if (areaStatus === "rainy") {
+      status = "weather-rainy";
+    } else if (areaStatus === "snowy") {
+      status = "weather-snowy";
+    } else {
+      status = "image-filter-center-focus";
+    }
+    return (
+    <View style={[styles.Box,{marginTop:HEADER_MAX_HEIGHT+10,height:80,marginVertical:10}]}>
+      <View style={[styles.Row,{flex:1,justifyContent:'space-between',padding:10}]}>
+        <View style={{flex:1}}>
+        <NBIcon name={status} type="MaterialCommunityIcons" style={{color:'#666',fontSize:40}}/>
+        </View>
+        <View style={{flex:1}}>
+        <Text style={{fontWeight:'bold',fontSize:25,color:'#666'}}>{area}</Text>
+        </View>
+        <View style={{flex:1}}>
+          <Text style={{fontSize:14}}>기온 : {temperature}<NBIcon name="temperature-celsius" type="MaterialCommunityIcons" style={{fontSize:14,color:'#666'}}/></Text>
+          <Text style={{fontSize:14}}>미세먼지 : {microDust}</Text>
+        </View>
+      </View>
+    </View>
+    )
+  }
   render(){
     const TongType = this.props.navigation.getParam('tongType');
+    let weatherBox;
+    if(TongType === "T") {
+      weatherBox = this.createWeather();
+    } else {
+      weatherBox = (<View style={{marginTop:HEADER_MAX_HEIGHT}} />);
+    }
 
     if (this.state.isLoading) {
       return (
@@ -161,25 +239,43 @@ class TongMain extends Component{
                       <Text style={{fontSize:10,color:'#aaa'}}>{val.date}</Text>
                     </View>
                   </View>
+                  { "ID" === "ID" &&
+                  <ToggleMenu
+                    setModifyParent={this.setModify}
+                    setDeleteParent={this.setDelete}
+                    argue={val}
+                  />
+                  }
                 </View>
                 { true &&
                   <View style={{marginVertical:10}}>
-                  <ScrollView horizontal={true}>
-                  <View style={[styles.TongContentImgs]}>
-                    <Image source={require('../../assets/images/profile_no.png')} style={styles.TongContentImgList} />
-                    <Image source={require('../../assets/images/profile_no.png')} style={styles.TongContentImgList} />
-                    <Image source={require('../../assets/images/profile_no.png')} style={styles.TongContentImgList} />
-                    <Image source={require('../../assets/images/profile_no.png')} style={styles.TongContentImgList} />
-                    <Image source={require('../../assets/images/profile_no.png')} style={styles.TongContentImgList} />
-                    <Image source={require('../../assets/images/profile_no.png')} style={styles.TongContentImgList} />
-                  </View>
-                  </ScrollView>
+                    <ScrollView horizontal={true}>
+                      <View style={[styles.TongContentImgs]}>
+                        <Image source={require('../../assets/images/noImage.png')} style={styles.TongContentImgList} />
+                        <Image source={require('../../assets/images/noImage.png')} style={styles.TongContentImgList} />
+                        <Image source={require('../../assets/images/noImage.png')} style={styles.TongContentImgList} />
+                        <Image source={require('../../assets/images/noImage.png')} style={styles.TongContentImgList} />
+                        <Image source={require('../../assets/images/noImage.png')} style={styles.TongContentImgList} />
+                        <Image source={require('../../assets/images/noImage.png')} style={styles.TongContentImgList} />
+                      </View>
+                    </ScrollView>
                   </View>
                 }
-                <View style={styles.TongContents}>
+                <View style={[styles.TongContents,"isReply" === "isReply" && styles.grayBottom]}>
                   <Text style={{fontSize:13}}>{val.content}</Text>
                 </View>
-                <ReplyView />
+                { "isReply" === "isReply" &&
+                <View style={[styles.TongContents]}>
+                  <ReplyList
+                    rName="댓글이름"
+                    rContent="댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용댓글내용"
+                  />
+                </View>
+                }
+                <ReplyView
+                  writeReplyParent={this.writeReply}
+                  argue={val}
+                />
               </View>
       })
 
@@ -234,10 +330,10 @@ class TongMain extends Component{
                 </TouchableHighlight>
               </Left>
               <Body style={{flex:1,alignItems:'center'}}>
-                <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>글쓰기</Text>
+                <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>{this.state.isModify ? "수정하기" : "글쓰기"}</Text>
               </Body>
               <Right  style={{flex:1}}>
-                <Text style={{fontSize:13,color:'#fff'}} onPress={() => {this.write()}}>완료</Text>
+                <Text style={{fontSize:13,color:'#fff'}} onPress={() => {this.division(this.state.isModify)}}>완료</Text>
               </Right>
             </Header>
             <Content style={{padding:10}}>
@@ -274,9 +370,7 @@ class TongMain extends Component{
             [{nativeEvent: {contentOffset: {y: this.state.scrollY}}}]
           )}
         >
-          <View style={[styles.Box,{marginTop:HEADER_MAX_HEIGHT+10,height:60,marginVertical:10}]}>
-            <Text>날씨</Text>
-          </View>
+          {weatherBox}
           {bbsList}
           </ScrollView>
           <Animated.View style={[styles.header,{height:headerHeight}]}>
@@ -341,7 +435,7 @@ class TongMain extends Component{
               <TouchableOpacity style={{width:'100%',height:'100%',justifyContent:'center',alignItems:'center'}}
                 onPress={() => {this.props.navigation.navigate('Main')}}
               >
-              <NBIcon name="angle-left" type="FontAwesome" />
+              <NBIcon name="angle-left" type="FontAwesome" style={{color:'#fff'}} />
               </TouchableOpacity>
             </Animated.View>
           </Animated.View>
@@ -361,10 +455,15 @@ class ReplyView extends Component {
   state={
     show: false,
   }
+
+  writeReplyChild = () => {
+    this.props.writeReplyParent(this.props.argue)
+  }
   render() {
     return (
       <View style={styles.TongContentReply}>
-      <TouchableOpacity onPress={() => {this.setState({show:!this.state.show})}}>
+      <TouchableOpacity style={{width:'100%',alignItems:'center'}}
+        onPress={() => {this.setState({show:!this.state.show})}}>
         <Text style={this.state.show ? styles.ContentReplyT : styles.ContentReplyF}>{this.state.show ? "접기" : "댓글달기"} <Icon name={this.state.show ? "angle-up" : "comment"} /></Text>
       </TouchableOpacity>
       { this.state.show && (
@@ -373,12 +472,82 @@ class ReplyView extends Component {
             <Textarea placeholder="댓글을 입력하세요." rowspan={10} style={{fontSize:10}} />
           </Form></View>
           <View style={{flex:1,justifyContent:'center'}}>
-            <Button info small bordered>
+            <Button info small bordered onPress={this.writeReplyChild}>
               <NBIcon name="check" type="FontAwesome" style={{fontSize:11}} />
             </Button>
           </View>
         </View>
       )}
+      </View>
+    )
+  }
+}
+
+class ReplyList extends Component {
+  render() {
+    return (
+      <View style={{marginTop:3,paddingVertical:3,flexDirection:'row',borderBottomColor:'#f9f9f9',borderBottomWidth:1}}>
+        <View style={{flex:1,justifyContent:'center'}}>
+          <Text style={{fontSize:11,fontWeight:'bold'}}>{this.props.rName} :</Text>
+        </View>
+        <View style={{flex:4,justifyContent:'center'}}>
+          <Text style={{fontSize:10}}>{this.props.rContent}</Text>
+        </View>
+      </View>
+    )
+  }
+}
+
+class ToggleMenu extends Component {
+  state={
+    show: false,
+  }
+
+  setDeleteChild = () => {
+    this.props.setDeleteParent(this.props.argue)
+  }
+  setModifyChild = () => {
+    this.props.setModifyParent(this.props.argue)
+  }
+
+
+  render() {
+    const boxHeight = 80;
+    const boxWidth = 90;
+    const fontStyle = {fontSize:13,color:'#666'};
+    return (
+      <View>
+        <TouchableOpacity style={{paddingRight:20}}
+          onPress={() => {this.setState({show: !this.state.show})}}
+        >
+          <NBIcon name="ellipsis-v" type="FontAwesome" style={{fontSize:15,color:'#999'}} />
+        </TouchableOpacity>
+        { this.state.show &&
+          <View style={[styles.Box,{borderWidth:1,borderColor:'#e9e9e9',width:boxWidth,position:'absolute',bottom:-boxHeight,left:-boxWidth-20,zIndex:1}]}>
+            <TouchableOpacity
+              onPress={this.setModifyChild}
+            >
+            <View style={[styles.Row,styles.grayBottom,{paddingVertical:3,marginBottom:10}]}>
+              <Text style={fontStyle}>수정하기</Text>
+              <NBIcon name="edit" type="FontAwesome" style={{color:'#999',fontSize:11}} />
+            </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={this.setDeleteChild}
+            >
+            <View style={[styles.Row,styles.grayBottom,{paddingVertical:3,marginBottom:10}]}>
+              <Text style={[fontStyle,{color:'#db3928'}]}>삭제</Text>
+              <NBIcon name="trash-o" type="FontAwesome" style={[fontStyle,{color:'#db3928'}]} />
+            </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => {this.setState({show:!this.state.show})}}>
+            <View style={[styles.Row,styles.grayBottom,{paddingVertical:3}]}>
+              <Text style={[fontStyle,{color:'#aaa'}]}>닫기</Text>
+              <NBIcon name="times" type="FontAwesome" style={[fontStyle,{color:'#aaa'}]} />
+            </View>
+            </TouchableOpacity>
+          </View>
+        }
       </View>
     )
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet,Image,TouchableOpacity } from 'react-native';
+import { StyleSheet,Image,TouchableOpacity, Alert } from 'react-native';
 import {
   View,
   Button,
@@ -46,7 +46,17 @@ class TongPeople extends Component{
       });
       */
   }
-
+  attendCheck(name) {
+    Alert.alert(
+      '출근 체크',
+      name+' 출근 체크 하시겠습니까?',
+      [
+        {text: '확인', onPress: () => console.log(name,'확인')},
+        {text: '취소', onPress: () => console.log(name,'취소')},
+      ],
+      { cancelable: false }
+    )
+  }
   render(){
     return (
       <Container>
@@ -60,7 +70,6 @@ class TongPeople extends Component{
           </Right>
         </Header>
         <Content
-          contentContainerStyle={{ flex: 1 }}
           style={{ backgroundColor: "#f9f9f9" }}
         >
           <View style={{width:'100%',padding:10,}}>
@@ -95,6 +104,49 @@ class TongPeople extends Component{
               chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
             />
           </View>
+          <Text style={{marginVertical:10,marginLeft:10,fontSize:13}}>현장 전체 동료 (159)</Text>
+          <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
+            <TongFriendList2
+              name="안민웅1"
+              type="직종"
+              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+              attend = {true}
+              parentMethod = {this.attendCheck}
+            />
+            <TongFriendList2
+              name="안민웅2"
+              type="직종"
+              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+              attend = {false}
+              parentMethod = {this.attendCheck}
+            />
+            <TongFriendList2
+              name="안민웅3"
+              type="직종"
+              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+              attend = {false}
+              parentMethod = {this.attendCheck}
+            />
+            <TongFriendList2
+              name="안민웅4"
+              type="직종"
+              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+              attend = {false}
+              parentMethod = {this.attendCheck}
+            />
+            <TongFriendList2
+              name="안민웅5"
+              type="직종"
+              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
+              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+              attend = {false}
+              parentMethod = {this.attendCheck}
+            />
+          </View>
         </Content>
       </Container>
     );
@@ -105,12 +157,42 @@ class TongFriendList extends Component{
     return(
       <TouchableOpacity onPress={this.props.detailHref}>
         <View style={styles.friendList}>
-          <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
-          <Text style={styles.friendName}>{this.props.name}</Text>
-          <Text style={styles.friendInfo}>{this.props.type}</Text>
-          <Button transparent style={styles.friendChatBtn} onPress={this.props.chatHref}>
-            <Icon name="commenting-o" type="FontAwesome" style={styles.friendChat} />
-          </Button>
+          <View style={{flexDirection:'row',alignItems:'center'}}>
+            <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
+            <Text style={styles.friendName}>{this.props.name}</Text>
+            <Text style={styles.friendInfo}>{this.props.type}</Text>
+          </View>
+          <View style={{flexDirection:'row',justifyContent:'flex-end',paddingRight:10}}>
+            <Button transparent style={styles.friendChatBtn} onPress={this.props.chatHref}>
+              <Icon name="commenting-o" type="FontAwesome" style={styles.friendChat} />
+            </Button>
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+}
+class TongFriendList2 extends Component{
+  attendCheckParent = () => {
+    this.props.parentMethod(this.props.name);
+  }
+  render() {
+    return(
+      <TouchableOpacity onPress={this.props.detailHref}>
+        <View style={styles.friendList}>
+          <View style={{flexDirection:'row',alignItems:'center'}}>
+            <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
+            <Text style={styles.friendName}>{this.props.name}</Text>
+            <Text style={styles.friendInfo}>{this.props.type}</Text>
+          </View>
+          <View style={{flexDirection:'row',justifyContent:'flex-end',paddingRight:10}}>
+            <Button transparent style={styles.friendChatBtn} onPress={this.props.chatHref}>
+              <Icon name="commenting-o" type="FontAwesome" style={styles.friendChat} />
+            </Button>
+            <Button transparent style={[styles.friendChatBtn]} onPress={this.attendCheckParent}>
+              <Icon name={this.props.attend ? "check-circle" : "info-circle"} type="FontAwesome" style={this.props.attend ? {color: '#555'} : {color:'#db3928'}} />
+            </Button>
+          </View>
         </View>
       </TouchableOpacity>
     )

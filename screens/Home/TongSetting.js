@@ -18,6 +18,8 @@ import {
  } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
 
+import { StoreGlobal } from '../../App';
+
 import styles from './styles.js';
 
 class TongSetting extends Component{
@@ -28,7 +30,7 @@ class TongSetting extends Component{
     {/*
     const TongType = this.props.navigation.getParam('tongType');
     */}
-    const TongType = 'T';
+    const TongType = StoreGlobal({type:'get',key:'tType'});
     return (
       <Container>
         <Header style={{backgroundColor:'#db3928',justifyContent:'space-between'}}>

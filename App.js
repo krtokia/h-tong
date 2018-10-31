@@ -5,6 +5,22 @@ import getTheme from './native-base-theme/components';
 import { StyleProvider } from 'native-base';
 import { Font } from 'expo';
 
+const globalState={};
+
+export const StoreGlobal = (obj)=> {
+
+  if(obj.type==='set'){
+  globalState[obj.key]=obj.value;
+  return true;
+  }else
+    if(obj.type==='get'){
+  return globalState[obj.key];
+  }else{
+  return null;
+  }
+
+}
+
 import MainScreen from './screens/MainScreen.js';
 
 export default class App extends React.Component {

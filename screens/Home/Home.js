@@ -14,6 +14,8 @@ import {
 import { Grid, Col, Row } from "react-native-easy-grid";
 import {RkCard, RkTheme} from 'react-native-ui-kitten';
 
+import { StoreGlobal } from '../../App';
+
 import styles from "./styles";
 
 class Home extends Component{
@@ -54,6 +56,11 @@ class Home extends Component{
     );
   }
 
+  navigateTong(tType) {
+    StoreGlobal({type:'set',key:'tType',value:tType});
+    console.log("tType: ",StoreGlobal({type:'get',key:'tType'}));
+  }
+
   render(){
     if (this.state.isLoading) {
       return (
@@ -65,10 +72,14 @@ class Home extends Component{
       let tongs = this.state.dataSource.map((val, key) => {
         return <View key={key} style={styles.tongView}>
                   <TouchableOpacity
-                          onPress = {() => this.props.navigation.navigate("TongMain", {
+                          onPress = {() => {
+                            this.props.navigation.navigate("TongMain", {
                             itemID: val.tongSeq,
                             tongType: 'T',
-                          })}
+                            }),
+                            this.navigateTong("T")
+                            }
+                          }
                   >
                   <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />
                   <View style={styles.tongContent}>
@@ -81,10 +92,14 @@ class Home extends Component{
       let communities = this.state.dataSource.map((val, key) => {
         return <View key={key} style={styles.tongView}>
                   <TouchableOpacity
-                          onPress = {() => this.props.navigation.navigate("TongMain", {
+                          onPress = {() => {
+                            this.props.navigation.navigate("TongMain", {
                             itemID: val.tongSeq,
                             tongType: 'C',
-                          })}
+                            }),
+                            this.navigateTong("C")
+                            }
+                          }
                   >
                   <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />
                   <View style={styles.tongContent}>

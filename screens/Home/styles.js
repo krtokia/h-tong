@@ -256,5 +256,9 @@ export default {
     right: 0,
     backgroundColor: '#db3928',
     overflow: 'hidden',
+  },
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 };

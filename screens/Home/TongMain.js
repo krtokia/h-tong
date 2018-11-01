@@ -439,6 +439,16 @@ class TongMain extends Component{
               </TouchableOpacity>
             </Animated.View>
           </Animated.View>
+          { "isAttend" === "isAttend" &&
+          <View style={{width:100,position:'absolute',top:35,right:10,zIndex:1}}>
+            <Button transparent small block rounded
+              style={{backgroundColor:'#db3928'}}
+              onPress={() => {Alert.alert('출근')}}
+            >
+              <Text style={{color:'#fff',fontSize:15}}>출근하기</Text>
+            </Button>
+          </View>
+          }
         </Content>
       </Container>
     );

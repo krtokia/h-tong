@@ -113,6 +113,7 @@ class TongPeople extends Component{
               chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
               attend = {true}
               parentMethod = {this.attendCheck}
+              attendRequest = {true}
             />
             <TongFriendList2
               name="안민웅2"
@@ -121,6 +122,7 @@ class TongPeople extends Component{
               chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
               attend = {false}
               parentMethod = {this.attendCheck}
+              attendRequest = {false}
             />
             <TongFriendList2
               name="안민웅3"
@@ -129,6 +131,7 @@ class TongPeople extends Component{
               chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
               attend = {false}
               parentMethod = {this.attendCheck}
+              attendRequest = {false}
             />
             <TongFriendList2
               name="안민웅4"
@@ -137,6 +140,7 @@ class TongPeople extends Component{
               chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
               attend = {false}
               parentMethod = {this.attendCheck}
+              attendRequest = {true}
             />
             <TongFriendList2
               name="안민웅5"
@@ -145,6 +149,7 @@ class TongPeople extends Component{
               chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
               attend = {false}
               parentMethod = {this.attendCheck}
+              attendRequest = {true}
             />
           </View>
         </Content>
@@ -176,7 +181,20 @@ class TongFriendList2 extends Component{
   attendCheckParent = () => {
     this.props.parentMethod(this.props.name);
   }
+
+  createIcon() {
+    if (this.props.attendRequest) {
+      if (this.props.attend) {
+        return <Icon name="check-circle" type="FontAwesome" style={{color: '#00f'}} />
+      } else {
+        return <Icon name="exclamation-circle" type="FontAwesome" style={{color: '#db3928'}} />
+      }
+    } else {
+      return <Icon name="minus-circle" type="FontAwesome" style={{color: '#aaa'}} />
+    }
+  }
   render() {
+    const attendIcon = this.createIcon();
     return(
       <TouchableOpacity onPress={this.props.detailHref}>
         <View style={styles.friendList}>
@@ -190,7 +208,7 @@ class TongFriendList2 extends Component{
               <Icon name="commenting-o" type="FontAwesome" style={styles.friendChat} />
             </Button>
             <Button transparent style={[styles.friendChatBtn]} onPress={this.attendCheckParent}>
-              <Icon name={this.props.attend ? "check-circle" : "info-circle"} type="FontAwesome" style={this.props.attend ? {color: '#555'} : {color:'#db3928'}} />
+              {attendIcon}
             </Button>
           </View>
         </View>

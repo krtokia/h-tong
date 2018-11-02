@@ -22,12 +22,30 @@ import { ImagePicker } from 'expo';
 import styles from "./styles";
 
 class Papers extends Component{
-  state = {
-    modalVisible: false,
-  };
+  constructor(props) {
+    super(props);
 
-  setModalVisible(visible) {
-    this.setState({modalVisible: visible});
+    this.setModalVisible = this.setModalVisible.bind(this);
+
+    this.state = {
+      modalVisible: false,
+      modalName: "신분증",
+    };
+  }
+  setModalVisible(visible,modalName) {
+    this.setState({modalVisible: visible,modalName: modalName});
+  }
+
+  setPaper() {
+    Alert.alert(
+      "서류등록",
+      "이 서류를 등록 하시겠습니까?",
+      [
+        {text: "예", onPress: () => {console.log("서류등록"),this.setState({modalVisible:false})}},
+        {text: "아니오", onPress: () => {console.log("서류등록 취소"),this.setState({modalVisible:false})}}
+      ],
+      { cancelable: false }
+    )
   }
 
   static navigationOptions = ({
@@ -47,18 +65,22 @@ class Papers extends Component{
             <TouchableOpacity style={{flex:3,width:'100%'}}
             onPress={() => {this.setModalVisible(!this.state.modalVisible);}} />
             <View style={{flex:4,width:'100%',justifyContent:'center',alignItems:'center'}}>
-              <View style={{backgroundColor:'#fffa',width:'90%',borderRadius:10,flex:2,marginBottom:5,flexDirection:'row',alignItems:'center'}}>
-                <NBIcon name="plus" type="FontAwesome" style={{color:'#fff',marginLeft:10,fontSize:20}} />
-                <Input style={{marginLeft:5,color:'#fff'}} placeholder="이름 입력" />
-                <TouchableOpacity style={{marginLeft:'auto',marginRight:10}}>
-                <Text style={{color:'#db3928',fontSize:12}}>완료</Text>
+              <View style={{backgroundColor:'#fff',width:150,height:150,borderRadius:10,borderWidth:3,borderColor:'#ddd',justifyContent:'center',alignItems:'center'}}>
+                <TouchableOpacity style={{justifyContent:'center',alignItems:'center'}}>
+                  <NBIcon name="camera" type="FontAwesome" style={{fontSize:35,color:'#999'}} />
+                  <Text style={{color:'#999',marginTop:20,fontSize:15}}>서류 사진 추가</Text>
                 </TouchableOpacity>
               </View>
-              <View style={{backgroundColor:'#fff',width:'90%',borderRadius:10,borderWidth:3,borderColor:'#ddd',flex:8,justifyContent:'center',alignItems:'center'}}>
-                <TouchableOpacity style={{justifyContent:'center',alignItems:'center'}}>
-                  <NBIcon name="upload" type="FontAwesome" style={{fontSize:35}} />
-                  <Text>사진 업로드</Text>
-                </TouchableOpacity>
+              <View style={{width:'40%',flex:1,alignItems:'center',marginTop:20}}>
+                <Text style={{color:'#fff'}}>{this.state.modalName}</Text>
+                <View style={{width:'100%',marginTop:20}}>
+                  <Button transparent rounded block
+                    style={{backgroundColor:'#db3928'}}
+                    onPress={() => {this.setPaper()}}
+                  >
+                    <Text style={{color:'#fff'}}>완료</Text>
+                  </Button>
+                </View>
               </View>
             </View>
             <TouchableOpacity style={{flex:3,width:'100%'}}
@@ -79,8 +101,72 @@ class Papers extends Component{
         </Header>
         <Content
           showsVerticalScrollIndicator={false}
-          style={{ backgroundColor: "#fff" }}
+          style={{ backgroundColor: "#f9f9f9" }}
+          contentContainerStyle={{flex:1}}
         >
+          <View style={styles.Box}>
+            <PaperList2
+              name="신분증"
+              hasPaper={true}
+              setModalVisibleParent={this.setModalVisible}
+            />
+            <PaperList2
+              name="건강문진표"
+              hasPaper={false}
+              setModalVisibleParent={this.setModalVisible}
+            />
+            <PaperList2
+              name="통장사본"
+              hasPaper={false}
+              setModalVisibleParent={this.setModalVisible}
+            />
+            <PaperList2
+              name="기타1"
+              hasPaper={false}
+              setModalVisibleParent={this.setModalVisible}
+            />
+            <PaperList2
+              name="기타2"
+              hasPaper={false}
+              setModalVisibleParent={this.setModalVisible}
+            />
+            <PaperList2
+              name="기타3"
+              hasPaper={false}
+              setModalVisibleParent={this.setModalVisible}
+            />
+            <PaperList2
+              name="기타4"
+              hasPaper={false}
+              setModalVisibleParent={this.setModalVisible}
+            />
+            <PaperList2
+              name="기타5"
+              hasPaper={false}
+              setModalVisibleParent={this.setModalVisible}
+            />
+            <PaperList2
+              name="기타6"
+              hasPaper={false}
+              setModalVisibleParent={this.setModalVisible}
+            />
+            <PaperList2
+              name="기타7"
+              hasPaper={false}
+              setModalVisibleParent={this.setModalVisible}
+            />
+            <PaperList2
+              name="기타8"
+              hasPaper={false}
+              setModalVisibleParent={this.setModalVisible}
+            />
+            <PaperList2
+              name="기타9"
+              hasPaper={false}
+              setModalVisibleParent={this.setModalVisible}
+            />
+          </View>
+{/*
           <View style={[styles.container,{marginTop:20,flexDirection:'row',flexWrap:'wrap'}]}>
             <PaperList
               title="신분증"
@@ -111,6 +197,7 @@ class Papers extends Component{
                     }
             />
           </View>
+*/}
         </Content>
       </Container>
     );
@@ -118,6 +205,28 @@ class Papers extends Component{
 }
 
 export default Papers;
+
+class PaperList2 extends Component{
+  render() {
+    const fontS = 14;
+    return(
+      <TouchableOpacity style={[styles.grayBottom,styles.row,{justifyContent:'space-between',padding:13,paddingBottom:8}]}
+        onPress={() => this.props.setModalVisibleParent(true,this.props.name)}
+      >
+        <View style={[styles.row,]}>
+          <NBIcon name="file-text-o" type="FontAwesome" style={{fontSize:fontS,marginRight:5}} />
+          <Text style={{fontSize:fontS}}>{this.props.name}</Text>
+          { this.props.hasPaper &&
+            <NBIcon name='primitive-dot' type='Octicons' style={{color:'#db3928',fontSize:12,marginLeft:5}} />
+          }
+        </View>
+        <View>
+          <Text style={{fontSize:12,color:this.props.hasPaper ? '#666' : '#db3928'}}>{this.props.hasPaper ? "보기" : "등록"}</Text>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+}
 
 class PaperList extends Component{
   render() {

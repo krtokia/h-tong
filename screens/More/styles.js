@@ -159,5 +159,16 @@ export default {
     flexBasis:'50%',
     height: deviceHeight / 5 + 20,
     padding:5,
+  },
+  grayBottom: {
+    borderBottomWidth:1,
+    borderBottomColor: '#e9e9e9'
+  },
+  row: {
+    flexDirection:'row'
+  },
+  center: {
+    justifyContent:'center',
+    alignItems:'center'
   }
 }

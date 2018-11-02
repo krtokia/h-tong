@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { StyleSheet, View, Image, StatusBar, Platform, TouchableOpacity } from 'react-native';
+import React, { Component, PropTypes } from 'react';
+import { StyleSheet, View, Image, StatusBar, Platform, TouchableOpacity, Linking, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Text, Root } from 'native-base';
 import { createMaterialTopTabNavigator, createStackNavigator, createBottomTabNavigator } from 'react-navigation';
@@ -315,7 +315,17 @@ const AppStackNavigator = createStackNavigator({
     },
     headerRight: (
       <View style={{flexDirection:"row"}}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => {
+            Alert.alert(
+              '',
+              '쇼핑몰로 이동하시겠습니까?',
+              [
+                {text:"예",onPress:() => Linking.openURL('http://www.naver.com')},
+                {text:"아니오"}
+              ],
+              { cancelable: false }
+            )
+          }}>
           <Icon name="shopping-cart" size={28} style={{color:'#999',marginRight:10}} />
         </TouchableOpacity>
       </View>

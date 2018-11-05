@@ -25,6 +25,7 @@ import { NavigationActions } from "react-navigation";
 import { ImagePicker } from 'expo';
 import styles from "./styles";
 import pickableImage from "../common.js"
+import { StoreGlobal } from "../../App"
 
 const _this = null;
 
@@ -32,8 +33,21 @@ class createTong2 extends pickableImage{
   constructor(props) {
     super(props);
     this.state = {
-      tongName: '',
-      modal: false,
+		tongName: '',
+		modal: false,
+		tongnum: '',
+		tongtitle: '',
+		tongtype: '',
+		projectnm: '',
+		authnum: '',
+		constructor: '',
+		supervisor: '',
+		owner: '',
+		contact: '',
+		term: '',
+		scale: '',
+		addr: '',
+		creator: StoreGlobal({type:'get',key:'username'}),
     }
     //uploadImage.state = uploadImage.state.bind(this);
     this.uploadImage = this.uploadImage.bind(this);
@@ -63,6 +77,10 @@ class createTong2 extends pickableImage{
   });
 
     division(tongType) {
+		if(this.state.tongName === ''){
+			Alert.alert('현장동 이름을 입력하세요');
+			return;
+		}
       if(tongType === 'T') {
         this.setState({modal: true});
       } else {
@@ -136,6 +154,55 @@ class createTong2 extends pickableImage{
       });
     }
 
+	createTong() {
+    const {tongName, projectnm, authnum, constructor, supervisor, owner, contact, term, scale, addr, creator} = this.state;
+    let apiUrl = 'http://13.124.127.253/api/createTong.php';
+    let options = null;
+
+    options = {
+        method: 'POST',
+        body: JSON.stringify({
+			tongtype: "T",
+			tongtitle: tongName,
+			projectnm: projectnm,
+			authnum: authnum,
+			constructor: constructor,
+			supervisor: supervisor,
+			owner: owner,
+			contact: contact,
+			term: term,
+			scale: scale,
+			addr: addr,
+			creator: 'dudtka37',
+        })
+	}
+	console.log(options);
+
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+		console.log("responseJson:",responseJson);
+        if(responseJson === 'success') {
+          Alert.alert(
+			"현장통",
+			"현장통이 생성되었습니다.",
+			 [
+				{text:"확인",onPress:() => {this.props.navigation.navigate("Main")}}
+			],
+			{ cancelable: false }
+			)
+        } else {
+          //alert(responseJson);
+          Alert.alert(
+            '현장통',
+            "현장통 생성 실패"
+          )
+		//this.props.navigation.navigate("Main");
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
+    }
+
   render(){
     var modalFontSize = 11;
 
@@ -165,7 +232,7 @@ class createTong2 extends pickableImage{
                 <Text style={{textAlign:'center',color:'#fff',fontSize:18}}>현장통 세부 설정</Text>
               </Body>
               <Right  style={{flex:1}}>
-                <Text style={{fontSize:13,color:'#fff'}} onPress={() => {this.modalComplate(!this.state.modal)}}>완료</Text>
+                <Text style={{fontSize:13,color:'#fff'}} onPress={() => {this.createTong()}}>완료</Text>
               </Right>
             </Header>
             <Content style={{padding:10}}>
@@ -184,22 +251,22 @@ class createTong2 extends pickableImage{
                       <Text style={{fontSize:modalFontSize}}>현장주소</Text>
                     </View>
                     <View style={[styles.createModalStyleRight]}>
-                      <TextInput placeholder="공사명을 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
-                      <TextInput placeholder="건축허가번호를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
-                      <TextInput placeholder="공사 시공자를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
-                      <TextInput placeholder="공사 감리자를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
-                      <TextInput placeholder="발주자를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
-                      <TextInput placeholder="현장 연락처를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
-                      <TextInput placeholder="공가기간을 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
-                      <TextInput placeholder="공사규모를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
-                      <TextInput placeholder="현장주소를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} />
+                      <TextInput placeholder="공사명을 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(projectnm) => this.setState({ projectnm })}/>
+                      <TextInput placeholder="건축허가번호를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(authnum) => this.setState({ authnum })}/>
+                      <TextInput placeholder="공사 시공자를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(constructor) => this.setState({ constructor })}/>
+                      <TextInput placeholder="공사 감리자를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(supervisor) => this.setState({ supervisor })}/>
+                      <TextInput placeholder="발주자를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(owner) => this.setState({ owner })}/>
+                      <TextInput placeholder="현장 연락처를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(contact) => this.setState({ contact })}/>
+                      <TextInput placeholder="공가기간을 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(term) => this.setState({ term })}/>
+                      <TextInput placeholder="공사규모를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(scale) => this.setState({ scale })}/>
+                      <TextInput placeholder="현장주소를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(addr) => this.setState({ addr })}/>
                     </View>
                   </View>
                 </ImageBackground>
               </Form>
               <View style={{width:150,alignSelf:'center',padding:10,marginTop:30}}>
                 <Button transparent rounded block style={{backgroundColor:'#db3928'}}
-                  onPress={() => {this.modalComplate()}}
+                  onPress={() => {this.createTong()}}
                 >
                   <Text style={{color:'#fff'}}>완료</Text>
                 </Button>

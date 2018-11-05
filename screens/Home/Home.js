@@ -56,9 +56,10 @@ class Home extends Component{
     );
   }
 
-  navigateTong(tType) {
+  navigateTong(tType, itemID) {
     StoreGlobal({type:'set',key:'tType',value:tType});
-    console.log("tType: ",StoreGlobal({type:'get',key:'tType'}));
+    console.log("tType :: ",StoreGlobal({type:'get',key:'tType'}));
+	console.log("itemID :: " + itemID);
   }
 
   render(){
@@ -74,16 +75,16 @@ class Home extends Component{
                   <TouchableOpacity
                           onPress = {() => {
                             this.props.navigation.navigate("TongMain", {
-                            itemID: val.tongSeq,
+                            itemID: val.tongnum,
                             tongType: 'T',
                             }),
-                            this.navigateTong("T")
+                            this.navigateTong("T", val.tongnum)
                             }
                           }
                   >
                   <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />
                   <View style={styles.tongContent}>
-                    <Text style={styles.tongName}>{val.tongTitle}</Text>
+                    <Text style={styles.tongName}>{val.tongtitle}</Text>
 
                   </View>
                   </TouchableOpacity>
@@ -94,7 +95,7 @@ class Home extends Component{
                   <TouchableOpacity
                           onPress = {() => {
                             this.props.navigation.navigate("TongMain", {
-                            itemID: val.tongSeq,
+                            itemID: val.tongnum,
                             tongType: 'C',
                             }),
                             this.navigateTong("C")
@@ -103,7 +104,7 @@ class Home extends Component{
                   >
                   <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />
                   <View style={styles.tongContent}>
-                    <Text style={styles.tongName}>{val.tongTitle}</Text>
+                    <Text style={styles.tongName}>{val.tongtitle}</Text>
 
                   </View>
                   </TouchableOpacity>

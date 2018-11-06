@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Animated,ImageBackground, TouchableOpacity, Image, Modal,ScrollView, TouchableHighlight, Alert, ActivityIndicator } from 'react-native';
+import { TouchableWithoutFeedback,Animated,ImageBackground, TouchableOpacity, Image, Modal,ScrollView, TouchableHighlight, Alert, ActivityIndicator } from 'react-native';
 import {
   Container,
   Content,
@@ -42,30 +42,31 @@ class TongMain extends Component{
     this.setModify = this.setModify.bind(this);
     this.setDelete = this.setDelete.bind(this);
     this.writeReply = this.writeReply.bind(this);
-    this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
-
+    this.setParentShow = this.setParentShow.bind(this);
+    this.setDeleteReply = this.setDeleteReply.bind(this);
+    this.setModifyReply = this.setModifyReply.bind(this);
 
 	const { navigation } = this.props;
 	const itemID = navigation.getParam('itemID');
+	StoreGlobal({type:'set',key:'tongnum',value:itemID});
     this.state = {
         isLoading: true,
         isLoading2: true,
         isLoading3: true,
         dataSource: null,
         bbsData: null,
-        addComment: false,
-        tongSeq: 10,
+        writeModal: false,
+        toggleModal: false,
         memId: 'SID',
         content: null,
         tongTitle: null,
         tongImage: null,
         scrollY: new Animated.Value(0),
         isModify: false,
-		tongnum: itemID,
-		reContent: null,
-		modifyVal: "",
-    repData: null,
-    refresh: null,
+    		tongnum: itemID,
+    		modifyVal: "",
+        refresh: null,
+        parentShow: false,
 		}
 
 
@@ -95,6 +96,7 @@ class TongMain extends Component{
               this.setState({
                 isLoading2: false,
                 bbsData: responseJson,
+                parentShow: !this.state.parentShow,
               });
             })
             .catch((error) => {
@@ -108,20 +110,18 @@ class TongMain extends Component{
     this.getBbs();
   }
 
-  forceUpdateHandler(){
-    this.forceUpdate();
-  };
+  setParentShow() {
+    this.setState({parentShow:!this.state.parentShow})
+  }
 
-  setAddComment(visible) {
-    this.setState({addComment: visible,isModify:false});
+  setwriteModal(visible) {
+    this.setState({writeModal: visible,isModify:false});
   }
 
   setModify(modifyVal) {
-    console.log("setModify함수입니다::::::",modifyVal)
-    this.setState({addComment: true,isModify: true,modifyVal: modifyVal});
+    this.setState({writeModal:true, isModify:true,content:modifyVal.content,modifyVal:modifyVal});
   }
   setDelete(deleteVal) {
-    console.log("setDelte");
     this.delete(deleteVal);
   }
 
@@ -134,21 +134,76 @@ class TongMain extends Component{
     }
   }
 
-  modify(modifyVal) {
-    this.setState({addComment:false,isModify:false})
-    console.log("modify complete",modifyVal);
-	this.setState.modifyVal(modifyVla);
+  modify() {
+    this.setState({writeModal:false,isModify:false,content:""})
+	  const {tongnum, memId, content} = this.state;
+
+	  let apiUrl = 'http://13.124.127.253/api/updateBoard.php';
+	   options = {
+        method: 'POST',
+        headers: {
+          'Accept' : 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tongnum : tongnum,
+          boardnum: this.state.modifyVal.boardnum,
+          content: content,
+        })
+      }
+      return fetch(apiUrl, options).then((response) => response.json())
+        .then((responseJson)=> {
+          if(responseJson === 'succed') {
+            console.log(responseJson);
+            Alert.alert(
+              "현장통",
+              "수정 되었습니다."
+            )
+            this.getBbs()
+          } else {
+            console.log(responseJson);
+          }
+        }).catch((error) => {
+          console.log(error)
+        });
   }
 
-  delete(args) {
-    console.log("delete complete",args);
+  delete(deleteVal) {
+    const {tongnum, memId} = this.state;
+    let apiUrl = 'http://13.124.127.253/api/deleteBoard.php';
+    options = {
+      method: 'POST',
+      headers: {
+        'Accept' : 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        tongnum : tongnum,
+        boardnum: deleteVal.boardnum,
+      })
+    }
+
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          console.log(responseJson);
+          Alert.alert(
+            "현장통",
+            "삭제 되었습니다."
+          )
+          this.getBbs();
+        } else {
+          console.log(responseJson);
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
   }
 
   writeReply(boardnum, content) {
     if(content == null) {
       Alert.alert("현장통","댓글 내용을 입력해주세요.");
     } else {
-      console.log
       const {tongnum, memId} = this.state;
 
       let apiUrl = 'http://13.124.127.253/api/write_reply.php';
@@ -180,8 +235,80 @@ class TongMain extends Component{
     }
   }
 
-  write() {
+  setModifyReply(content, modifyVal) {
+    let replynum = modifyVal.replynum;
+    let boardnum = modifyVal.boardnum;
+    this.modifyReply(content, boardnum, replynum)
+  }
 
+  modifyReply(content, boardnum, replynum) {
+    const {tongnum, memId} = this.state;
+    let apiUrl = 'http://13.124.127.253/api/???.php';
+    options = {
+      method: 'POST',
+      headers: {
+        'Accept' : 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        tongnum : tongnum,
+        boardnum: boardnum,
+        replynum: replynum,
+        reContent: content,
+      })
+    }
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          console.log(responseJson);
+          this.setState({refresh:Date(Date.now()).toString()})
+        } else {
+          console.log(responseJson);
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
+  }
+
+  setDeleteReply(deleteVal) {
+    let boardNum = deleteVal.boardnum;
+    let replyNum = deleteVal.replynum;
+    this.deleteReply(boardNum, replyNum)
+  }
+
+  deleteReply(boardnum, replynum) {
+
+      const {tongnum, memId} = this.state;
+
+      let apiUrl = 'http://13.124.127.253/api/deleteReply.php';
+
+      options = {
+        method: 'POST',
+        headers: {
+          'Accept' : 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tongnum : tongnum,
+          boardnum: boardnum,
+		      replynum: replynum,
+        })
+      }
+      return fetch(apiUrl, options).then((response) => response.json())
+        .then((responseJson)=> {
+          if(responseJson === 'succed') {
+            console.log(responseJson);
+            this.setState({refresh:Date(Date.now()).toString()})
+          } else {
+            console.log(responseJson);
+          }
+        }).catch((error) => {
+          console.log(error)
+        });
+  }
+
+  write() {
+    this.setState({writeModal:false,isModify:false,content:""})
     const {tongnum, memId, content} = this.state;
 
     let apiUrl = 'http://13.124.127.253/api/write.php';
@@ -202,7 +329,7 @@ class TongMain extends Component{
       .then((responseJson)=> {
         if(responseJson === 'succed') {
           console.log(responseJson);
-          this.props.navigation.navigate("Main");
+          this.getBbs()
         } else {
           //alert(responseJson);
           Alert.alert(
@@ -276,8 +403,11 @@ class TongMain extends Component{
         this.state.tongImage = val.tongimg;
       });
 
-      let bbsList = this.state.bbsData.map((val, key) => {
-        return <View style={styles.TongContentBox} key={key}>
+    let bbsList;
+    if (this.state.bbsData) {
+      bbsList = this.state.bbsData.map((val, key) => {
+        return <TouchableWithoutFeedback onPress={() => {this.setState({parentShow:!this.state.parentShow})}} key={key}>
+              <View style={styles.TongContentBox}>
                 <View style={styles.TongContentHeader}>
                   <View style={{flexDirection: 'row'}}>
                     <Image style={styles.ContentHeaderImg} source={require('../../assets/images/profile_no.png')} />
@@ -291,10 +421,13 @@ class TongMain extends Component{
                     setModifyParent={this.setModify}
                     setDeleteParent={this.setDelete}
                     bbsValue={val}
+                    parentShow={this.state.parentShow}
+                    setShow={this.setParentShow}
+                    mode="board"
                   />
                   }
                 </View>
-                { true &&
+                { "hasImage" === "hasImage" &&
                   <View style={{marginVertical:10}}>
                     <ScrollView horizontal={true}>
                       <View style={[styles.TongContentImgs]}>
@@ -315,6 +448,11 @@ class TongMain extends Component{
                   boardnum={val.boardnum}
                   tongnum={val.tongnum}
                   refresh={this.state.refresh}
+                  bbsValue={val}
+                  parentShow={this.state.parentShow}
+                  setShow={this.setParentShow}
+                  setDeleteReplyParent={this.setDeleteReply}
+                  setModifyReplyParent={this.setModifyReply}
                 />
                 <ReplyMake
                   writeReplyParent={this.writeReply}
@@ -322,7 +460,13 @@ class TongMain extends Component{
                   tongnum={val.tongnum}
                 />
               </View>
+            </TouchableWithoutFeedback>
       })
+    } else {
+      bbsList = <View style={{alignSelf:'center',marginTop:30}}>
+                  <Text style={{fontWeight:'bold'}}>게시글이 없습니다.</Text>
+                </View>
+    }
 
 
 
@@ -361,16 +505,16 @@ class TongMain extends Component{
         <Modal
           animationType="slide"
           transparent={false}
-          visible={this.state.addComment}
+          visible={this.state.writeModal}
           onRequestClose={() => {
-            this.setAddComment(!this.state.addComment),
+            this.setwriteModal(!this.state.writeModal),
             this.setState({modifyVal: ""})
           }}>
             <Header style={{height:50,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
               <Left style={{flex:1}}>
                 <TouchableHighlight
                   onPress={() => {
-                    this.setAddComment(!this.state.addComment),
+                    this.setwriteModal(!this.state.writeModal),
                     this.setState({modifyVal: ""})
                   }}>
                   <Icon name='times' color={'#fff'} size={25} />
@@ -386,8 +530,8 @@ class TongMain extends Component{
             <Content style={{padding:10}}>
               <Form>
                 <ImageBackground source={require('../../assets/images/backgroundLogo.png')} style={{width:'100%'}}>
-                <Textarea onChangeText={(content) => this.setState({ content })} rowSpan={20}
-                  value={this.state.modifyVal.content}
+                <Textarea onChangeText={(content) => {this.setState({content:content})}} rowSpan={20}
+                  value={this.state.content}
                 />
                 </ImageBackground>
               </Form>
@@ -405,8 +549,6 @@ class TongMain extends Component{
               </FooterTab>
             </Footer>
         </Modal>
-
-
         <Content
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#f4f4f4" }}
@@ -419,9 +561,12 @@ class TongMain extends Component{
             [{nativeEvent: {contentOffset: {y: this.state.scrollY}}}]
           )}
         >
+          <TouchableWithoutFeedback onPress={() => {this.setState({parentShow:!this.state.parentShow})}}>
           {weatherBox}
+          </TouchableWithoutFeedback>
           {bbsList}
           </ScrollView>
+          <TouchableWithoutFeedback onPress={() => {this.setState({parentShow:!this.state.parentShow})}}>
           <Animated.View style={[styles.header,{height:headerHeight}]}>
             <Animated.Image
               style={[
@@ -461,7 +606,7 @@ class TongMain extends Component{
                     small
                     rounded
                     style={{backgroundColor:'#db3928'}}
-                    onPress={() => {this.setAddComment(!this.state.addComment)}}
+                    onPress={() => {this.setwriteModal(!this.state.writeModal)}}
                   >
                     <Text>글쓰기</Text>
                   </Button>
@@ -488,11 +633,12 @@ class TongMain extends Component{
               </TouchableOpacity>
             </Animated.View>
           </Animated.View>
+          </TouchableWithoutFeedback>
           { "isAttend" === "isAttend" &&
           <View style={{width:100,position:'absolute',top:35,right:10,zIndex:1}}>
             <Button transparent small block rounded
               style={{backgroundColor:'#db3928'}}
-              onPress={() => {this.setState({refresh:Date(Date.now()).toString()}),console.log("click",this.state.refresh)}}
+              onPress={() => {this.setState({parentShow:!this.state.parentShow})}}
             >
               <Text style={{color:'#fff',fontSize:15}}>출근하기</Text>
             </Button>
@@ -513,11 +659,14 @@ const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 class ReplyView extends Component {
   constructor(props) {
     super(props)
+    this.modifyReply = this.modifyReply.bind(this)
     this.state = {
       isLoading: true,
       show: false,
       repData: null,
       refresh: 'nn',
+      isModify: false,
+      content: "",
     }
   }
 
@@ -546,7 +695,15 @@ class ReplyView extends Component {
              });
  }
 
+ modifyReply(content, modifyVal) {
+   this.props.setModifyReplyParent(content, modifyVal)
+ }
+ setReplyDelete = (deleteVal) => {
+   this.props.setDeleteReplyParent(deleteVal)
+ }
+
   render() {
+    const fontStyle = {fontSize:13,color:'#666'};
     if (this.state.isLoading) {
       return (
         <View style={styles.TongContentReply}>
@@ -568,7 +725,23 @@ class ReplyView extends Component {
             </View>
             <View style={{flex:0.5}} />
             <View style={{flex:9}}>
-              <Text style={{fontSize:12,color:'#666'}}>{val.reContent}</Text>
+              { "ID" === "ID" ? (
+              <ReplyToggle
+                replyVal={val}
+                parentShow={this.props.parentShow}
+                parentModify={this.modifyReply}
+              />
+              ) : (
+                <Text style={{fontSize:12,color:'#666'}}>{val.reContent}</Text>
+              )
+              }
+            </View>
+            <View style={[styles.Row,{flex:1.5,justifyContent:'space-around'}]}>
+            { "ID" === "ID" &&
+              <TouchableOpacity onPress={() => this.setReplyDelete(val)}>
+                <NBIcon name="trash-o" type="FontAwesome" style={[fontStyle,{color:'#db3928'}]} />
+              </TouchableOpacity>
+            }
             </View>
           </View>
         )
@@ -579,6 +752,55 @@ class ReplyView extends Component {
         </View>
       )
     }
+  }
+}
+
+class ReplyToggle extends Component {
+  state={
+    show:false,
+    content: null,
+    isModify: false,
+    parentShow:this.props.parentShow,
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(this.props.parentShow !== prevProps.parentShow) {
+      this.setState({isModify:false,content:this.props.reContent})
+    }
+  }
+
+  setShow = () => {
+    this.props.setShow
+    this.setState({show:!this.state.show,isModify:!this.state.isModify,content:this.props.replyVal.reContent})
+  }
+
+  modifyReply = () => {
+    this.props.parentModify(this.state.content, this.props.replyVal)
+  }
+
+  render() {
+    return (
+      <View>
+      { this.state.isModify ? (
+        <Form>
+          <Textarea rowspan={5} style={{fontSize:12,color:'#666',backgroundColor:'#f9f9f9'}}
+            value={this.state.content}
+            onChangeText={(content) => this.setState({ content })}
+          />
+          <TouchableOpacity
+            onPress={this.modifyReply}
+            style={[styles.center,{width:"70%",height:20,backgroundColor:'green',marginTop:10,alignSelf:'center'}]}>
+            <Text style={{fontSize:13,color:'#fff'}}>저장</Text>
+          </TouchableOpacity>
+        </Form>
+        ) : (
+        <TouchableOpacity onPress={this.setShow}>
+          <Text style={{fontSize:12,color:'#666'}}>{this.props.replyVal.reContent}</Text>
+        </TouchableOpacity>
+        )
+      }
+      </View>
+    )
   }
 }
 
@@ -619,31 +841,36 @@ class ReplyMake extends Component {
   }
 }
 
-class ReplyList extends Component {
-  render() {
-    return (
-      <View style={{marginTop:3,paddingVertical:3,flexDirection:'row',borderBottomColor:'#f9f9f9',borderBottomWidth:1}}>
-        <View style={{flex:1,justifyContent:'center'}}>
-          <Text style={{fontSize:11,fontWeight:'bold'}}>{this.props.rName} :</Text>
-        </View>
-        <View style={{flex:4,justifyContent:'center'}}>
-          <Text style={{fontSize:10}}>{this.props.rContent}</Text>
-        </View>
-      </View>
-    )
-  }
-}
-
 class ToggleMenu extends Component {
-  state={
+  constructor(props) {
+  super(props)
+  this.state = {
     show: false,
+    tongnum: StoreGlobal({type:'get',key:'tongnum'}),
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(this.props.parentShow !== prevProps.parentShow) {
+      this.setState({show:false})
+    }
+  }
+
+  setShow = () => {
+    this.props.setShow
+    this.setState({show:!this.state.show})
   }
 
   setDeleteChild = () => {
-    this.props.setDeleteParent(this.props.argue)
+    this.props.setDeleteParent(this.props.bbsValue)
   }
   setModifyChild = () => {
     this.props.setModifyParent(this.props.bbsValue)
+	  StoreGlobal({type:'set',key:'boardnum',value:this.props.bbsValue.boardnum});
+  }
+
+  setReplyModify = () => {
+    this.props.setModifyReplyParent(this.props.bbsValue)
   }
 
 
@@ -652,16 +879,16 @@ class ToggleMenu extends Component {
     const boxWidth = 90;
     const fontStyle = {fontSize:13,color:'#666'};
     return (
-      <View>
+        <View>
         <TouchableOpacity style={{paddingRight:20}}
-          onPress={() => {this.setState({show: !this.state.show})}}
+          onPress={this.setShow}
         >
           <NBIcon name="ellipsis-v" type="FontAwesome" style={{fontSize:15,color:'#999'}} />
         </TouchableOpacity>
         { this.state.show &&
-          <View style={[styles.Box,{borderWidth:1,borderColor:'#e9e9e9',width:boxWidth,position:'absolute',bottom:-boxHeight,left:-boxWidth-20,zIndex:1}]}>
+          <View style={[styles.Box,{borderWidth:1,borderColor:'#e9e9e9',width:boxWidth,position:'absolute',bottom:this.props.mode === "board" ? -boxHeight : 0,left:-boxWidth-20,zIndex:1}]}>
             <TouchableOpacity
-              onPress={this.setModifyChild}
+              onPress={this.props.mode === "board" ? this.setModifyChild : this.setReplyModify}
             >
             <View style={[styles.Row,styles.grayBottom,{paddingVertical:3,marginBottom:10}]}>
               <Text style={fontStyle}>수정하기</Text>
@@ -669,7 +896,7 @@ class ToggleMenu extends Component {
             </View>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={this.setDeleteChild}
+              onPress={this.props.mode === "board" ? this.setDeleteChild : this.setReplyDelete}
             >
             <View style={[styles.Row,styles.grayBottom,{paddingVertical:3,marginBottom:10}]}>
               <Text style={[fontStyle,{color:'#db3928'}]}>삭제</Text>
@@ -684,7 +911,7 @@ class ToggleMenu extends Component {
             </TouchableOpacity>
           </View>
         }
-      </View>
+        </View>
     )
   }
 }

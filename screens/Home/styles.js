@@ -260,5 +260,9 @@ export default {
   center: {
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  fullScreen: {
+    width: deviceWidth,
+    height: deviceHeight
   }
 };

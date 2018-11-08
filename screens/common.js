@@ -18,12 +18,11 @@ class tong extends Component{
     });
 
     console.log(result);
-    this.setState({imageSource:result.uri});
+    this.setState({imageSource:result.uri,imgresult:result});
     //console.log("Image Source: " + this.state.imageSource);
 
     if (!result.cancelled) {
-      this.setState({ imageSource: result.uri });
-
+      this.setState({ imageSource: result.uri,imgresult:result});
     }
   };
 

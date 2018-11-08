@@ -64,7 +64,7 @@ class createTong2 extends pickableImage{
   static navigationOptions = ({
     header:null,
     headerTitle: null,
-    headerRight: (<Text onPress={() => _this.division()}>완료  </Text>),
+//    headerRight: (<Text onPress={() => _this.division()}>완료  </Text>),
     headerStyle: {
       backgroundColor: '#fff',
       shadowOpacity: 0,
@@ -77,16 +77,18 @@ class createTong2 extends pickableImage{
   });
 
     division(tongType) {
-		if(this.state.tongName === ''){
-			Alert.alert('현장동 이름을 입력하세요');
-			return;
-		}
+  		if(this.state.tongName === ''){
+  			Alert.alert('현장동 이름을 입력하세요');
+  			return;
+  		}
+
       if(tongType === 'T') {
         this.setState({modal: true});
       } else {
-        Alert.alert('커뮤니티통 생성 기능');
+        this.createTong(tongType)
       }
     }
+
     modalComplate() {
       Alert.alert('현장통 생성 기능')
       this.setState({modal: false});
@@ -154,29 +156,57 @@ class createTong2 extends pickableImage{
       });
     }
 
-	createTong() {
-    const {tongName, projectnm, authnum, constructor, supervisor, owner, contact, term, scale, addr, creator} = this.state;
+	createTong(tongType) {
+    const { imageSource, tongName, projectnm, authnum, constructor, supervisor, owner, contact, term, scale, addr, creator} = this.state;
     let apiUrl = 'http://13.124.127.253/api/createTong.php';
     let options = null;
 
-    options = {
+    const formData = new FormData();
+
+    formData.append('name', tongName);
+    formData.append('tongtype', tongType);
+    formData.append('tongtitle', tongName);
+    formData.append('projectnm', projectnm);
+    formData.append('authnum', authnum);
+    formData.append('constructor', constructor);
+    formData.append('supervisor', supervisor);
+    formData.append('owner', owner);
+    formData.append('contact', contact);
+    formData.append('term', term);
+    formData.append('scale', scale);
+    formData.append('creator', 'dudtka37');
+
+    if (imageSource) {
+      uri = imageSource;
+      uriParts = uri.split('.');
+      fileType = uriParts[uriParts.length - 1];
+
+      formData.append('photo', {
+        uri,
+        name: `photo.${fileType}`,
+        type: `image/${fileType}`,
+      });
+
+      options = {
         method: 'POST',
-        body: JSON.stringify({
-			tongtype: "T",
-			tongtitle: tongName,
-			projectnm: projectnm,
-			authnum: authnum,
-			constructor: constructor,
-			supervisor: supervisor,
-			owner: owner,
-			contact: contact,
-			term: term,
-			scale: scale,
-			addr: addr,
-			creator: 'dudtka37',
-        })
-	}
-	console.log(options);
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+    } else {
+      formData.append('type', 'none');
+
+      options = {
+        method: 'POST',
+        body: formData,
+        headers: { Accept: 'application/json' },
+      }
+
+    }
+
+    console.log(options)
 
     return fetch(apiUrl, options).then((response) => response.json())
       .then((responseJson)=> {
@@ -184,9 +214,9 @@ class createTong2 extends pickableImage{
         if(responseJson === 'success') {
           Alert.alert(
 			"현장통",
-			"현장통이 생성되었습니다.",
+			"생성되었습니다.",
 			 [
-				{text:"확인",onPress:() => {this.props.navigation.navigate("Main")}}
+				{text:"확인",onPress:() => {this.props.navigation.navigate("Home", { refresh:Date(Date.now()).toString()})}}
 			],
 			{ cancelable: false }
 			)
@@ -231,9 +261,9 @@ class createTong2 extends pickableImage{
               <Body style={{flex:4,alignItems:'center'}}>
                 <Text style={{textAlign:'center',color:'#fff',fontSize:18}}>현장통 세부 설정</Text>
               </Body>
-              <Right  style={{flex:1}}>
-                <Text style={{fontSize:13,color:'#fff'}} onPress={() => {this.createTong()}}>완료</Text>
-              </Right>
+              <Right  style={{flex:1}} />
+                {/*<Text style={{fontSize:13,color:'#fff'}} onPress={() => {this.createTong()}}>완료</Text>
+              </Right>*/}
             </Header>
             <Content style={{padding:10}}>
               <Form>
@@ -266,7 +296,7 @@ class createTong2 extends pickableImage{
               </Form>
               <View style={{width:150,alignSelf:'center',padding:10,marginTop:30}}>
                 <Button transparent rounded block style={{backgroundColor:'#db3928'}}
-                  onPress={() => {this.createTong()}}
+                  onPress={() => {this.createTong(tongType)}}
                 >
                   <Text style={{color:'#fff'}}>완료</Text>
                 </Button>

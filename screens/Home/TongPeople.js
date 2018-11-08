@@ -20,32 +20,39 @@ import {
 
 import styles from "./styles";
 
+import { StoreGlobal } from '../../App';
+
 class TongPeople extends Component{
   constructor(props) {
     super(props);
 
     this.state = {
       searchTxt: null,
+      tongnum: StoreGlobal({type:'get',key:'tongnum'}),
+      dataSource: null,
     }
   }
 
   getFriend = async() => {
-    console.log("getFiend: " + this.state.userId );
-    /*
-    return fetch("http://13.124.127.253/api/results.php?page=friend&seq=")
+    const { tongnum } = this.state;
+    return fetch("http://13.124.127.253/api/results.php?page=selectMembers&seq=" + tongnum)
       .then((response) => response.json())
       .then((responseJson) => {
-        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.setState({
+          this.setState({
           isLoading: false,
           dataSource: responseJson,
         });
+        console.log(this.state.dataSource)
       })
       .catch((error) => {
         console.error(error);
       });
-      */
   }
+
+  componentDidMount() {
+    this.getFriend()
+  }
+
   attendCheck(name) {
     Alert.alert(
       '출근 체크',

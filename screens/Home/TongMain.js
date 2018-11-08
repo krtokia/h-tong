@@ -21,7 +21,7 @@ import {
   Icon as NBIcon
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
-import { NavigationActions } from "react-navigation";
+import { StackActions, NavigationActions } from "react-navigation";
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -32,9 +32,9 @@ import tong from "../common.js";
 
 import { StoreGlobal } from '../../App';
 
-var variable = "123";
+import pickableImage from "../common.js"
 
-class TongMain extends Component{
+class TongMain extends pickableImage{
 
   constructor(props) {
     super(props);
@@ -67,9 +67,17 @@ class TongMain extends Component{
     		modifyVal: "",
         refresh: null,
         parentShow: false,
+        deleteimg: false,
 		}
 
 
+  }
+
+  _useCon() {
+    if(this.state.isModify) {
+      this.setState({updateimg: true})
+      console.log("updateIMG!")
+    }
   }
 
 
@@ -97,6 +105,12 @@ class TongMain extends Component{
                 isLoading2: false,
                 bbsData: responseJson,
                 parentShow: !this.state.parentShow,
+                isModify: false,
+                updateimg: false,
+                imageSource: false,
+                content:"",
+                imgresult: null,
+                deleteimg: false,
               });
             })
             .catch((error) => {
@@ -119,8 +133,15 @@ class TongMain extends Component{
   }
 
   setModify(modifyVal) {
-    this.setState({writeModal:true, isModify:true,content:modifyVal.content,modifyVal:modifyVal});
+    this.setState({
+      writeModal:true,
+      isModify:true,
+      content:modifyVal.content,
+      modifyVal:modifyVal,
+      imageSource: `http://13.124.127.253/images/tongBoard/` + modifyVal.boardimg
+    });
   }
+
   setDelete(deleteVal) {
     this.delete(deleteVal);
   }
@@ -135,22 +156,61 @@ class TongMain extends Component{
   }
 
   modify() {
-    this.setState({writeModal:false,isModify:false,content:""})
-	  const {tongnum, memId, content} = this.state;
+    this.setState({writeModal:false,isModify:false})
+	  const {tongnum, memId, content, imageSource, imgresult, deleteimg} = this.state;
 
 	  let apiUrl = 'http://13.124.127.253/api/updateBoard.php';
-	   options = {
-        method: 'POST',
-        headers: {
-          'Accept' : 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          tongnum : tongnum,
-          boardnum: this.state.modifyVal.boardnum,
-          content: content,
-        })
+    let uri = null;
+    let fileType = null;
+    let updateimg;
+
+    if (deleteimg) {
+      updateimg=true;
+      console.log("deleteimg true")
+    }
+    if (imgresult) {
+      if (!imgresult.cancelled) {
+        updateimg=true;
+        console.log("updateimg true")
       }
+    }
+
+    const formData = new FormData();
+
+    formData.append('tongnum', tongnum);
+    formData.append('boardnum', this.state.modifyVal.boardnum);
+    formData.append('content', content);
+
+    if (updateimg) {
+      if(deleteimg) {
+        formData.append('deleteimg', deleteimg);
+      } else {
+        uri = imageSource;
+        uriParts = uri.split('.');
+        fileType = uriParts[uriParts.length - 1];
+
+        formData.append('photo', {
+          uri,
+          name: `photo.${fileType}`,
+          type: `image/${fileType}`,
+        });
+      }
+      options = {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+
+    } else {
+      options = {
+        method: 'POST',
+        body: formData
+      }
+    }
+
       return fetch(apiUrl, options).then((response) => response.json())
         .then((responseJson)=> {
           if(responseJson === 'succed') {
@@ -309,22 +369,45 @@ class TongMain extends Component{
 
   write() {
     this.setState({writeModal:false,isModify:false,content:""})
-    const {tongnum, memId, content} = this.state;
+    const {tongnum, memId, content, imageSource} = this.state;
 
     let apiUrl = 'http://13.124.127.253/api/write.php';
+    let uri = null;
+    let fileType = null;
 
-    options = {
-      method: 'POST',
-      headers: {
-        'Accept' : 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        seq : tongnum,
-        id: memId,
-        content: content,
-      })
+    const formData = new FormData();
+
+    formData.append('seq', tongnum);
+    formData.append('id', memId);
+    formData.append('content', content);
+
+    if (imageSource) {
+      uri = imageSource;
+      uriParts = uri.split('.');
+      fileType = uriParts[uriParts.length - 1];
+
+      formData.append('photo', {
+        uri,
+        name: `photo.${fileType}`,
+        type: `image/${fileType}`,
+      });
+
+      options = {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+
+    } else {
+      options = {
+        method: 'POST',
+        body: formData
+      }
     }
+
     return fetch(apiUrl, options).then((response) => response.json())
       .then((responseJson)=> {
         if(responseJson === 'succed') {
@@ -427,19 +510,15 @@ class TongMain extends Component{
                   />
                   }
                 </View>
-                { "hasImage" === "hasImage" &&
+                { val.boardimg !== '' && (
                   <View style={{marginVertical:10}}>
                     <ScrollView horizontal={true}>
                       <View style={[styles.TongContentImgs]}>
-                        <Image source={require('../../assets/images/noImage.png')} style={styles.TongContentImgList} />
-                        <Image source={require('../../assets/images/noImage.png')} style={styles.TongContentImgList} />
-                        <Image source={require('../../assets/images/noImage.png')} style={styles.TongContentImgList} />
-                        <Image source={require('../../assets/images/noImage.png')} style={styles.TongContentImgList} />
-                        <Image source={require('../../assets/images/noImage.png')} style={styles.TongContentImgList} />
-                        <Image source={require('../../assets/images/noImage.png')} style={styles.TongContentImgList} />
+                        <Image source={{uri: `http://13.124.127.253/images/tongBoard/` + val.boardimg}} style={styles.TongContentImgList} />
                       </View>
                     </ScrollView>
                   </View>
+                  )
                 }
                 <View style={[styles.TongContents,"isReply" === "isReply" && styles.grayBottom]}>
                   <Text style={{fontSize:13}}>{val.content}</Text>
@@ -527,25 +606,45 @@ class TongMain extends Component{
                 <Text style={{fontSize:13,color:'#fff'}} onPress={() => {this.division(this.state.isModify)}}>완료</Text>
               </Right>
             </Header>
-            <Content style={{padding:10}}>
-              <Form>
+            <Content contentContainerStyle={{flex:1}} padder>
+              <Form style={{flex:3}}>
                 <ImageBackground source={require('../../assets/images/backgroundLogo.png')} style={{width:'100%'}}>
-                <Textarea onChangeText={(content) => {this.setState({content:content})}} rowSpan={20}
+                <Textarea onChangeText={(content) => {this.setState({content:content})}} rowSpan={15}
                   value={this.state.content}
                 />
                 </ImageBackground>
+                <View style={{flex:1}}>
+                { this.state.imageSource &&
+                  <TouchableOpacity onPress={() =>
+                    Alert.alert(
+                      '현장통',
+                      '이미지를 삭제합니다.',
+                      [
+                        {text:"확인", onPress:() => this.setState({deleteimg:true,imageSource:false,imgresult:false})},
+                        {text:"취소"}
+                      ],
+                      { cancelable: true }
+                    )
+                  } >
+                    <Image source={{ uri: this.state.imageSource }} style={{height:"100%",resizeMode:'contain'}} />
+                  </TouchableOpacity>
+                }
+                </View>
               </Form>
+
             </Content>
             <Footer>
               <FooterTab style={{backgroundColor:'#fff'}}>
-                <Button>
+                <Button onPress={this._pickImage.bind(this)}>
                   <NBIcon type='FontAwesome' name='camera' style={{color:'#999'}} />
                   <Text style={{color:'#ccc'}}>사진</Text>
                 </Button>
+                {/*
                 <Button>
                   <NBIcon type='FontAwesome' name='video-camera' style={{color:'#999'}} />
                   <Text style={{color:'#ccc'}}>동영상</Text>
                 </Button>
+                */}
               </FooterTab>
             </Footer>
         </Modal>
@@ -620,29 +719,31 @@ class TongMain extends Component{
             </Animated.View>
             <Animated.View style={{width:30,height:30,position:'absolute',top:32,left:10,backgroundColor:'#fff8',borderRadius:15,opacity:imageOpacity}}>
               <TouchableOpacity style={{width:'100%',height:'100%',justifyContent:'center',alignItems:'center'}}
-                onPress={() => {this.props.navigation.navigate('Main')}}
+                onPress={() => {this.props.navigation.navigate("Home",{ refresh:Date(Date.now()).toString()})}}
               >
               <NBIcon name="angle-left" type="FontAwesome" />
               </TouchableOpacity>
             </Animated.View>
             <Animated.View style={{width:30,height:30,position:'absolute',top:32,left:10,borderRadius:15,opacity:imageOpacityR}}>
               <TouchableOpacity style={{width:'100%',height:'100%',justifyContent:'center',alignItems:'center'}}
-                onPress={() => {this.props.navigation.navigate('Main')}}
+                onPress={() => {this.props.navigation.navigate("Home",{ refresh:Date(Date.now()).toString()})}}
               >
               <NBIcon name="angle-left" type="FontAwesome" style={{color:'#fff'}} />
               </TouchableOpacity>
             </Animated.View>
           </Animated.View>
           </TouchableWithoutFeedback>
-          { "isAttend" === "isAttend" &&
-          <View style={{width:100,position:'absolute',top:35,right:10,zIndex:1}}>
-            <Button transparent small block rounded
-              style={{backgroundColor:'#db3928'}}
-              onPress={() => {this.setState({parentShow:!this.state.parentShow})}}
-            >
-              <Text style={{color:'#fff',fontSize:15}}>출근하기</Text>
-            </Button>
-          </View>
+          { TongType === 'T' &&
+            <View style={{width:100,position:'absolute',top:35,right:10,zIndex:1}}>
+            { "isAttend" === "isAttend" &&
+              <Button transparent small block rounded
+                style={{backgroundColor:'#db3928'}}
+                onPress={() => {this.setState({parentShow:!this.state.parentShow})}}
+              >
+                <Text style={{color:'#fff',fontSize:15}}>출근하기</Text>
+              </Button>
+            }
+            </View>
           }
         </Content>
       </Container>

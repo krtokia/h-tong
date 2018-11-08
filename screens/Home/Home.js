@@ -23,14 +23,14 @@ class Home extends Component{
     super(props);
     this.state= {
       isLoading: true,
+      isLoading2: true,
       dataSource: null,
+      dataSource2: null,
     }
   }
 
-  componentWillMount() {
-    //console.log("START componentDidMount");
-
-    return fetch("http://13.124.127.253/api/results.php?page=home")
+  tongList = async() => {
+    return fetch("http://13.124.127.253/api/results.php?page=home&tongtype=T")
       .then((response) => response.json())
       .then((responseJson) => {
         //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -39,11 +39,38 @@ class Home extends Component{
           dataSource: responseJson,
         });
       })
-
       .catch((error) => {
         console.error(error);
       });
+  }
+  commList = async() => {
+    return fetch("http://13.124.127.253/api/results.php?page=home&tongtype=C")
+      .then((response) => response.json())
+      .then((responseJson) => {
+        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.setState({
+          isLoading2: false,
+          dataSource2: responseJson,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  componentDidMount() {
+    console.log("mount")
+    this.tongList()
+    this.commList()
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps !== this.props) {
+     this.tongList()
+     this.commList()
+     console.log("update")
     }
+  }
 
   ListViewItemSeparator = () => {
     return (
@@ -69,8 +96,15 @@ class Home extends Component{
           <ActivityIndicator />
         </View>
       )
+    } else if (this.state.isLoading2) {
+      return (
+        <View Style={{flex:1, paddingTop:20}}>
+          <ActivityIndicator />
+        </View>
+      )
     } else {
       let tongs = this.state.dataSource.map((val, key) => {
+        let tongimg = val.tongimg ? val.tongimg : 'noImage.png';
         return <View key={key} style={styles.tongView}>
                   <TouchableOpacity
                           onPress = {() => {
@@ -82,7 +116,7 @@ class Home extends Component{
                             }
                           }
                   >
-                  <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />
+                  <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + tongimg}} />
                   <View style={styles.tongContent}>
                     <Text style={styles.tongName}>{val.tongtitle}</Text>
 
@@ -90,7 +124,8 @@ class Home extends Component{
                   </TouchableOpacity>
                 </View>
       });
-      let communities = this.state.dataSource.map((val, key) => {
+      let communities = this.state.dataSource2.map((val, key) => {
+        let tongimg = val.tongimg ? val.tongimg : 'noImage.png';
         return <View key={key} style={styles.tongView}>
                   <TouchableOpacity
                           onPress = {() => {
@@ -98,11 +133,11 @@ class Home extends Component{
                             itemID: val.tongnum,
                             tongType: 'C',
                             }),
-                            this.navigateTong("C")
+                            this.navigateTong("C", val.tongnum)
                             }
                           }
                   >
-                  <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + val.tongImage}} />
+                  <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + tongimg}} />
                   <View style={styles.tongContent}>
                     <Text style={styles.tongName}>{val.tongtitle}</Text>
 

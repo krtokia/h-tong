@@ -676,7 +676,6 @@ class ReplyView extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.refresh !== prevProps.refresh) {
-      console.log("class update")
       this.getRep()
     }
   }

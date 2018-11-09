@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet,Image,TouchableOpacity } from 'react-native';
+import { StyleSheet,Image,TouchableOpacity,ActivityIndicator } from 'react-native';
 import {
   View,
   Button,
@@ -21,20 +21,120 @@ import {
 } from 'native-base';
 
 import styles from './styles.js';
+import { StoreGlobal } from '../../App';
+import pickableImage from "../common.js"
 
 var BUTTONS = ["내국인", "외국인"];
 
-class Mypage extends Component{
+class Mypage extends pickableImage{
   static navigationOptions = ({
     header: null
   });
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      id: StoreGlobal({type:'get',key:'loginId'}),
+      dataSource: null,
+      isLoading: true,
+    };
+  }
+
+  getUser = async() => {
+    return fetch("http://13.124.127.253/api/results.php?page=setting&id=" + this.state.id)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.setState({
+          isLoading: false,
+          dataSource: responseJson[0],
+          imageSource: null,
+          imgresult: null,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  componentDidMount() {
+    //console.log("START componentDidMount");
+    this.getUser()
+  }
+
+  userUpdate() {
+    const { id, dataSource, imageSource, imgresult } = this.state;
+
+    let apiUrl = 'http://13.124.127.253/api/userUpdate.php';
+    const formData = new FormData();
+
+    formData.append('userId', id);
+    formData.append('userNm', dataSource.userNm);
+    formData.append('passWd', dataSource.passWd);
+    formData.append('nationality', dataSource.nationality);
+    formData.append('email', dataSource.email);
+    formData.append('cellPhone', dataSource.cellPhone);
+    formData.append('career', dataSource.career);
+    formData.append('birthDay', dataSource.birthDay);
+    formData.append('address', dataSource.address);
+    formData.append('company', dataSource.company);
+    formData.append('jobgroup', dataSource.jobgroup);
+
+    if (imageSource) {
+      uri = imageSource;
+      uriParts = uri.split('.');
+      fileType = uriParts[uriParts.length - 1];
+
+      formData.append('photo', {
+        uri,
+        name: `photo.${fileType}`,
+        type: `image/${fileType}`,
+      });
+
+      options = {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+    } else {
+      options = {
+        method: 'POST',
+        body: formData,
+      }
+    }
+
+    console.log('updateStart',options)
+
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          console.log(responseJson);
+        } else {
+          //alert(responseJson);
+          console.log(responseJson);
+        }
+      }).catch((error) => {
+        console.log("error::",error)
+      });
   }
 
   render(){
+    if(this.state.isLoading) {
+    return (
+      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+        <ActivityIndicator />
+      </View>
+    )
+    } else {
+      let photoName;
+      if(this.state.imageSource) {
+        photoName = this.state.imageSource
+      } else {
+        photoName = this.state.dataSource.photo ? 'http://13.124.127.253/images/userProfile/'+this.state.dataSource.photo : 'http://13.124.127.253/images/userProfile/profile_no.png';
+      }
     return (
       <Container>
         <Header style={{backgroundColor:'#db3928',justifyContent:'space-between'}}>
@@ -51,13 +151,15 @@ class Mypage extends Component{
         <Content
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#f4f4f4" }}
-          contentContainerStyle={{ flex: 1 }}
+          contentContainerStyle={{paddingBottom:30}}
         >
           <View style={[styles.Box,{backgroundColor:'#f9f9f9',marginTop:0,borderColor:'#e9e9e9',borderBottomWidth:2}]}>
             <View style={{marginBottom:10,alignSelf:'center',alignItems:'center'}}>
-              <Image source={require('../../assets/images/profile_no.png')} style={{width:150,height:150,resizeMode:'cover',borderRadius:500}} />
+              <Image source={{uri: photoName }} style={{width:150,height:150,resizeMode:'cover',borderRadius:500}} />
               <View style={{position:"absolute",bottom:5,right:5,width:30,height:30,backgroundColor:'#fff',borderRadius:15,borderColor:'#999',borderWidth:1}}>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={this._pickImage.bind(this)}
+                >
                   <View style={{width:'100%',height:'100%',justifyContent:'center',alignItems:'center'}}>
                     <Icon name="camera" type="FontAwesome" style={{fontSize:13,color:'#999'}} />
                   </View>
@@ -69,7 +171,7 @@ class Mypage extends Component{
           <View style={[styles.Box,{marginTop:0,paddingVertical:0}]}>
             <View style={styles.itemBox}>
               <Text style={styles.itemTitle}>아이디</Text>
-              <Text style={styles.itemContent}>IDIDID</Text>
+              <Text style={styles.itemContent}>{this.state.dataSource.userId}</Text>
             </View>
             <View style={styles.itemBox}>
               <Text style={styles.itemTitle}>패스워드</Text>
@@ -77,9 +179,27 @@ class Mypage extends Component{
                 <Text style={[styles.itemContent,{color:'#db3928'}]}>수정</Text>
               </TouchableOpacity>
             </View>
-            <View style={styles.itemBox}>
-              <Text style={styles.itemTitle}>이름</Text>
-              <Text style={[styles.itemContent]}>홍길동</Text>
+            <View style={[styles.itemBox,{paddingVertical:3,paddingRight:3}]}>
+              <Text style={[styles.itemTitle,{textAlignVertical:'center'}]}>이름</Text>
+              <Form style={{width:'70%',alignItems:'flex-end'}}>
+                <Item style={{borderColor:'transparent'}}>
+                <Input
+                  textAlign={'right'}
+                  style={[styles.itemInput]}
+                  placeholder="이름을 입력해주세요"
+                  underline="false"
+                  onChangeText={(content) => {
+                    this.setState(prevState => ({
+                      dataSource: {
+                        ...prevState.dataSource,
+                        userNm: content
+                      }
+                    })),console.log(this.state.dataSource)}}
+                >
+                  {this.state.dataSource.userNm}
+                </Input>
+                </Item>
+              </Form>
             </View>
             <View style={[styles.itemBox,{paddingVertical:3,paddingRight:3}]}>
               <Text style={[styles.itemTitle,{textAlignVertical:'center'}]}>연락처</Text>
@@ -90,8 +210,15 @@ class Mypage extends Component{
                   style={[styles.itemInput]}
                   placeholder="연락처를 입력해주세요"
                   underline="false"
+                  onChangeText={(content) => {
+                    this.setState(prevState => ({
+                      dataSource: {
+                        ...prevState.dataSource,
+                        cellPhone: content
+                      }
+                    }));}}
                 >
-                  010-111-1111
+                  {this.state.dataSource.cellPhone}
                 </Input>
                 </Item>
               </Form>
@@ -104,13 +231,18 @@ class Mypage extends Component{
                     options: BUTTONS,
                     title: "국적을 선택하세요"
                   },
-                  buttonIndex => {
-                    this.setState({ clicked: BUTTONS[buttonIndex] });
+                  (buttonIndex) => {
+                    this.setState(prevState => ({
+                      dataSource: {
+                        ...prevState.dataSource,
+                        nationality: BUTTONS[buttonIndex]
+                      }
+                    }));
                   }
                 )}
                 style={styles.itemContent}
               >
-                내국인
+                {this.state.dataSource.nationality}
               </Text>
             </View>
             <View style={[styles.itemBox,{paddingVertical:3,paddingRight:3}]}>
@@ -122,8 +254,59 @@ class Mypage extends Component{
                   style={[styles.itemInput]}
                   placeholder="이메일를 입력해주세요"
                   underline="false"
+                  onChangeText={(content) => {
+                    this.setState(prevState => ({
+                      dataSource: {
+                        ...prevState.dataSource,
+                        email: content
+                      }
+                    }));}}
                 >
-                  com@com.com
+                  {this.state.dataSource.email}
+                </Input>
+                </Item>
+              </Form>
+            </View>
+            <View style={[styles.itemBox,{paddingVertical:3,paddingRight:3}]}>
+              <Text style={[styles.itemTitle,{textAlignVertical:'center'}]}>회사</Text>
+              <Form style={{width:'70%',alignItems:'flex-end'}}>
+                <Item style={{borderColor:'transparent'}}>
+                <Input
+                  textAlign={'right'}
+                  style={[styles.itemInput]}
+                  placeholder="회사를 입력해주세요"
+                  underline="false"
+                  onChangeText={(content) => {
+                    this.setState(prevState => ({
+                      dataSource: {
+                        ...prevState.dataSource,
+                        company: content
+                      }
+                    }));}}
+                >
+                  {this.state.dataSource.email}
+                </Input>
+                </Item>
+              </Form>
+            </View>
+            <View style={[styles.itemBox,{paddingVertical:3,paddingRight:3}]}>
+              <Text style={[styles.itemTitle,{textAlignVertical:'center'}]}>직종</Text>
+              <Form style={{width:'70%',alignItems:'flex-end'}}>
+                <Item style={{borderColor:'transparent'}}>
+                <Input
+                  textAlign={'right'}
+                  style={[styles.itemInput]}
+                  placeholder="직종을 입력해주세요"
+                  underline="false"
+                  onChangeText={(content) => {
+                    this.setState(prevState => ({
+                      dataSource: {
+                        ...prevState.dataSource,
+                        jobgroup: content
+                      }
+                    }));}}
+                >
+                  {this.state.dataSource.email}
                 </Input>
                 </Item>
               </Form>
@@ -144,13 +327,16 @@ class Mypage extends Component{
             <Text style={{fontSize:10,color:'#db3928',marginVertical:20}}>
               ※필수 입력란을 확인해주시기 바랍니다.
             </Text>
-            <Button rounded style={{backgroundColor:'#db3928',paddingHorizontal:50,alignSelf:'center'}}>
+            <Button rounded style={{backgroundColor:'#db3928',paddingHorizontal:50,alignSelf:'center'}}
+              onPress={() => {this.userUpdate()}}
+            >
               <Text style={{fontSize:15}}>완료</Text>
             </Button>
           </View>
         </Content>
       </Container>
     );
+  }
   }
 }
 export default Mypage;

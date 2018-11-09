@@ -16,7 +16,7 @@ import { Header } from 'react-navigation';
 
 const bg = require("../../assets/images/bg.png");
 const logo = require("../../assets/images/loginLogo.png");
-
+import { StoreGlobal } from '../../App';
 import styles from './styles.js'
 
 export default class App extends Component {
@@ -42,7 +42,6 @@ export default class App extends Component {
 
   onLogin() {
     const { username, password } = this.state;
-
         fetch('http://13.124.127.253/api/login.php', {
             method: 'POST',
             headers: {
@@ -57,6 +56,7 @@ export default class App extends Component {
           .then((responseJson)=> {
             if(responseJson === 'data matched') {
               console.log(responseJson);
+              StoreGlobal({type:'set',key:'loginId',value:username})
               this.props.navigation.navigate("Main");
             } else {
               //alert(responseJson);
@@ -110,7 +110,7 @@ export default class App extends Component {
             <Button
               title={'로그인'}
               color='#cc0404'
-              onPress={this.skip.bind(this)}
+              onPress={this.onLogin.bind(this)}
             />
           </View>
         </View>

@@ -44,7 +44,8 @@ export default {
     borderColor:'#e9e9e9',
     flexDirection:'row',
     justifyContent:'space-between',
-    padding:10
+    paddingHorizontal:10,
+    paddingVertical:10
   },
   itemTitle: {
     fontSize: 14,
@@ -55,6 +56,6 @@ export default {
   },
   itemInput: {
     height:'auto',
-    fontSize:12
+    fontSize:12,
   },
 }

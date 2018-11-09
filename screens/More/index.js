@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  ActivityIndicator
  } from 'react-native';
  import {
    View,
@@ -23,6 +24,7 @@ import {
  } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
 
+import { StoreGlobal } from '../../App';
 import styles from './styles.js';
 
 class More extends Component{
@@ -33,29 +35,39 @@ class More extends Component{
     this.state={
       isLoading: true,
       dataSource: null,
-      id: 'sid',
+      id: StoreGlobal({type:'get',key:'loginId'}),
     }
   }
 
-  componentDidMount() {
-    //console.log("START componentDidMount");
-
+  getUser = async() => {
     return fetch("http://13.124.127.253/api/results.php?page=setting&id=" + this.state.id)
       .then((response) => response.json())
       .then((responseJson) => {
         //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.setState({
           isLoading: false,
-          dataSource: responseJson,
+          dataSource: responseJson[0],
         });
       })
 
       .catch((error) => {
         console.error(error);
       });
-    }
+  }
+
+  componentDidMount() {
+    //console.log("START componentDidMount");
+    this.getUser()
+  }
 
   render(){
+    if(this.state.isLoading) {
+      return (
+        <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
+          <ActivityIndicator />
+        </View>
+      )
+    } else {
     return (
       <Container>
         <Content
@@ -77,8 +89,8 @@ class More extends Component{
                   </View>
                   </TouchableOpacity>
                 </View>
-                <Text style={{fontSize:13,color:'grey',marginBottom:8}}>협력2건설 / 미장</Text>
-                <Text style={{fontSize:15}}>010-1234-5678</Text>
+                <Text style={{fontSize:13,color:'grey',marginBottom:8}}>{this.state.dataSource.company} / {this.state.dataSource.jobgroup}</Text>
+                <Text style={{fontSize:15}}>{this.state.dataSource.cellPhone}</Text>
               </View>
             </View>
 
@@ -133,6 +145,7 @@ class More extends Component{
         </Content>
       </Container>
     );
+  }
   }
 }
 export default More;

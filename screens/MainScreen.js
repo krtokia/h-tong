@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { StyleSheet, View, Image, StatusBar, Platform, TouchableOpacity, Linking, Alert } from 'react-native';
+import { TouchableWithoutFeedback, StyleSheet, View, Image, StatusBar, Platform, TouchableOpacity, Linking, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Text, Root } from 'native-base';
 import { createMaterialTopTabNavigator, createStackNavigator, createBottomTabNavigator } from 'react-navigation';
@@ -298,6 +298,7 @@ const AppStackNavigator = createStackNavigator({
       borderBottomWidth: 0,
     },
     headerTitle: (
+      <TouchableWithoutFeedback onPress={() => console.log(this.navigate)}>
       <Image
         source={Logo}
         style={{
@@ -308,6 +309,7 @@ const AppStackNavigator = createStackNavigator({
           resizeMode: 'contain',
         }}
       />
+      </TouchableWithoutFeedback>
     ),
     headerTitleStyle: {
       marginLeft:-50,

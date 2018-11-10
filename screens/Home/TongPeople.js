@@ -29,20 +29,19 @@ class TongPeople extends Component{
     this.state = {
       searchTxt: null,
       tongnum: StoreGlobal({type:'get',key:'tongnum'}),
-      dataSource: null,
+      dataSource: [],
     }
   }
 
   getFriend = async() => {
     const { tongnum } = this.state;
-    return fetch("http://13.124.127.253/api/results.php?page=selectMembers&seq=" + tongnum)
+    return fetch("http://13.124.127.253/api/results.php?page=selectMembers&tongnum=" + tongnum)
       .then((response) => response.json())
       .then((responseJson) => {
           this.setState({
           isLoading: false,
           dataSource: responseJson,
         });
-        console.log(this.state.dataSource)
       })
       .catch((error) => {
         console.error(error);
@@ -65,6 +64,26 @@ class TongPeople extends Component{
     )
   }
   render(){
+    var checky;
+    const fvalue = this.state.dataSource.map((key, val) => {
+      if(key.attendYn === "Y") {
+        checky = true
+      } else {
+        checky = false
+      }
+      return (
+        <TongFriendList2
+          key={val}
+          name={key.tongMemNm}
+          type={key.jobgroup}
+          detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
+          chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
+          attend = {checky}
+          parentMethod = {this.attendCheck}
+          attendRequest = {true}
+        />
+        )
+    });
     return (
       <Container>
         <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
@@ -96,68 +115,9 @@ class TongPeople extends Component{
               chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
             />
           </View>
-          <Text style={{marginVertical:10,marginLeft:10,fontSize:13}}>내 동료 (159)</Text>
-          <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
-            <TongFriendList
-              name="안민웅"
-              type="직종"
-              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
-              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
-            />
-            <TongFriendList
-              name="안민웅"
-              type="직종"
-              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
-              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
-            />
-          </View>
           <Text style={{marginVertical:10,marginLeft:10,fontSize:13}}>현장 전체 동료 (159)</Text>
           <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
-            <TongFriendList2
-              name="안민웅1"
-              type="직종"
-              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
-              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
-              attend = {true}
-              parentMethod = {this.attendCheck}
-              attendRequest = {true}
-            />
-            <TongFriendList2
-              name="안민웅2"
-              type="직종"
-              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
-              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
-              attend = {false}
-              parentMethod = {this.attendCheck}
-              attendRequest = {false}
-            />
-            <TongFriendList2
-              name="안민웅3"
-              type="직종"
-              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
-              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
-              attend = {false}
-              parentMethod = {this.attendCheck}
-              attendRequest = {false}
-            />
-            <TongFriendList2
-              name="안민웅4"
-              type="직종"
-              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
-              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
-              attend = {false}
-              parentMethod = {this.attendCheck}
-              attendRequest = {true}
-            />
-            <TongFriendList2
-              name="안민웅5"
-              type="직종"
-              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
-              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
-              attend = {false}
-              parentMethod = {this.attendCheck}
-              attendRequest = {true}
-            />
+            {fvalue}
           </View>
         </Content>
       </Container>

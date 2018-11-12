@@ -264,5 +264,13 @@ export default {
   fullScreen: {
     width: deviceWidth,
     height: deviceHeight
+  },
+  workListBox: {
+    width: deviceWidth / 4 - 20,
+    height: deviceWidth / 4 - 20,
+    borderWidth: 1,
+    marginHorizontal: 5,
+    marginBottom: 5,
+    borderColor: '#999'
   }
 };

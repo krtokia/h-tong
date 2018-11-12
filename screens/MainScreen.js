@@ -47,6 +47,7 @@ import TongPaperAgree from "./Home/TongPaperAgree.js";
 import TongPaperSafe from "./Home/TongPaperSafe.js";
 import TongPaperHealth from "./Home/TongPaperHealth.js";
 import TongPaperArmor from "./Home/TongPaperArmor.js";
+import TongWork from "./Home/TongWork.js";
 
 import CommunityMain from "./Home/CommunityMain.js";
 import CommunityNotice from "./Home/CommunityNotice.js";
@@ -168,16 +169,16 @@ const HomeTabNavi = createBottomTabNavigator({
       tabBarIcon: ({tintColor}) => <Icon name="address-book-o" size={20} color={tintColor} />,
     },
    },
-   TongSetting: {
-    screen: TongSetting,
+   TongWork: {
+    screen: TongWork,
     navigationOptions: {
-       tabBarIcon: ({tintColor}) => <Icon name="cog" size={20} color={tintColor} />,
+       tabBarIcon: ({tintColor}) => <Icon name="list-alt" size={20} color={tintColor} />,
     },
   },
-  TongMore: {
-    screen: More,
+  TongSetting: {
+    screen: TongSetting,
     navigationOptions: {
-      tabBarIcon: ({tintColor}) => <Icon name="user-circle" size={30} color={tintColor} />,
+      tabBarIcon: ({tintColor}) => <Icon name="cog" size={30} color={tintColor} />,
     },
   },
 }, {

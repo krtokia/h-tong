@@ -86,7 +86,6 @@ class TongMain extends pickableImage{
   }
 
   getFriend = async() => {
-    this.setState({isLoading4:true})
     const { tongnum } = this.state;
     return fetch("http://13.124.127.253/api/results.php?page=selectMembers&tongnum=" + tongnum)
       .then((response) => response.json())
@@ -101,6 +100,11 @@ class TongMain extends pickableImage{
               this.setState({joinYn: "N"})
             }
           })
+        } else {
+          this.setState({
+            isLoading4: false,
+            count: 0,
+          })
         }
       })
       .catch((error) => {
@@ -110,7 +114,6 @@ class TongMain extends pickableImage{
 
 
   getTong = async() => {
-    this.setState({isLoading:true})
     return fetch("http://13.124.127.253/api/results.php?page=tong&seq=" + this.state.tongnum)
       .then((response) => response.json())
       .then((responseJson) => {
@@ -126,7 +129,6 @@ class TongMain extends pickableImage{
   }
 
   getBbs = async() => {
-      this.setState({isLoading2:true})
       return fetch("http://13.124.127.253/api/results.php?page=bbs&seq=" + this.state.tongnum)
             .then((response) => response.json())
             .then((responseJson) => {
@@ -182,7 +184,7 @@ class TongMain extends pickableImage{
   }
 
   componentDidMount() {
-    //console.log("START componentDidMount");
+    console.log("START componentDidMount");
     this.getTong();
     this.getBbs();
     this.getFriend();

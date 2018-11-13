@@ -29,11 +29,52 @@ class TongSearch extends Component{
     super(props);
 
     this.state = {
-
+      count: 0,
+      isLoading: true,
+      dataSource: null,
+      searchTxt: "",
     }
   }
 
+  searchTong = () => {
+    this.setState({isLoading: true})
+    return fetch("http://13.124.127.253/api/results.php?page=searchTong&searchText="+this.state.searchTxt)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if(responseJson) {
+          this.setState({
+            isLoading: false,
+            dataSource: responseJson,
+            count: Object.keys(responseJson).length,
+          });
+        } else {
+          this.setState({
+            isLoading: false,
+            dataSource: responseJson,
+            count: 0,
+          })
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
   render(){
+    let tongs;
+    if (this.state.dataSource) {
+      tongs = this.state.dataSource.map((val,key) => {
+        return <View key={key}>
+            <TongList
+              name={val.tongtitle}
+              tongImg={val.tongimg}
+              Href={() => {this.props.navigation.navigate('CommunityMain',{search:"Y",itemID:val.tongnum})}}
+            />
+          </View>
+      })
+    } else {
+      tongs = <View />
+    }
     return (
       <Container>
         <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
@@ -45,7 +86,7 @@ class TongSearch extends Component{
             </TouchableOpacity>
           </Left>
           <Body style={{flex:4,alignItems:'center'}}>
-            <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>전체 통 검색</Text>
+            <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>전체 커뮤니티 검색</Text>
           </Body>
           <Right  style={{flex:1}}>
           </Right>
@@ -57,20 +98,18 @@ class TongSearch extends Component{
           <View style={{width:'100%',padding:10,}}>
             <Item rounded style={{alignSelf:'center',width:'90%',height:40,backgroundColor:'rgba(0,0,0,0.1)'}}>
               <Input placeholder='동료 검색' style={{paddingLeft:30}}  onChangeText={(searchTxt) => this.setState({ searchTxt })}/>
-              <Button style={{width:'25%',height:'100%',borderTopRightRadius:50,borderBottomRightRadius:50,justifyContent:'center',backgroundColor:'#db3928'}}>
+              <Button style={{width:'25%',height:'100%',borderTopRightRadius:50,borderBottomRightRadius:50,justifyContent:'center',backgroundColor:'#db3928'}}
+                onPress={this.searchTong}
+              >
                 <Icon name="search" />
               </Button>
             </Item>
           </View>
-          <Text style={{marginVertical:10,marginLeft:10,fontSize:13}}>검색 된 동료 (159)</Text>
+          <Text style={{marginVertical:10,marginLeft:10,fontSize:13}}>검색 된 통 ({this.state.count})</Text>
           <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
-            <TongFriendList
-              name="안민웅"
-              type="직종"
-              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
-              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
-            />
+            {tongs}
           </View>
+          {/*
           <Text style={{marginVertical:10,marginLeft:10,fontSize:13}}>내 동료 (159)</Text>
           <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
             <TongFriendList
@@ -86,22 +125,20 @@ class TongSearch extends Component{
               chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
             />
           </View>
+          */}
         </Content>
       </Container>
     );
   }
 }
-class TongFriendList extends Component{
+class TongList extends Component{
   render() {
+    let tongimg = this.props.tongimg ? "http://13.124.127.253/images/tongHead/"+this.props.tongimg : "http://13.124.127.253/images/tongHead/noImage.png"
     return(
-      <TouchableOpacity onPress={this.props.detailHref}>
-        <View style={styles.friendList}>
-          <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
+      <TouchableOpacity onPress={this.props.Href}>
+        <View style={[styles.friendList,{justifyContent:'flex-start'}]}>
+          <Image source={{uri: tongimg}} style={styles.friendThumbnail} />
           <Text style={styles.friendName}>{this.props.name}</Text>
-          <Text style={styles.friendInfo}>{this.props.type}</Text>
-          <Button transparent style={styles.friendChatBtn} onPress={this.props.chatHref}>
-            <Icon name="commenting-o" type="FontAwesome" style={styles.friendChat} />
-          </Button>
         </View>
       </TouchableOpacity>
     )

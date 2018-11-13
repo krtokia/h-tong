@@ -60,6 +60,12 @@ class More extends Component{
     this.getUser()
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if(this.props.navigation.getParam('refresh') !== prevProps.navigation.getParam('refresh')) {
+      this.getUser();
+    }
+  }
+
   render(){
     if(this.state.isLoading) {
       return (
@@ -68,6 +74,7 @@ class More extends Component{
         </View>
       )
     } else {
+      let userImg = this.state.dataSource.photo ? this.state.dataSource.photo : "profile_no.png"
     return (
       <Container>
         <Content
@@ -77,11 +84,11 @@ class More extends Component{
           <View style={[styles.Box,{marginTop:0,paddingTop:30}]}>
             <View style={{flexDirection:'row',borderColor:'#e9e9e9',borderBottomWidth:1}}>
               <View style={{marginBottom:10,alignSelf:'center',alignItems:'center'}}>
-                <Image source={require('../../assets/images/profile_no.png')} style={{width:130,height:130,resizeMode:'cover',borderRadius:500}} />
+                <Image source={{uri: 'http://13.124.127.253/images/userProfile/'+userImg}} style={{width:130,height:130,resizeMode:'cover',borderRadius:500}} />
               </View>
               <View style={{justifyContent:'flex-end',padding:20}}>
                 <View style={{flexDirection:'row',alignItems:'center'}}>
-                  <Text style={{fontWeight:'bold',fontSize:23,marginBottom:8}}>{this.state.id} </Text>
+                  <Text style={{fontWeight:'bold',fontSize:23,marginBottom:8}}>{this.state.dataSource.userNm} </Text>
                   <TouchableOpacity onPress={() => this.props.navigation.navigate('Mypage')}>
                   <View style={{flexDirection:'row'}}>
                   <Icon name="edit" type="FontAwesome" style={{fontSize:13,color:'#db3928'}} />

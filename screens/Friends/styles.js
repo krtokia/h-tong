@@ -68,5 +68,10 @@ export default {
     fontSize: 20,
     color: '#555',
     marginBottom: 5
+  },
+  friendIconT: {
+    fontSize: 20,
+    color: '#db3928',
+    marginBottom: 5
   }
 }

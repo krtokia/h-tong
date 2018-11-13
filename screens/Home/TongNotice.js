@@ -32,8 +32,6 @@ import { StoreGlobal } from '../../App';
 
 import styles from './styles.js';
 
-
-
 class TongNotice extends Component{
   constructor(props) {
     super(props);

@@ -37,7 +37,35 @@ class TongSetting extends Component{
     this.state = {
       modal: false,
       toggleSwitch: false,
+      memId: StoreGlobal({type:'get',key:'loginId'}),
+      tongnum: StoreGlobal({type:'get',key:'tongnum'})
     }
+  }
+
+  deleteMember = () => {
+    const { memId, tongnum } = this.state;
+    let apiUrl = 'http://13.124.127.253/api/tongMembers.php?action=deleteMembers';
+    const formData = new FormData();
+    formData.append('tongnum', tongnum);
+    formData.append('tongMemId', memId)
+
+    options = {
+      method: 'POST',
+      body: formData,
+    }
+
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          Alert.alert("현장통","탈퇴 되었습니다.")
+          this.props.navigation.navigate("Home")
+        } else {
+          //alert(responseJson);
+          console.log(responseJson)
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
   }
 
   tongExit(tType) {
@@ -46,7 +74,7 @@ class TongSetting extends Component{
       TongType+"통 탈퇴",
       "이 "+TongType+"통을 탈퇴하시겠습니까?",
       [
-        {text: "예", onPress: () => {console.log('현장통 탈퇴')}},
+        {text: "예", onPress: this.deleteMember},
         {text: "아니오", style: 'cancel'}
       ],
       { cancelable: false }

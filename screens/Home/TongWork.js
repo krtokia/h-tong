@@ -129,19 +129,24 @@ class TongWork extends Component{
       )
     } else {
       let insertYn = true;
-      const worklist = this.state.workData.map((val, key) => {
-        if(this.state.dataKor === val.workdate) {
-          insertYn = false;
-        }
-        return <View key={key}>
-          <WorkList
-            workdate={val.workdate}
-            photos={val.photolist}
-            action="update"
-            method={this.imgupload}
-          />
-        </View>
-      })
+      let worklist;
+      if (this.state.workData) {
+        worklist = this.state.workData.map((val, key) => {
+          if(this.state.dataKor === val.workdate) {
+            insertYn = false;
+          }
+          return <View key={key}>
+            <WorkList
+              workdate={val.workdate}
+              photos={val.photolist}
+              action="update"
+              method={this.imgupload}
+            />
+          </View>
+        })
+      } else {
+        worklist = <View />
+      }
       return (
         <Container>
           <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>

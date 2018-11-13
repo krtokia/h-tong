@@ -18,34 +18,64 @@ import {
 } from 'native-base';
 
 import styles from './styles.js';
+import { StoreGlobal } from '../../App';
 
 class Friends extends Component{
   constructor(props) {
     super(props);
     this.state = {
       searchTxt: null,
-	  isLoading: true,
-      dataSource: [],
-	  count: 0,
+      isLoading: true,
+      isLoading2: false,
+      dataSource: null,
+      dataSource2: [],
+      count: 0,
+      count2: 0,
+      memId: StoreGlobal({type:'get',key:'loginId'})
     }
   }
-
+  componentDidMount() {
+    this.getFriend();
+  }
 
   getFriend = async() => {
-    console.log("getFiendTest: " + this.state.searchTxt );
-
-    return fetch("http://13.124.127.253/api/results.php?page=getMyFriend&id=sid")
+    return fetch("http://13.124.127.253/api/results.php?page=getMyFriend&id="+this.state.memId)
       .then((response) => response.json())
       .then((responseJson) => {
-		for (const value of responseJson){
-			console.log(value.friendId);
-		}
-        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.setState({
-          isLoading: false,
-		  dataSource: responseJson,
-		  count: Object.keys(responseJson).length,
-        });
+        if(responseJson) {
+          this.setState({
+            isLoading: false,
+    		    dataSource: responseJson,
+    		    count: Object.keys(responseJson).length,
+          });
+        } else {
+          this.setState({
+            isLoading: false,
+          })
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  searchFriend = async() => {
+    console.log("getFiendTest: " + this.state.searchTxt );
+
+    return fetch("http://13.124.127.253/api/results.php?page=searchFriend&name="+this.state.searchTxt)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if(responseJson) {
+          this.setState({
+            isLoading2: false,
+  		      dataSource2: responseJson,
+  		      count2: Object.keys(responseJson).length,
+          });
+        } else {
+          this.setState({
+            isLoading2: false,
+          })
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -53,15 +83,30 @@ class Friends extends Component{
   }
 
   render(){
-	  const fvalue = this.state.dataSource.map((data) => {
-		  return (
-			  <FriendList
-			  name={data.friendId}
-			  type="직종"
-			  detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
-              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
-			  />
-			  )
+    let fvalue
+    if (this.state.dataSource) {
+  	  fvalue = this.state.dataSource.map((data, key) => {
+  		  return <View key={key}>
+            <FriendList
+              name={data.friendNm}
+              type={data.friendJob}
+              detailHref={() => {this.props.navigation.navigate('FriendDetail', {friendId:data.friendId,refresh:Date(Date.now()).toString()})}}
+              chatHref={() => {this.props.navigation.navigate('ChatRoom', {friendId:data.friendId,refresh:Date(Date.now()).toString()})}}
+            />
+          </View>
+  	  });
+    } else {
+      fvalue = <View />
+    }
+    let fvalue2 = this.state.dataSource2.map((data, key) => {
+		  return <View key={key}>
+          <FriendList
+            name={data.userNm}
+            type={data.jobgroup}
+            detailHref={() => {this.props.navigation.navigate('FriendDetail', {friendId:data.userId,refresh:Date(Date.now()).toString()})}}
+            chatHref={() => {this.props.navigation.navigate('ChatRoom', {friendId:data.userId,refresh:Date(Date.now()).toString()})}}
+          />
+        </View>
 	  });
     return (
       <Container>
@@ -73,23 +118,18 @@ class Friends extends Component{
           <View style={{width:'100%',padding:10,}}>
             <Item rounded style={{alignSelf:'center',width:'90%',height:40,backgroundColor:'#aaa1'}}>
               <Input placeholder='동료 검색' style={{paddingLeft:30}}  onChangeText={(searchTxt) => this.setState({ searchTxt })}/>
-              <Button style={{width:'25%',height:'100%',borderTopRightRadius:50,borderBottomRightRadius:50,justifyContent:'center',backgroundColor:'#db3928'}} onPress={this.getFriend}>
+              <Button style={{width:'25%',height:'100%',borderTopRightRadius:50,borderBottomRightRadius:50,justifyContent:'center',backgroundColor:'#db3928'}} onPress={this.searchFriend}>
                 <Icon name="search"/>
               </Button>
             </Item>
           </View>
-			    <Text style={{marginTop:10,marginLeft:10,fontSize:13}}>검색 된 동료 ({this.state.count})</Text>
+			    <Text style={{marginTop:10,marginLeft:10,fontSize:13}}>검색 된 동료 ({this.state.count2})</Text>
+          <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
+            {fvalue2}
+          </View>
+          <Text style={{marginTop:10,marginLeft:10,fontSize:13}}>내 동료 ({this.state.count})</Text>
           <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
             {fvalue}
-          </View>
-          <Text style={{marginTop:10,marginLeft:10,fontSize:13}}>내 동료 (159)</Text>
-          <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
-            <FriendList
-              name="안민웅"
-              type="직종"
-              detailHref={() => {this.props.navigation.navigate('FriendDetail')}}
-              chatHref={() => {this.props.navigation.navigate('ChatRoom')}}
-            />
           </View>
         </Content>
       </Container>

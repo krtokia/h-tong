@@ -26,11 +26,12 @@ class Home extends Component{
       isLoading2: true,
       dataSource: null,
       dataSource2: null,
+      memId: StoreGlobal({type:'get',key:'loginId'})
     }
   }
 
   tongList = async() => {
-    return fetch("http://13.124.127.253/api/results.php?page=home&tongtype=T")
+    return fetch("http://13.124.127.253/api/results.php?page=home&tongtype=T&id="+this.state.memId)
       .then((response) => response.json())
       .then((responseJson) => {
         //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -44,7 +45,7 @@ class Home extends Component{
       });
   }
   commList = async() => {
-    return fetch("http://13.124.127.253/api/results.php?page=home&tongtype=C")
+    return fetch("http://13.124.127.253/api/results.php?page=home&tongtype=C&id="+this.state.memId)
       .then((response) => response.json())
       .then((responseJson) => {
         //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -59,7 +60,6 @@ class Home extends Component{
   }
 
   componentDidMount() {
-    console.log("mount")
     this.tongList()
     this.commList()
   }
@@ -68,7 +68,6 @@ class Home extends Component{
     if (prevProps !== this.props) {
      this.tongList()
      this.commList()
-     console.log("update")
     }
   }
 
@@ -85,8 +84,6 @@ class Home extends Component{
 
   navigateTong(tType, itemID) {
     StoreGlobal({type:'set',key:'tType',value:tType});
-    console.log("tType :: ",StoreGlobal({type:'get',key:'tType'}));
-	console.log("itemID :: " + itemID);
   }
 
   render(){
@@ -103,7 +100,9 @@ class Home extends Component{
         </View>
       )
     } else {
-      let tongs = this.state.dataSource.map((val, key) => {
+      let tongs;
+      if (this.state.dataSource) {
+      tongs = this.state.dataSource.map((val, key) => {
         let tongimg = val.tongimg ? val.tongimg : 'noImage.png';
         return <View key={key} style={styles.tongView}>
                   <TouchableOpacity
@@ -123,13 +122,18 @@ class Home extends Component{
                   </View>
                   </TouchableOpacity>
                 </View>
-      });
-      let communities = this.state.dataSource2.map((val, key) => {
+        });
+      } else {
+        tongs = <View style={styles.tongView}><Text>가입한 현장통이 없습니다.</Text></View>
+      }
+      let communities;
+      if (this.state.dataSource2) {
+        communities = this.state.dataSource2.map((val, key) => {
         let tongimg = val.tongimg ? val.tongimg : 'noImage.png';
         return <View key={key} style={styles.tongView}>
                   <TouchableOpacity
                           onPress = {() => {
-                            this.props.navigation.navigate("TongMain", {
+                            this.props.navigation.navigate("CommunityMain", {
                             itemID: val.tongnum,
                             tongType: 'C',
                             }),
@@ -144,8 +148,10 @@ class Home extends Component{
                   </View>
                   </TouchableOpacity>
                 </View>
-      });
-
+        });
+      } else {
+        communities = <View style={styles.tongView}><Text>가입한 커뮤니티통이 없습니다.</Text></View>
+      }
 
     return (
       <Container>

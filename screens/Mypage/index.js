@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet,Image,TouchableOpacity,ActivityIndicator } from 'react-native';
+import { Alert,StyleSheet,Image,TouchableOpacity,ActivityIndicator } from 'react-native';
 import {
   View,
   Button,
@@ -106,12 +106,11 @@ class Mypage extends pickableImage{
       }
     }
 
-    console.log('updateStart',options)
-
     return fetch(apiUrl, options).then((response) => response.json())
       .then((responseJson)=> {
         if(responseJson === 'succed') {
-          console.log(responseJson);
+          Alert.alert("현장통","수정 되었습니다.")
+          this.props.navigation.navigate('HomeMore', {refresh:Date(Date.now()).toString()})
         } else {
           //alert(responseJson);
           console.log(responseJson);
@@ -143,7 +142,7 @@ class Mypage extends pickableImage{
             <Text style={{fontSize:20,color:'#fff'}}>기본정보수정</Text>
           </Body>
           <Right style={{alignSelf:'flex-end',flex:1}}>
-            <Button transparent rounded onPress={() => {this.props.navigation.goBack()}}>
+            <Button transparent rounded onPress={() => {this.props.navigation.navigate('HomeMore', {refresh:Date(Date.now()).toString()})}}>
               <Icon name="close" style={{color:'#fff'}} />
             </Button>
           </Right>
@@ -194,7 +193,7 @@ class Mypage extends pickableImage{
                         ...prevState.dataSource,
                         userNm: content
                       }
-                    })),console.log(this.state.dataSource)}}
+                    }))}}
                 >
                   {this.state.dataSource.userNm}
                 </Input>

@@ -47,7 +47,7 @@ class createTong2 extends pickableImage{
 		term: '',
 		scale: '',
 		addr: '',
-		creator: StoreGlobal({type:'get',key:'username'}),
+		creator: StoreGlobal({type:'get',key:'loginId'}),
     }
     //uploadImage.state = uploadImage.state.bind(this);
     this.uploadImage = this.uploadImage.bind(this);
@@ -174,7 +174,7 @@ class createTong2 extends pickableImage{
     formData.append('contact', contact);
     formData.append('term', term);
     formData.append('scale', scale);
-    formData.append('creator', 'dudtka37');
+    formData.append('creator', creator);
 
     if (imageSource) {
       uri = imageSource;
@@ -287,7 +287,7 @@ class createTong2 extends pickableImage{
                       <TextInput placeholder="공사 감리자를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(supervisor) => this.setState({ supervisor })}/>
                       <TextInput placeholder="발주자를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(owner) => this.setState({ owner })}/>
                       <TextInput placeholder="현장 연락처를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(contact) => this.setState({ contact })}/>
-                      <TextInput placeholder="공가기간을 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(term) => this.setState({ term })}/>
+                      <TextInput placeholder="공사기간을 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(term) => this.setState({ term })}/>
                       <TextInput placeholder="공사규모를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(scale) => this.setState({ scale })}/>
                       <TextInput placeholder="현장주소를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(addr) => this.setState({ addr })}/>
                     </View>

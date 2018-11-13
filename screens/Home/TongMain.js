@@ -48,7 +48,9 @@ class TongMain extends pickableImage{
 
 	const { navigation } = this.props;
 	const itemID = navigation.getParam('itemID');
+  const tongType = navigation.getParam('tongType');
 	StoreGlobal({type:'set',key:'tongnum',value:itemID});
+  StoreGlobal({type:'set',key:'tongtype',value:tongType});
     this.state = {
         isLoading: true,
         isLoading2: true,
@@ -57,7 +59,7 @@ class TongMain extends pickableImage{
         bbsData: null,
         writeModal: false,
         toggleModal: false,
-        memId: 'SID',
+        memId: StoreGlobal({type:'get',key:'loginId'}),
         content: null,
         tongTitle: null,
         tongImage: null,
@@ -68,6 +70,8 @@ class TongMain extends pickableImage{
         refresh: null,
         parentShow: false,
         deleteimg: false,
+        count: 0,
+        joinYn: "Y",
 		}
 
 
@@ -78,6 +82,27 @@ class TongMain extends pickableImage{
       this.setState({updateimg: true})
       console.log("updateIMG!")
     }
+  }
+
+  getFriend = async() => {
+    const { tongnum } = this.state;
+    return fetch("http://13.124.127.253/api/results.php?page=selectMembers&tongnum=" + tongnum)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if(responseJson) {
+          this.setState({
+            count: Object.keys(responseJson).length,
+          });
+          responseJson.map((data) => {
+            if(this.state.memId === data.tongMemId) {
+              this.setState({joinYn: "N"})
+            }
+          })
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
 
@@ -118,10 +143,44 @@ class TongMain extends pickableImage{
             });
   }
 
+  joinCommunity = () => {
+    const { memId, dataSource } = this.state;
+    let apiUrl = 'http://13.124.127.253/api/tongMembers.php?action=insertMembers';
+    const formData = new FormData();
+    formData.append('tongnum', dataSource[0].tongnum);
+    formData.append('tongOwnId', dataSource[0].creator);
+    formData.append('tongtype', dataSource[0].tongtype);
+    formData.append('tongMemId', memId)
+
+    options = {
+      method: 'POST',
+      body: formData,
+    }
+
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          Alert.alert("현장통","가입되었습니다.")
+          this.getTong();
+          this.getBbs();
+          this.getFriend();
+        } else {
+          //alert(responseJson);
+          Alert.alert(
+            '현장통',
+            responseJson
+          )
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
+  }
+
   componentDidMount() {
     //console.log("START componentDidMount");
     this.getTong();
     this.getBbs();
+    this.getFriend();
   }
 
   setParentShow() {
@@ -686,12 +745,19 @@ class TongMain extends pickableImage{
                   <Text style={{fontSize:20}}>{this.state.tongTitle}</Text>
                   <View style={{marginTop:10,flexDirection:'row',justifyContent:'space-between'}}>
                     <View>
-                      <Text style={{fontSize:13}}>{TongType === 'T' ? '현장' : '커뮤니티'}동료(17)</Text>
+                      <Text style={{fontSize:13}}>{TongType === 'T' ? '현장' : '커뮤니티'}동료({this.state.count})</Text>
                     </View>
                     <View style={{flexDirection:'row',paddingRight:10}}>
-                      <TouchableOpacity onPress={() => {this.props.navigation.navigate('Test')}}>
-                        <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="plus-circle" /> 동료초대</Text>
-                      </TouchableOpacity>
+                      { this.state.joinYn === "Y" ? (
+                          <TouchableOpacity onPress={this.joinCommunity}>
+                            <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="plus-circle" /> 커뮤니티가입</Text>
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity onPress={() => {this.props.navigation.navigate('Test')}}>
+                            <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="plus-circle" /> 동료초대</Text>
+                          </TouchableOpacity>
+                        )
+                      }
                       {TongType === 'T' &&
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('TongInfo')}>
                           <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="map-marker" /> 현장위치</Text>
@@ -810,7 +876,7 @@ class ReplyView extends Component {
           <ActivityIndicator />
         </View>
       )
-    } else if (this.state.repData == null) {
+    } else if (!this.state.repData) {
       return (
         <View style={[styles.TongContentReply,styles.center,{padding:10}]}>
           <Text style={styles.ContentReplyT}>댓글이 없습니다.</Text>
@@ -825,7 +891,7 @@ class ReplyView extends Component {
             </View>
             <View style={{flex:0.5}} />
             <View style={{flex:9}}>
-              { "ID" === "ID" ? (
+              { StoreGlobal({type:'get',key:'loginId'}) === val.replyer ? (
               <ReplyToggle
                 replyVal={val}
                 parentShow={this.props.parentShow}

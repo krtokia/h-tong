@@ -102,9 +102,12 @@ const TongStackNavi = createStackNavigator({
 })
 
 const CommunityStackNavi = createStackNavigator({
-  CommunityMain: { screen: CommunityMain },
+  CommunityMain: { screen: TongMain },
+},{
+  navigationOptions: {
+    header: null
+  }
 })
-
 
 const CommunityTabNavi = createBottomTabNavigator({
   CommunityStackNavi: {
@@ -114,27 +117,21 @@ const CommunityTabNavi = createBottomTabNavigator({
     },
    },
    CommunityNotice: {
-     screen: CommunityNotice,
+     screen: TongNotice,
      navigationOptions: {
        tabBarIcon: ({tintColor}) => <Icon name="bullhorn" size={20} color={tintColor} />,
      },
     },
   CommunityPeople: {
-    screen: CommunityPeople,
+    screen: TongPeople,
     navigationOptions: {
-      tabBarIcon: ({tintColor}) => <Icon name="info-circle" size={20} color={tintColor} />,
+      tabBarIcon: ({tintColor}) => <Icon name="address-book-o" size={20} color={tintColor} />,
     },
    },
    CommunitySetting: {
-    screen: CommunitySetting,
+    screen: TongSetting,
     navigationOptions: {
-       tabBarIcon: ({tintColor}) => <Icon name="cog" size={20} color={tintColor} />,
-    },
-  },
-  CommunityMore: {
-    screen: More,
-    navigationOptions: {
-      tabBarIcon: ({tintColor}) => <Icon name="user-circle" size={30} color={tintColor} />,
+       tabBarIcon: ({tintColor}) => <Icon name="cog" size={30} color={tintColor} />,
     },
   },
 }, {

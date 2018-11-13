@@ -3,6 +3,11 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  Modal,
+  ImageBackground,
+  TouchableWithoutFeedback,
+  ActivityIndicator,
+  Alert
  } from 'react-native';
  import {
    Container,
@@ -15,50 +20,392 @@ import {
    Header,
    Left,
    Right,
-   Body
+   Body,
+   Form,
+   Textarea,
+   Footer,
+   FooterTab
  } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
 
+import { StoreGlobal } from '../../App';
+
 import styles from './styles.js';
 
-const dataArray = [
-  { title: "공지사항1", content: "공지사항1 내용" },
-  { title: "공지사항2", content: "공지사항2 내용" },
-  { title: "공지사항3", content: "공지사항3 내용" },
-  { title: "공지사항4", content: "공지사항4 내용" },
-  { title: "공지사항5", content: "공지사항5 내용" },
-  { title: "공지사항6", content: "공지사항6 내용" },
-  { title: "공지사항7", content: "공지사항7 내용" },
-  { title: "공지사항8", content: "공지사항8 내용" },
-  { title: "공지사항9", content: "공지사항9 내용" },
-  { title: "공지사항10", content: "공지사항10 내용" },
-  { title: "공지사항11", content: "공지사항11 내용" },
-  { title: "공지사항12", content: "공지사항12 내용" },
-];
-
 class CommunityNotice extends Component{
-  render(){
+  constructor(props) {
+    super(props);
+    this.setModify = this.setModify.bind(this);
+    this.setDelete = this.setDelete.bind(this);
+    this.state = {
+      isLoading: true,
+      modal: false,
+      memId: 'SID',
+      content: null,
+      isModify: false,
+      parentShow: false,
+      bbsData: null,
+      tongnum:StoreGlobal({type:'get',key:'tongnum'}),
+      modifyVal: null,
+    }
+  }
+
+  getNoti = async() => {
+      return fetch("http://13.124.127.253/api/results.php?page=selectNotice&tongnum=" + this.state.tongnum)
+            .then((response) => response.json())
+            .then((responseJson) => {
+              //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+              this.setState({
+                isLoading: false,
+                bbsData: responseJson,
+                parentShow: !this.state.parentShow,
+                content: null,
+              });
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+  }
+  componentDidMount() {
+    this.getNoti()
+  }
+  _noticeList() {
+    const data = Array.from({length: 10});
     return (
-      <Container>
-        <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
-          <Left style={{flex:1}}>
-          </Left>
-          <Body style={{flex:1,alignItems:'center'}}>
-            <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>공지사항</Text>
-          </Body>
-          <Right  style={{flex:1}}>
-          </Right>
-        </Header>
-        <Content
-         style={{backgroundColor:'#f9f9f9'}}
-         contentContainerStyle={{ flex: 1 }}>
-           <Accordion dataArray={dataArray}
-             headerStyle={{backgroundColor:'#fff',borderBottomWidth:1,borderBottomColor:'#eee'}}
-             contentStyle={{backgroundColor:'#eee',borderBottomWidth:1,borderBottomColor:'#eee',fontSize:11}}
-           />
-        </Content>
-      </Container>
+      <TouchableWithoutFeedback onPress={() => {this.setState({parentShow:!this.state.parentShow})}}>
+      <View style={{paddingBottom:20}}>
+      {data.map((_, i) =>
+        <View key={i}>
+          <NoticeList
+            name={val.notiWriter}
+            division="관리자"
+            content={`공지사항 ${i}`}
+            setModifyParent={this.setModify}
+            setDeleteParent={this.setDelete}
+            argue="Hello"
+            parentShow={this.state.parentShow}
+          />
+        </View>
+      )}
+      </View>
+      </TouchableWithoutFeedback>
     );
   }
+
+  setModify(modifyVal) {
+    console.log("modifyVal",modifyVal)
+    this.setState({modal: true,isModify: true,content:modifyVal.notiContent,modifyVal:modifyVal});
+  }
+
+  setDelete(deleteVal) {
+    this.delete(deleteVal);
+  }
+
+  delete(deleteVal) {
+    const {tongnum, memId} = this.state;
+    let apiUrl = 'http://13.124.127.253/api/writeNoti.php?action=deleteNoti';
+    options = {
+      method: 'POST',
+      headers: {
+        'Accept' : 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        tongnum : tongnum,
+        seq: deleteVal.seq,
+      })
+    }
+
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          console.log(responseJson);
+          Alert.alert(
+            "현장통",
+            "삭제 되었습니다."
+          )
+          this.getNoti();
+        } else {
+          console.log(responseJson);
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
+  }
+
+  division(mode) {
+    this.setState({isModify:false})
+    if(mode) {
+      this.modify();
+    } else {
+      this.write();
+    }
+  }
+
+  modify() {
+    this.setState({modal:false,isModify:false})
+    console.log("modify complete",this.state.modifyVal);
+
+    const {tongnum, memId, content} = this.state;
+
+    let apiUrl = 'http://13.124.127.253/api/writeNoti.php?action=updateNoti';
+	   options = {
+        method: 'POST',
+        headers: {
+          'Accept' : 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tongnum : tongnum,
+          seq: this.state.modifyVal.seq,
+          notiContent: content,
+          notiTitle: 'aa'
+        })
+      }
+      return fetch(apiUrl, options).then((response) => response.json())
+        .then((responseJson)=> {
+          if(responseJson === 'succed') {
+            console.log(responseJson);
+            Alert.alert(
+              "현장통",
+              "수정 되었습니다."
+            )
+            this.getNoti()
+          } else {
+            console.log(responseJson);
+          }
+        }).catch((error) => {
+          console.log(error)
+        });
+  }
+
+  write() {
+    this.setState({modal:!this.state.modal,isModify:false})
+    const {tongnum, memId, content} = this.state;
+
+    let apiUrl = 'http://13.124.127.253/api/writeNoti.php?action=insertNoti';
+
+    options = {
+      method: 'POST',
+      headers: {
+        'Accept' : 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        tongnum : tongnum,
+        notiWriter: memId,
+        notiContent: content,
+        notiTitle: "aa"
+      })}
+      return fetch(apiUrl, options).then((response) => response.json())
+        .then((responseJson)=> {
+          if(responseJson === 'succed') {
+            console.log("succed",responseJson);
+            this.getNoti()
+          } else {
+            console.log("Fail",responseJson);
+          }
+        }).catch((error) => {
+          console.log(error)
+        });
+    }
+
+  render(){
+    if (this.state.isLoading) {
+      return (
+        <View Style={{flex:1, paddingTop:20}}>
+          <ActivityIndicator />
+        </View>
+      )
+    } else {
+      let notiList;
+      if (this.state.bbsData) {
+        notiList = this.state.bbsData.map((val, key) => {
+          return <View key={key}>
+                  <NoticeList
+                    name={val.notiWriter}
+                    division="관리자"
+                    content={val.notiContent}
+                    setModifyParent={this.setModify}
+                    setDeleteParent={this.setDelete}
+                    argue={val}
+                    parentShow={this.state.parentShow}
+                  />
+                 </View>
+        })
+      } else {
+        notiList =
+          <View style={[styles.center,{width:'100%',height:100}]}>
+            <Text>공지사항이 없습니다.</Text>
+          </View>
+      }
+      return (
+        <Container>
+          <Modal
+            animationType="slide"
+            transparent={false}
+            visible={this.state.modal}
+            onRequestClose={() => {
+              this.setState({modal:!this.state.modal,isModify:false,content:null});
+            }}>
+              <Header style={{height:50,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
+                <Left style={{flex:1}}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({modal:!this.state.modal,isModify:false,content:null})
+                    }}>
+                    <Icon name='times' type="FontAwesome" style={{color:'#fff'}} />
+                  </TouchableOpacity>
+                </Left>
+                <Body style={{flex:2,alignItems:'center'}}>
+                  <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>공지사항 {this.state.isModify ? "수정" : "작성"}</Text>
+                </Body>
+                <Right  style={{flex:1}}>
+                  <Text style={{fontSize:13,color:'#fff'}} onPress={() => {this.division(this.state.isModify)}}>완료</Text>
+                </Right>
+              </Header>
+              <Content style={{padding:10}}>
+                <Form>
+                  <ImageBackground source={require('../../assets/images/backgroundLogo.png')} style={{width:'100%'}}>
+                  <Textarea onChangeText={(content) => this.setState({ content })} rowSpan={20}
+                    value={this.state.content ? this.state.content : ""}
+                  />
+                  </ImageBackground>
+                </Form>
+              </Content>
+              {/*<Footer>
+                <FooterTab style={{backgroundColor:'#fff'}}>
+                  <Button>
+                    <Icon type='FontAwesome' name='camera' style={{color:'#999'}} />
+                    <Text style={{color:'#ccc'}}>사진</Text>
+                  </Button>
+                  <Button>
+                    <Icon type='FontAwesome' name='video-camera' style={{color:'#999'}} />
+                    <Text style={{color:'#ccc'}}>동영상</Text>
+                  </Button>
+                </FooterTab>
+              </Footer>*/}
+          </Modal>
+          <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
+            <Left style={{flex:1}}>
+            </Left>
+            <Body style={{flex:1,alignItems:'center'}}>
+              <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>공지사항</Text>
+            </Body>
+            <Right  style={{flex:1}}>
+              { true &&
+                <TouchableOpacity style={{marginRight:10,marginTop:10}}
+                  onPress={() => {this.setState({modal:!this.state.modal,isModify:false})}}
+                >
+                  <Text style={{fontSize:15,color:'#fff'}}>작성</Text>
+                </TouchableOpacity>
+              }
+            </Right>
+          </Header>
+          <Content
+           style={{backgroundColor:'#f9f9f9',paddingBottom:10,}}
+          >
+          <TouchableWithoutFeedback onPress={() => {this.setState({parentShow:!this.state.parentShow})}}>
+            <View>
+            {notiList}
+            <View style={{height:30,marginTop:30,width:'100%'}} />
+            </View>
+          </TouchableWithoutFeedback>
+
+          </Content>
+        </Container>
+      );
+    }
+  }
 }
-export default CommunityNotice;
+
+class NoticeList extends Component{
+  state={
+    show: false,
+    dimensions: undefined,
+    boxHeight: 'auto',
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if(this.props.parentShow !== prevProps.parentShow) {
+      this.setState({show:false})
+      this.setState({boxHeight:'auto'})
+    }
+  }
+  setShow() {
+    this.setState({show:!this.state.show});
+    if(this.state.dimensions.height < 50) {
+      this.setState({boxHeight:80})
+    }
+    if (this.state.show) {
+      this.setState({boxHeight:'auto'})
+    }
+  }
+  setDeleteChild = () => {
+    this.props.setDeleteParent(this.props.argue)
+  }
+  setModifyChild = () => {
+    this.props.setModifyParent(this.props.argue)
+  }
+
+  render() {
+    const boxHeight = 80;
+    const boxWidth = 90;
+    const fontStyle = {fontSize:13,color:'#666'};
+    return(
+      <View style={[styles.TongContentBox]}>
+        <View style={styles.TongContentHeader}>
+          <View style={{flexDirection: 'row'}}>
+            <Image style={styles.ContentHeaderImg} source={require('../../assets/images/profile_no.png')} />
+            <View style={{marginLeft:10}}>
+              <Text style={{fontSize:14,fontWeight:'bold'}}>{this.props.name}</Text>
+              <Text style={{fontSize:10,color:'#aaa'}}>{this.props.division}</Text>
+            </View>
+          </View>
+          { "isAdmin" === "isAdmin" &&
+          <View>
+            <TouchableOpacity style={{paddingRight:20}}
+              onPress={() => {this.setShow()}}
+            >
+              <Icon name="ellipsis-v" type="FontAwesome" style={{fontSize:15,color:'#999'}} />
+            </TouchableOpacity>
+            { this.state.show &&
+            <View style={[styles.Box,{borderWidth:1,borderColor:'#e9e9e9',position:'absolute',width:boxWidth,bottom:-boxHeight,left:-boxWidth-20,zIndex:1}]}>
+              <TouchableOpacity
+                onPress={this.setModifyChild}
+              >
+              <View style={[styles.Row,styles.grayBottom,{paddingVertical:3,marginBottom:10}]}>
+                <Text style={fontStyle}>수정하기</Text>
+                <Icon name="edit" type="FontAwesome" style={{color:'#999',fontSize:11}} />
+              </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={this.setDeleteChild}
+              >
+              <View style={[styles.Row,styles.grayBottom,{paddingVertical:3,marginBottom:10}]}>
+                <Text style={[fontStyle,{color:'#db3928'}]}>삭제</Text>
+                <Icon name="trash-o" type="FontAwesome" style={[fontStyle,{color:'#db3928'}]} />
+              </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {this.setShow()}}>
+              <View style={[styles.Row,styles.grayBottom,{paddingVertical:3}]}>
+                <Text style={[fontStyle,{color:'#aaa'}]}>닫기</Text>
+                <Icon name="times" type="FontAwesome" style={[fontStyle,{color:'#aaa'}]} />
+              </View>
+              </TouchableOpacity>
+            </View>
+            }
+          </View>
+          }
+        </View>
+        <View style={[styles.TongContents,{height:this.state.boxHeight}]} onLayout={this.onLayout}>
+          <Text style={{fontSize:13}}>{this.props.content}</Text>
+        </View>
+      </View>
+    )
+  }
+  onLayout = event => {
+    if (this.state.dimensions) return // layout was already called
+    let {width, height} = event.nativeEvent.layout
+    this.setState({dimensions: {width, height}})
+  }
+}

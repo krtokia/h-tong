@@ -31,11 +31,17 @@ class Friends extends Component{
       dataSource2: [],
       count: 0,
       count2: 0,
-      memId: StoreGlobal({type:'get',key:'loginId'})
+      memId: StoreGlobal({type:'get',key:'loginId'}),
     }
   }
   componentDidMount() {
     this.getFriend();
+  }
+
+  componentDidUpdate(prevProps) {
+    if(this.props.navigation.getParam('refresh') !== prevProps.navigation.getParam('refresh')) {
+      this.getFriend()
+    }
   }
 
   getFriend = async() => {
@@ -90,7 +96,7 @@ class Friends extends Component{
             <FriendList
               name={data.friendNm}
               type={data.friendJob}
-              detailHref={() => {this.props.navigation.navigate('FriendDetail', {friendId:data.friendId,refresh:Date(Date.now()).toString()})}}
+              detailHref={() => {this.props.navigation.navigate('FriendDetail', {friendId:data.friendId,refresh:Date(Date.now()).toString(),prevPage:'index'})}}
               chatHref={() => {this.props.navigation.navigate('ChatRoom', {friendId:data.friendId,refresh:Date(Date.now()).toString()})}}
             />
           </View>
@@ -103,7 +109,7 @@ class Friends extends Component{
           <FriendList
             name={data.userNm}
             type={data.jobgroup}
-            detailHref={() => {this.props.navigation.navigate('FriendDetail', {friendId:data.userId,refresh:Date(Date.now()).toString()})}}
+            detailHref={() => {this.props.navigation.navigate('FriendDetail', {friendId:data.userId,refresh:Date(Date.now()).toString(),prevPage:'index'})}}
             chatHref={() => {this.props.navigation.navigate('ChatRoom', {friendId:data.userId,refresh:Date(Date.now()).toString()})}}
           />
         </View>

@@ -120,6 +120,15 @@ class Mypage extends pickableImage{
       });
   }
 
+  _goBack = () => {
+    // if(this.props.navigation.getParam('prevPage') === "home") {
+    //   this.props.navigation.navigate('HomeMore', {refresh:Date(Date.now()).toString()})
+    // } else {
+    //   this.props.navigation.navigate('TongPeople', {refresh:Date(Date.now()).toString()})
+    // }
+    this.props.navigation.navigate('HomeMore', {refresh:Date(Date.now()).toString()})
+  }
+
   render(){
     if(this.state.isLoading) {
     return (
@@ -142,7 +151,7 @@ class Mypage extends pickableImage{
             <Text style={{fontSize:20,color:'#fff'}}>기본정보수정</Text>
           </Body>
           <Right style={{alignSelf:'flex-end',flex:1}}>
-            <Button transparent rounded onPress={() => {this.props.navigation.navigate('HomeMore', {refresh:Date(Date.now()).toString()})}}>
+            <Button transparent rounded onPress={this._goBack}>
               <Icon name="close" style={{color:'#fff'}} />
             </Button>
           </Right>

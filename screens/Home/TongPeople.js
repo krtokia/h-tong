@@ -88,6 +88,12 @@ class TongPeople extends Component{
     this.getFriend()
   }
 
+  componentDidUpdate(prevProps) {
+    if(this.props.navigation.getParam('refresh') !== prevProps.navigation.getParam('refresh')) {
+      this.getFriend()
+    }
+  }
+
   attendCheck(name) {
     Alert.alert(
       '출근 체크',
@@ -109,23 +115,34 @@ class TongPeople extends Component{
       let fvalue
       if(this.state.dataSource) {
         fvalue = this.state.dataSource.map((key, val) => {
-          if(key.attendYn === "Y") {
-            checky = true
+          if(key.tongMemId === this.state.memId) {
+            return (
+              <TongFriendList
+                key={val}
+                name={key.tongMemNm}
+                type={key.jobgroup}
+                detailHref={() => {this.props.navigation.navigate('Mypage')}}
+              />
+            )
           } else {
-            checky = false
+            if(key.attendYn === "Y") {
+              checky = true
+            } else {
+              checky = false
+            }
+            return (
+              <TongFriendList2
+                key={val}
+                name={key.tongMemNm}
+                type={key.jobgroup}
+                detailHref={() => {this.props.navigation.navigate('FriendDetail',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
+                chatHref={() => {this.props.navigation.navigate('ChatRoom',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
+                attend = {checky}
+                parentMethod = {this.attendCheck}
+                attendRequest = {true}
+              />
+            )
           }
-          return (
-            <TongFriendList2
-              key={val}
-              name={key.tongMemNm}
-              type={key.jobgroup}
-              detailHref={() => {this.props.navigation.navigate('FriendDetail',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
-              chatHref={() => {this.props.navigation.navigate('ChatRoom',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
-              attend = {checky}
-              parentMethod = {this.attendCheck}
-              attendRequest = {true}
-            />
-          )
         });
       } else {
         fvalue = <View />
@@ -205,11 +222,6 @@ class TongFriendList extends Component{
             <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
             <Text style={styles.friendName}>{this.props.name}</Text>
             <Text style={styles.friendInfo}>{this.props.type}</Text>
-          </View>
-          <View style={{flexDirection:'row',justifyContent:'flex-end',paddingRight:10}}>
-            <Button transparent style={styles.friendChatBtn} onPress={this.props.chatHref}>
-              <Icon name="commenting-o" type="FontAwesome" style={styles.friendChat} />
-            </Button>
           </View>
         </View>
       </TouchableOpacity>

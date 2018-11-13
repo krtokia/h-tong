@@ -55,6 +55,7 @@ class TongMain extends pickableImage{
         isLoading: true,
         isLoading2: true,
         isLoading3: true,
+        isLoading4: true,
         dataSource: null,
         bbsData: null,
         writeModal: false,
@@ -85,12 +86,14 @@ class TongMain extends pickableImage{
   }
 
   getFriend = async() => {
+    this.setState({isLoading4:true})
     const { tongnum } = this.state;
     return fetch("http://13.124.127.253/api/results.php?page=selectMembers&tongnum=" + tongnum)
       .then((response) => response.json())
       .then((responseJson) => {
         if(responseJson) {
           this.setState({
+            isLoading4: false,
             count: Object.keys(responseJson).length,
           });
           responseJson.map((data) => {
@@ -107,6 +110,7 @@ class TongMain extends pickableImage{
 
 
   getTong = async() => {
+    this.setState({isLoading:true})
     return fetch("http://13.124.127.253/api/results.php?page=tong&seq=" + this.state.tongnum)
       .then((response) => response.json())
       .then((responseJson) => {
@@ -122,6 +126,7 @@ class TongMain extends pickableImage{
   }
 
   getBbs = async() => {
+      this.setState({isLoading2:true})
       return fetch("http://13.124.127.253/api/results.php?page=bbs&seq=" + this.state.tongnum)
             .then((response) => response.json())
             .then((responseJson) => {
@@ -534,6 +539,12 @@ class TongMain extends pickableImage{
         </View>
       )
     } else if (this.state.isLoading2) {
+      return (
+        <View Style={{flex:1, paddingTop:20}}>
+          <ActivityIndicator />
+        </View>
+      )
+    } else if (this.state.isLoading4) {
       return (
         <View Style={{flex:1, paddingTop:20}}>
           <ActivityIndicator />

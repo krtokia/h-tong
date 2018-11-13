@@ -110,6 +110,14 @@ class FriendDetail extends Component{
       });
   }
 
+  _goBack = () => {
+    if(this.props.navigation.getParam('prevPage') === 'index') {
+      this.props.navigation.navigate('Friends',{refresh:Date(Date.now()).toString()})
+    } else {
+      this.props.navigation.navigate('tongPeople',{refresh:Date(Date.now()).toString()});
+    }
+  }
+
   render(){
     if(this.state.isLoading) {
       return (
@@ -128,7 +136,7 @@ class FriendDetail extends Component{
             <View style={[styles.Box,{marginTop:0}]}>
               <View style={{borderBottomColor:'#f9f9f9',borderBottomWidth:1,paddingVertical:10}}>
                 <View style={{alignSelf:'flex-end'}}>
-                  <Button transparent onPress={() => {this.props.navigation.goBack()}}>
+                  <Button transparent onPress={this._goBack}>
                     <Icon name="remove" type="FontAwesome" style={{color:'#999'}} />
                   </Button>
                 </View>

@@ -6,6 +6,7 @@ class tong extends Component{
     super(props);
     this.state = {
       imageSource: '../../assets/images/robot-prod.png',
+      imgresult: null,
       data: null,
     }
     this._pickImage = this._pickImage.bind(this);

@@ -54,6 +54,7 @@ class Works extends Component{
                 isLoading: false,
                 workData: responseJson,
               })
+              console.log(responseJson)
             })
             .catch((error) => {
               console.error(error);
@@ -70,22 +71,11 @@ class Works extends Component{
         <ActivityIndicator />
       </View>
     } else {
-      let markCalendar = {};
-      if(this.state.workData) {
-        this.state.workData.map((data) => {
-          markCalendar = {
-            ...markCalendar,
-            [data.workdate]: {
-              selected: true,
-              marked: true
-            }
-          }
+      let workdate = [];
+      if(this.state.workDate) {
+        workdate = this.state.workData.map((data) => {
+          workdate.push(data.workdate,{selected:true})
         })
-      }
-      const mark = {
-      '2018-11-05': { selected: true, marked: true },
-      '2018-11-07': { selected: true, marked: true },
-      '2018-11-18': { selected: true, marked: true }
       }
       return (
         <Container>
@@ -164,7 +154,13 @@ class Works extends Component{
                   }
                 }}
                 onDayPress={(day) => {this.modalSet(day)}}
-                markedDates={markCalendar}
+                markedDates={{
+                  '2018-10-01':{selected:true},
+                  '2018-10-12':{selected:true},
+                  '2018-10-13':{selected:true},
+                  '2018-10-17':{selected:true},
+                  '2018-10-22':{selected:true},
+                }}
               />
             </View>
             <View style={{flexDirection:'row',justifyContent:'space-around',paddingVertical:10}}>

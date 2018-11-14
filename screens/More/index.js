@@ -3,7 +3,10 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  ScrollView,
+  DatePickerAndroid,
+  TextInput,
  } from 'react-native';
  import {
    View,
@@ -26,20 +29,29 @@ import { Grid, Col, Row } from "react-native-easy-grid";
 
 import { StoreGlobal } from '../../App';
 import styles from './styles.js';
+import pickableImage from "../common.js";
 
-class More extends Component{
+class More extends pickableImage{
 
   constructor(props) {
     super(props);
 
     this.state={
       isLoading: true,
+      isLoading2: true,
+      isLoading3: true,
       dataSource: null,
       id: StoreGlobal({type:'get',key:'loginId'}),
+      userImgs: null,
+      isLoading2: true,
+      openInput: false,
+      career: "",
+      careerSource: null,
     }
   }
 
   getUser = async() => {
+    this.setState({isLoading:true})
     return fetch("http://13.124.127.253/api/results.php?page=setting&id=" + this.state.id)
       .then((response) => response.json())
       .then((responseJson) => {
@@ -55,15 +67,137 @@ class More extends Component{
       });
   }
 
+  getImages = async() => {
+    this.setState({isLoading2:true})
+    return fetch("http://13.124.127.253/api/results.php?page=userImage&id=" + this.state.id)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.setState({
+          isLoading2: false,
+          userImgs: responseJson,
+        });
+      })
+
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  getCareer = async() => {
+    this.setState({isLoading3:true})
+    return fetch("http://13.124.127.253/api/results.php?page=getCareer&id=" + this.state.id)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.setState({
+          isLoading3: false,
+          careerSource: responseJson,
+          openInput: false,
+          career: "",
+          selectedDate: "",
+        });
+      })
+
+      .catch((error) => {
+        console.error(error);
+      });
+  }
   componentDidMount() {
     //console.log("START componentDidMount");
     this.getUser()
+    this.getImages()
+    this.getCareer()
+
+
+
   }
 
   componentDidUpdate(prevProps, prevState) {
     if(this.props.navigation.getParam('refresh') !== prevProps.navigation.getParam('refresh')) {
       this.getUser();
     }
+    if(this.state.imageSource !== prevState.imageSource) {
+      this.uploadImg()
+    }
+  }
+
+  uploadImg() {
+    const { imageSource, id, dataSource } = this.state;
+    let apiUrl = 'http://13.124.127.253/api/userUpdate.php?action=imgUpload';
+    uri = imageSource;
+    uriParts = uri.split('.');
+    fileType = uriParts[uriParts.length - 1];
+
+    const formData = new FormData();
+
+    formData.append('userId', id);
+    formData.append('photo', {
+      uri,
+      name: `photo.${fileType}`,
+      type: `image/${fileType}`,
+    });
+
+    options = {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          this.getImages()
+        }
+      }).catch((error) => {
+        console.log("error::",error)
+      });
+  }
+
+  showPicker = async (stateKey, options) => {
+    try {
+      const {action, year, month, day} = await DatePickerAndroid.open({
+        // Use `new Date()` for current date.
+        // May 25 2020. Month 0 is January.
+        date: new Date(Date.now())
+      });
+      if (action !== DatePickerAndroid.dismissedAction) {
+        this.setState({
+          selectedDate: year+"."+(month+1)+"."+day,
+          openInput: true,
+        })
+      }
+    } catch ({code, message}) {
+      console.warn('Cannot open date picker', message);
+    }
+  }
+
+  insertCareer = () => {
+    const { selectedDate, career, id } = this.state;
+    let apiUrl = 'http://13.124.127.253/api/userUpdate.php?action=career';
+    const formData = new FormData();
+
+    console.log("selectedDate",selectedDate)
+
+    formData.append('userId', id);
+    formData.append('careerDate', selectedDate);
+    formData.append('career', career);
+    options = {
+      method: 'POST',
+      body: formData
+    }
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          this.getCareer()
+        } else {
+          console.log(responseJson);
+        }
+      }).catch((error) => {
+        console.log("error::",error)
+      });
   }
 
   render(){
@@ -73,8 +207,48 @@ class More extends Component{
           <ActivityIndicator />
         </View>
       )
+    } else if(this.state.isLoading2) {
+      return (
+        <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
+          <ActivityIndicator />
+        </View>
+      )
+    } else if(this.state.isLoading3) {
+      return (
+        <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
+          <ActivityIndicator />
+        </View>
+      )
     } else {
       let userImg = this.state.dataSource.photo ? this.state.dataSource.photo : "profile_no.png"
+      let getImages;
+      if(this.state.userImgs) {
+        getImages = this.state.userImgs.map((val,key) => {
+          return <View key={key}>
+            <TouchableOpacity>
+              <Image style={styles.detailImage} source={{uri: 'http://13.124.127.253/images/userImages/'+val.photo}} />
+            </TouchableOpacity>
+          </View>
+        })
+      } else {
+        getImages = <View />
+      }
+
+      let getCareer;
+      if(this.state.careerSource) {
+        getCareer = this.state.careerSource.map((val,key) => {
+          return <CareerList
+                  key={key}
+                  dateVal={val.careerDate}
+                  infoVal={val.career}
+                />
+        })
+      } else {
+        getCareer = <CareerList
+                dateVal=""
+                infoVal="경력이 없습니다."
+              />
+      }
     return (
       <Container>
         <Content
@@ -126,26 +300,52 @@ class More extends Component{
           <View style={styles.Box}>
             <View style={{alignItems:'flex-start',paddingBottom:10,borderBottomWidth:1,borderBottomColor:'#f4f4f4'}}>
               <Text style={{color:'#aaa',fontSize:13}}>대표사진</Text>
-              <View style={{flexDirection:'row',marginTop:5,}}>
-                <Image style={styles.detailImage} source={require('../../assets/images/noImage.png')} />
-                <Image style={styles.detailImage} source={require('../../assets/images/noImage.png')} />
-                <Image style={styles.detailImage} source={require('../../assets/images/noImage.png')} />
-                <Image style={styles.detailImage} source={require('../../assets/images/noImage.png')} />
-              </View>
+              <ScrollView horizontal={true}>
+                <View style={{flexDirection:'row',marginTop:5,justifyContent:'flex-start'}}>
+                  {getImages}
+                  <TouchableOpacity style={[styles.addImage]} onPress={this._pickImage}>
+                    <Icon name="plus" type="FontAwesome" style={{fontSize:30,color:'#999'}} />
+                    <Text style={{fontSize:15,color:'#999'}}>추가</Text>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
             </View>
             <View style={{flexDirection:'row',alignItems:'flex-start',marginTop:10}}>
               <Text style={{color:'#aaa',fontSize:13}}>경력</Text>
               <View style={{marginLeft:10}}>
-                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
+                {getCareer}
+                { this.state.openInput &&
+                  <View>
+                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                      <View style={{width:'30%'}}>
+                        <TouchableOpacity onPress={this.showPicker.bind(this)}>
+                          <Text style={{fontSize:13}}>{this.state.selectedDate}</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <View style={{width:'65%'}}>
+                        <TextInput
+                          onChangeText={(career) => this.setState({ career })}
+                          onBlur={this.insertCareer}
+                          underlineColorAndroid="transparent"
+                          placeholder="경력 입력"
+                          style={{fontSize:13}}
+                          />
+                      </View>
+                    </View>
+                  </View>
+                }
+                { this.state.openInput ? (
+                  <TouchableOpacity style={[styles.center,styles.row]} onPress={this.insertCareer}>
+                    <Icon name="pencil" type="FontAwesome" style={{color:'#db3928',fontSize:15}} />
+                    <Text style={{color:'#db3928',fontSize:15}}> 입력</Text>
+                  </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity style={[styles.center,styles.row]} onPress={this.showPicker.bind(this)}>
+                      <Icon name="plus" type="FontAwesome" style={{color:'#999',fontSize:15}} />
+                      <Text style={{color:'#999',fontSize:15}}> 추가</Text>
+                    </TouchableOpacity>
+                  )
+                }
               </View>
             </View>
           </View>

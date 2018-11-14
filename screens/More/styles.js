@@ -150,10 +150,19 @@ export default {
     marginHorizontal: 'auto'
   },
   detailImage: {
-    flex:1,
+    width:70,
     marginHorizontal:3,
     height:70,
     resizeMode:'contain',
+  },
+  addImage: {
+    width:70,
+    height:70,
+    marginHorizontal:3,
+    borderWidth:1,
+    borderColor:'#e9e9e9',
+    justifyContent:'center',
+    alignItems:'center'
   },
   paperItems: {
     flexBasis:'50%',

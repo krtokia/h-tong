@@ -65,7 +65,7 @@ class Mypage extends pickableImage{
   userUpdate() {
     const { id, dataSource, imageSource, imgresult } = this.state;
 
-    let apiUrl = 'http://13.124.127.253/api/userUpdate.php';
+    let apiUrl = 'http://13.124.127.253/api/userUpdate.php?action=userInfo';
     const formData = new FormData();
 
     formData.append('userId', id);
@@ -292,7 +292,7 @@ class Mypage extends pickableImage{
                       }
                     }));}}
                 >
-                  {this.state.dataSource.email}
+                  {this.state.dataSource.company}
                 </Input>
                 </Item>
               </Form>
@@ -314,7 +314,7 @@ class Mypage extends pickableImage{
                       }
                     }));}}
                 >
-                  {this.state.dataSource.email}
+                  {this.state.dataSource.jobgroup}
                 </Input>
                 </Item>
               </Form>

@@ -57,14 +57,12 @@ class TongWork extends Component{
               nowDate = new Date(Date.now());
               dateKor = nowDate.getFullYear()+"년 "+(nowDate.getMonth()+1)+"월 "+nowDate.getDate()+"일";
               dateOrigin = nowDate.getFullYear()+"-"+(nowDate.getMonth()+1)+"-"+nowDate.getDate();
-              responseJson.unshift({workdate:'9999년 99월 99일'})
               this.setState({
                 isLoading: false,
                 workData: responseJson,
                 dateKor:dateKor,
                 dateOrigin:dateOrigin
               })
-              console.log(responseJson)
             })
             .catch((error) => {
               console.error(error);
@@ -75,15 +73,17 @@ class TongWork extends Component{
     this.getWorklist();
   }
 
-  imgupload(imageSource) {
-    let apiUrl = 'http://13.124.127.253/api/worklist.php?';
+  imgupload(action, workdate, previmg, imageSource, memId) {
+    let apiUrl = 'http://13.124.127.253/api/worklist.php?action='+action;
     let uri = null;
     let fileType = null;
 
     const formData = new FormData();
 
     formData.append('tongnum', StoreGlobal({type:'get',key:'tongnum'}));
-    formData.append('userId', StoreGlobal({type:'get',key:'loginId'}));
+    formData.append('photolist', previmg);
+    formData.append('memId', memId);
+    formData.append('workdate', workdate)
 
     uri = imageSource;
     uriParts = uri.split('.');
@@ -134,43 +134,23 @@ class TongWork extends Component{
       let insertYn = true;
       let isToday = false;
       let worklist;
-      let prevDate;
-      let flag = false;
-      let photoArray = [];
-      let photoLast;
       if (this.state.workData) {
         worklist = this.state.workData.map((val, key) => {
-          photoLast = null;
-          if(prevDate === val.workdate) {
-            prevDate = val.workdate;
-            flag = false;
-          } else if(!prevDate){
-            prevDate = val.workdate;
-            flag = false;
+          if(this.state.dateKor === val.workdate) {
+            insertYn = false;
+            isToday = true;
           } else {
-            flag = true;
-            prevDate = val.workdate;
+            isToday = false;
           }
-          photoArray.push(val.photolist)
-          console.log(val.workdate, flag)
-          if(flag) {
-            if(this.state.dateKor === val.workdate) {
-              insertYn = false;
-              isToday = true;
-            } else {
-              isToday = false;
-            }
-            photoLast = photoArray;
-            photoArray = new Array();
-            return <View key={key}>
-              <WorkList
-                workdate={val.workdate}
-                photolist={photoLast}
-                method={this.imgupload}
-                isToday={isToday}
-              />
-            </View>
-          }
+          return <View key={key}>
+            <WorkList
+              workdate={val.workdate}
+              photos={val.photolist}
+              action="update"
+              method={this.imgupload}
+              isToday={isToday}
+            />
+          </View>
         })
       } else {
         worklist = <View />
@@ -194,7 +174,8 @@ class TongWork extends Component{
               { insertYn &&
                 <WorkList
                   workdate={this.state.dateKor}
-                  photolist={new Array()}
+                  photos=""
+                  action="insert"
                   method={this.imgupload}
                   isToday={true}
                 />
@@ -214,16 +195,16 @@ class WorkList extends pickableImage {
     super(props);
     this.state = {
       show: false,
-      photolist: this.props.photolist
+      photos: this.props.photos
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.imageSource !== prevState.imageSource) {
-      this.props.method(this.state.imageSource)
+      this.props.method(this.props.action, this.props.workdate, this.state.photos, this.state.imageSource)
     }
-    if (this.props.photolist !== prevProps.photolist) {
-      this.setState({photolist: this.props.photolist})
+    if (this.props.photos !== prevProps.photos) {
+      this.setState({photos: this.props.photos})
     }
   }
 
@@ -232,7 +213,7 @@ class WorkList extends pickableImage {
     const headerStyle={fontSize:14,color:'#666'}
     const lineStyle={fontSize:10,color:'#666'}
 
-    let photolist = this.state.photolist.map((data, key) => {
+    const photolist = this.state.photos.split(',').map((data, key) => {
       if(data) {
       return <View style={styles.workListBox} key={key}>
           <Image source={{uri: `http://13.124.127.253/images/workList/`+data}}

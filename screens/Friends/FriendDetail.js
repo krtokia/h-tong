@@ -34,12 +34,16 @@ class FriendDetail extends Component{
       friendId: this.props.navigation.getParam('friendId'),
       dataSource: null,
       isFriend: false,
+      userImgs: null,
+      careerSource: null,
     }
   }
 
   componentDidMount() {
     this.getInfo();
     this.getIsFriend();
+    this.getImages()
+    this.getCareer()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -62,6 +66,38 @@ class FriendDetail extends Component{
             isFriend: false,
           })
         }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+  getImages = async() => {
+    this.setState({isLoading2:true})
+    return fetch("http://13.124.127.253/api/results.php?page=userImage&id=" + this.state.friendId)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.setState({
+          isLoading2: false,
+          userImgs: responseJson,
+        });
+      })
+
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  getCareer = async() => {
+    this.setState({isLoading3:true})
+    return fetch("http://13.124.127.253/api/results.php?page=getCareer&id=" + this.state.friendId)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.setState({
+          isLoading3: false,
+          careerSource: responseJson,
+        });
       })
       .catch((error) => {
         console.error(error);
@@ -125,8 +161,48 @@ class FriendDetail extends Component{
           <ActivityIndicator />
         </View>
       )
+    } else if(this.state.isLoading2) {
+      return (
+        <View style={{flex:1, justifyContent:'center',alignItems:'center'}}>
+          <ActivityIndicator />
+        </View>
+      )
+    } else if(this.state.isLoading3) {
+      return (
+        <View style={{flex:1, justifyContent:'center',alignItems:'center'}}>
+          <ActivityIndicator />
+        </View>
+      )
     } else {
       let imgURI = this.state.dataSource.photo ? this.state.dataSource.photo : "profile_no.png"
+      let getImages;
+      if(this.state.userImgs) {
+        getImages = this.state.userImgs.map((val,key) => {
+          return <View key={key}>
+            <TouchableOpacity>
+              <Image style={styles.detailImage} source={{uri: 'http://13.124.127.253/images/userImages/'+val.photo}} />
+            </TouchableOpacity>
+          </View>
+        })
+      } else {
+        getImages = <View />
+      }
+
+      let getCareer;
+      if(this.state.careerSource) {
+        getCareer = this.state.careerSource.map((val,key) => {
+          return <CareerList
+                  key={key}
+                  dateVal={val.careerDate}
+                  infoVal={val.career}
+                />
+        })
+      } else {
+        getCareer = <CareerList
+                dateVal=""
+                infoVal="경력이 없습니다."
+              />
+      }
       return (
         <Container>
           <Content
@@ -176,25 +252,13 @@ class FriendDetail extends Component{
               <View style={{alignItems:'flex-start',paddingBottom:10,borderBottomWidth:1,borderBottomColor:'#f4f4f4'}}>
                 <Text style={{color:'#aaa',fontSize:13}}>대표사진</Text>
                 <View style={{flexDirection:'row',marginTop:5,}}>
-                  <Image style={styles.detailImage} source={require('../../assets/images/noImage.png')} />
-                  <Image style={styles.detailImage} source={require('../../assets/images/noImage.png')} />
-                  <Image style={styles.detailImage} source={require('../../assets/images/noImage.png')} />
-                  <Image style={styles.detailImage} source={require('../../assets/images/noImage.png')} />
+                  {getImages}
                 </View>
               </View>
               <View style={{flexDirection:'row',alignItems:'flex-start',marginTop:10}}>
                 <Text style={{color:'#aaa',fontSize:13}}>경력</Text>
                 <View style={{marginLeft:10}}>
-                  <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                  <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                  <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                  <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                  <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                  <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                  <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                  <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                  <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
-                  <CareerList dateVal="2018.11.11" infoVal="마곡동 삼성빌딩 신축현장" />
+                  {getCareer}
                 </View>
               </View>
             </View>

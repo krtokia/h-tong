@@ -40,12 +40,12 @@ class TongNotice extends Component{
     this.state = {
       isLoading: true,
       modal: false,
-      memId: 'SID',
+      memId: StoreGlobal({type:'get',key:'loginId'}),
       content: null,
       isModify: false,
       parentShow: false,
       bbsData: null,
-      tongnum:StoreGlobal({type:'get',key:'tongnum'}),
+      tongnum: StoreGlobal({type:'get',key:'tongnum'}),
       modifyVal: null,
     }
   }

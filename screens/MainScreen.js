@@ -48,6 +48,7 @@ import TongPaperSafe from "./Home/TongPaperSafe.js";
 import TongPaperHealth from "./Home/TongPaperHealth.js";
 import TongPaperArmor from "./Home/TongPaperArmor.js";
 import TongWork from "./Home/TongWork.js";
+import TongMap from "./Home/TongMap.js"
 
 import CommunityMain from "./Home/CommunityMain.js";
 import CommunityNotice from "./Home/CommunityNotice.js";
@@ -270,6 +271,7 @@ const AppStackNavigator = createStackNavigator({
   TongPaperArmor: { screen: TongPaperArmor },
   TongPaper2: { screen: TongPaper2 },
   TongSearch: { screen: TongSearch },
+  TongMap: { screen: TongMap },
   Test: { screen: Test },
   HomeTab: {
     screen: HomeTabNavi,

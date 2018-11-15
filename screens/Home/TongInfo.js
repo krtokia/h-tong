@@ -25,7 +25,7 @@ import {
    Footer,
    Form,
  } from "native-base";
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import styles from './styles.js';
 
 import { StoreGlobal } from '../../App';
@@ -33,37 +33,36 @@ import { StoreGlobal } from '../../App';
 var fontColor = '#888';
 
 class TongInfo extends Component{
-  state = {
-      isLoading: true,
-      dataSource: null,
-      mapRegion: {
-        latitude: 37.78825,
-        longitude: -122.4324,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      },
-      modal: false,
-      tongnum: StoreGlobal({type:'get',key:'tongnum'}),
-      memId: StoreGlobal({type:'get',key:'memId'}),
-  		projectnm: '',
-  		authnum: '',
-  		constructor: '',
-  		supervisor: '',
-  		owner: '',
-  		contact: '',
-  		term: '',
-  		scale: '',
-  		addr: '',
-      refresh: "",
-    };
-
-  _handleMapRegionChange = mapRegion => {
-    this.setState({ mapRegion });
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+        isLoading: true,
+        dataSource: null,
+        mapRegion: null,
+        modalMap: false,
+        modal: false,
+        tongnum: StoreGlobal({type:'get',key:'tongnum'}),
+        memId: StoreGlobal({type:'get',key:'memId'}),
+    		projectnm: '',
+    		authnum: '',
+    		constructor: '',
+    		supervisor: '',
+    		owner: '',
+    		contact: '',
+    		term: '',
+    		scale: '',
+    		addr: '',
+        refresh: "",
+      };
+  }
 
   modalComplate() {
     this.updateTongInfo()
     this.setState({modal: false});
+  }
+
+  onRegionChange = (data) => {
+    console.log(data)
   }
 
   componentDidMount() {
@@ -152,6 +151,27 @@ class TongInfo extends Component{
         var modalFontSize = 11;
         return (
           <Container>
+          <Modal
+            animationType="slide"
+            transparent={false}
+            visible={this.state.modalMap}
+            onRequestClose={() => {
+              this.setState({modalMap: false});
+            }}>
+            <View style={{flex:1}}>
+              <View style={{flex:7}}>
+                <MapView
+                  style={{flex:1}}
+                  onRegionChange={this.onRegionChange}
+                >
+                  <Marker />
+                </MapView>
+              </View>
+              <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                <Text onPress={() => {this.setState({modalMap:false})}}>닫기</Text>
+              </View>
+            </View>
+            </Modal>
             <Modal
               animationType="slide"
               transparent={false}
@@ -237,6 +257,7 @@ class TongInfo extends Component{
                           >
                             {this.state.dataSource[0].addr}
                           </TextInput>
+                          <Text onPress={() => {this.setState({modalMap:true})}}>지도</Text>
                         </View>
                       </View>
                     </ImageBackground>

@@ -53,6 +53,9 @@ class TongWork extends Component{
       return fetch("http://13.124.127.253/api/results.php?page=getWorkList&tongnum=" + this.state.tongnum)
             .then((response) => response.json())
             .then((responseJson) => {
+              if(!responseJson) {
+                responseJson = new Array();
+              }
               //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
               nowDate = new Date(Date.now());
               dateKor = nowDate.getFullYear()+"년 "+(nowDate.getMonth()+1)+"월 "+nowDate.getDate()+"일";
@@ -64,7 +67,6 @@ class TongWork extends Component{
                 dateKor:dateKor,
                 dateOrigin:dateOrigin
               })
-              console.log(responseJson)
             })
             .catch((error) => {
               console.error(error);

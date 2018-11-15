@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActivityIndicator,StyleSheet,Image,TouchableOpacity,TouchableHighlight,Modal,TextInput, Picker } from 'react-native';
+import { Alert,ActivityIndicator,StyleSheet,Image,TouchableOpacity,TouchableHighlight,Modal,TextInput, Picker } from 'react-native';
 import {
   View,
   Button,
@@ -23,37 +23,101 @@ import { StoreGlobal } from '../../App';
 
 import styles from './styles.js';
 
+let markCalendar = {};
+
 class Works extends Component{
   constructor(props) {
     super(props)
 
+    this.openModal = this.openModal.bind(this);
+
     this.state = {
+      depositSelect:"N",
+      modalTitle: "",
+      modalMoney: "",
+      modalName: "",
+      modalSeq: "",
       modal: false,
-      modalItem: null,
-      modalDate: null,
       memId: StoreGlobal({type:'get',key:'loginId'}),
       isLoading: true,
       workData: null,
+      workDays: 0,
     }
   }
 
   modalSet(day) {
     var date=`${day.year}년${day.month}월${day.day}일`;
-    this.setState({modal:true,modalDate:date})
-  }
-  modalExit() {
-    this.setState({modalDate:null,modal:false})
+    var makeArray = Object.keys(markCalendar);
+    var findArray = makeArray.findIndex((obj) => {
+      return obj === day.dateString;
+    })
+
+    if(findArray) {
+      //this.setState({modal:true,modalDate:date})
+      console.log(findArray)
+    }
   }
 
-  getWorkList = async() => {
-      return fetch("http://13.124.127.253/api/results.php?page=getWorkListPlan&id=" + this.state.memId)
+  openModal(seq, action, money) {
+    var workObj = this.state.workData[seq];
+    this.setState({
+      modal:!this.state.modal,
+      depositSelect:workObj.deposit,
+      modalTitle: workObj.dateFor+"("+workObj.weekFor+")",
+      modalMoney: workObj.money,
+      modalName: workObj.tongtitle,
+      modalSeq: workObj.seq,
+    })
+  }
+
+  modalExit() {
+    this.setState({
+      depositSelect:"N",
+      modalTitle: "",
+      modalMoney: "",
+      modalName: "",
+      modalSeq: "",
+      modal: false,
+    })
+  }
+
+  updateWork() {
+    const {depositSelect,modalTitle,modalMoney,modalName,modalSeq} = this.state;
+    console.log(depositSelect)
+    console.log(modalMoney)
+    console.log(modalSeq)
+    this.modalExit()
+  }
+
+  monthChange(month) {
+    this.getWorkList(month.dateString)
+  }
+
+  getWorkList = async(nowDate) => {
+      if(!nowDate) {
+        nowDate = new Date(Date.now());
+        dateOrigin = nowDate.getFullYear()+"-"+(nowDate.getMonth()+1)+"-"+nowDate.getDate();
+        nowDate = dateOrigin;
+      }
+      console.log("http://13.124.127.253/api/results.php?page=getWorkListPlan&id=" + this.state.memId + "&workdate="+nowDate)
+      return fetch("http://13.124.127.253/api/results.php?page=getWorkListPlan&id=" + this.state.memId + "&workdate="+nowDate)
             .then((response) => response.json())
             .then((responseJson) => {
               //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-              this.setState({
-                isLoading: false,
-                workData: responseJson,
-              })
+              if(responseJson) {
+                this.setState({
+                  isLoading: false,
+                  workData: responseJson,
+                  workDays: Object.keys(responseJson).length
+                })
+                console.log(this.state.workData)
+              } else {
+                this.setState({
+                  isLoading: false,
+                  workData: responseJson,
+                })
+              }
+              console.log(responseJson)
             })
             .catch((error) => {
               console.error(error);
@@ -70,17 +134,38 @@ class Works extends Component{
         <ActivityIndicator />
       </View>
     } else {
-      let markCalendar = {};
+      let worklist = new Array();
+      let total = 0;
+      let depositY = 0;
+      let depositN = 0;
       if(this.state.workData) {
-        this.state.workData.map((data) => {
+        worklist = this.state.workData.map((val, key) => {
           markCalendar = {
             ...markCalendar,
-            [data.workdate]: {
+            [val.workdate]: {
               selected: true,
               marked: true
             }
           }
+          dateFor = val.dateFor+"("+val.weekFor+")";
+          total = total+parseInt(val.money);
+          if(val.deposit === "Y") {
+            depositY = depositY+parseInt(val.money);
+          } else {
+            depositN = depositN+parseInt(val.money);
+          }
+          return <WorkList
+            key={key}
+            date={dateFor}
+            seq={key}
+            seq2={val.seq}
+            name={val.tongtitle}
+            status={val.deposit === "Y" ? "지급완료" : "미수금"}
+            money={val.money.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            method={this.openModal}
+          />
         })
+
       }
       const mark = {
       '2018-11-05': { selected: true, marked: true },
@@ -103,7 +188,7 @@ class Works extends Component{
                 <View style={styles.modalHeader}>
                   <View style={{flex:1}} />
                   <View style={{flex:4,justifyContent:'center',alignItems:'center'}}>
-                    <Text style={{color:'#fff'}}>{this.state.modalDate}</Text>
+                    <Text style={{color:'#fff'}}>{this.state.modalTitle}</Text>
                   </View>
                   <View style={{flex:1}}>
                     <TouchableOpacity style={{width:'100%',height:'100%',alignItems:'center',justifyContent:'center'}}
@@ -115,26 +200,40 @@ class Works extends Component{
                 </View>
                 <View style={styles.modalInner}>
                   <View style={[styles.grayUnderline,{width:'100%'}]}>
-                    <Text style={{fontSize:13,marginLeft:20,marginBottom:5,}}>제목</Text>
-                    <TextInput placeholder="입력" style={{width:'80%',fontSize:13}} underlineColorAndroid="#0000" />
+                    <Text style={{fontSize:13,marginLeft:20,marginBottom:5,}}>현장이름</Text>
+                    <TextInput
+                      editable={false}
+                      style={{width:'80%',fontSize:13}}
+                      underlineColorAndroid="#0000"
+                      value={this.state.modalName}
+                    />
                   </View>
                   <View style={[styles.grayUnderline,{width:'100%'}]}>
-                    <Text style={{fontSize:13,marginLeft:20,marginBottom:5,}}>제목</Text>
-                    <TextInput placeholder="입력" style={{width:'80%',fontSize:13}} underlineColorAndroid="#0000" />
-                  </View>
-                  <View style={[styles.grayUnderline,{width:'100%'}]}>
-                    <Text style={{fontSize:13,marginLeft:20,marginBottom:5,}}>제목</Text>
-                    <Picker
-                      selectedValue={this.state.modalItem}
-                      style={{width:'90%',height:30}}
-                      onValueChange={(itemValue, itemIndex) => this.setState({modalItem: itemValue})}
+                    <Text style={{fontSize:13,marginLeft:20,marginBottom:5,}}>금액</Text>
+                    <TextInput
+                      placeholder="금액 입력"
+                      style={{width:'80%',fontSize:13}}
+                      underlineColorAndroid="#0000"
+                      onChangeText={(content) => {this.setState({modalMoney:content})}}
                     >
-                      <Picker.Item label="선택1" value="1" />
-                      <Picker.Item label="선택2" value="2" />
+                      {this.state.modalMoney}
+                    </TextInput>
+                  </View>
+                  <View style={[styles.grayUnderline,{width:'100%'}]}>
+                    <Text style={{fontSize:13,marginLeft:20,marginBottom:5,}}>수금여부</Text>
+                    <Picker
+                      selectedValue={this.state.depositSelect}
+                      style={{width:'90%',height:30}}
+                      onValueChange={(itemValue, itemIndex) => this.setState({depositSelect: itemValue})}
+                    >
+                      <Picker.Item label="지급완료" value="Y" />
+                      <Picker.Item label="미수금" value="N" />
                     </Picker>
                   </View>
                   <View style={{width:150,marginTop:30}}>
-                  <Button rounded block small transparent style={{backgroundColor:'#db3928'}}>
+                  <Button rounded block small transparent style={{backgroundColor:'#db3928'}}
+                    onPress={() => {this.updateWork()}}
+                  >
                     <Text style={{color:'#fff',fontSize:13}}>완료</Text>
                   </Button>
                   </View>
@@ -147,7 +246,6 @@ class Works extends Component{
           <Content
             showsVerticalScrollIndicator={false}
             style={{ backgroundColor: "#f9f9f9"}}
-            contentContainerStyle={{ flex: 1 }}
           >
             <View style={[styles.Box,{height:300}]}>
               <Calendar
@@ -163,29 +261,20 @@ class Works extends Component{
                     base: { width:25,height:25,alignItems:'center' },
                   }
                 }}
+                hideExtraDays={true}
                 onDayPress={(day) => {this.modalSet(day)}}
+                onMonthChange={(month) => {this.monthChange(month)}}
                 markedDates={markCalendar}
               />
             </View>
             <View style={{flexDirection:'row',justifyContent:'space-around',paddingVertical:10}}>
-              <Text style={{fontSize:10}}>작업일 21일</Text>
-              <Text style={{fontSize:10}}>총금액 2,100,000</Text>
-              <Text style={{fontSize:10}}>수금 2,100,000</Text>
-              <Text style={{fontSize:10}}>미수금 2,100,000</Text>
+              <Text style={{fontSize:10}}>작업일 {this.state.workDays}일</Text>
+              <Text style={{fontSize:10}}>총금액 {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
+              <Text style={{fontSize:10}}>수금 {depositY.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
+              <Text style={{fontSize:10}}>미수금 {depositN.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
             </View>
             <View style={[styles.Box,{marginTop:0,paddingHorizontal:10}]}>
-              <WorkList
-                date="10.01.(월)"
-                name="현장통1 신축현장"
-                status="지급예정"
-                money="109,300"
-              />
-              <WorkList
-                date="10.01.(월)"
-                name="현장통1 신축현장"
-                status="미수금"
-                money="109,300"
-              />
+              {worklist}
             </View>
           </Content>
         </Container>
@@ -196,20 +285,27 @@ class Works extends Component{
 export default Works;
 
 class WorkList extends Component{
+
+  openModal = () => {
+    this.props.method(this.props.seq, this.props.status, this.props.money)
+  }
+
   render(){
     return(
-      <TouchableOpacity>
+      <View>
+      <TouchableOpacity onPress={this.openModal}>
         <View style={{borderBottomWidth:1,borderBottomColor:'#e9e9e9',flexDirection:'row',justifyContent:'space-between',paddingVertical:5}}>
           <View>
             <Text style={[styles.smallText,{color:'#aaa'}]}>{this.props.date}</Text>
             <Text>{this.props.name}</Text>
           </View>
           <View style={{alignItems:'flex-end'}}>
-            <Text style={[styles.smallText, this.props.status === '지급예정' ? {color:'red'} : {color:'blue'} ]}>{this.props.status}</Text>
+            <Text style={[styles.smallText, this.props.status === '미수금' ? {color:'red'} : {color:'blue'} ]}>{this.props.status}</Text>
             <Text>{this.props.money}원</Text>
           </View>
         </View>
       </TouchableOpacity>
+      </View>
     )
   }
 }

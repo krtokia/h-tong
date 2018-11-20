@@ -60,7 +60,7 @@ class TongWork extends Component{
               nowDate = new Date(Date.now());
               dateKor = nowDate.getFullYear()+"년 "+(nowDate.getMonth()+1)+"월 "+nowDate.getDate()+"일";
               dateOrigin = nowDate.getFullYear()+"-"+(nowDate.getMonth()+1)+"-"+nowDate.getDate();
-              responseJson.unshift({workdate:'9999년 99월 99일'})
+//              responseJson.unshift({workdate:'9999년 99월 99일'})
               this.setState({
                 isLoading: false,
                 workData: responseJson,
@@ -105,13 +105,9 @@ class TongWork extends Component{
         'Content-Type': 'multipart/form-data',
       },
     }
-
-    console.log(options)
-
     return fetch(apiUrl, options).then((response) => response.json())
       .then((responseJson)=> {
         if(responseJson === 'succed') {
-          console.log(responseJson);
           this.getWorklist();
         } else {
           //alert(responseJson);
@@ -125,6 +121,19 @@ class TongWork extends Component{
       });
   }
 
+  dataConvert(data) {
+    var dateObj = {};
+    for (var i = 0; i<data.length; i++) {
+      var num = data[i].workdate;
+      if(dateObj[num]) {
+        dateObj[num] = [ ...dateObj[num], data[i].photolist];
+      } else {
+        dateObj[num] = [data[i].photolist];
+      }
+    }
+    return dateObj;
+  }
+
   render(){
     if (this.state.isLoading) {
       return (
@@ -135,45 +144,62 @@ class TongWork extends Component{
     } else {
       let insertYn = true;
       let isToday = false;
+      // let worklist;
+      // let prevDate;
+      // let flag = false;
+      // let photoArray = [];
+      // let photoLast;
       let worklist;
-      let prevDate;
-      let flag = false;
-      let photoArray = [];
-      let photoLast;
       if (this.state.workData) {
-        worklist = this.state.workData.map((val, key) => {
-          photoLast = null;
-          if(prevDate === val.workdate) {
-            prevDate = val.workdate;
-            flag = false;
-          } else if(!prevDate){
-            prevDate = val.workdate;
-            flag = false;
+        convertData = this.dataConvert(this.state.workData)
+        worklist = Object.keys(convertData).map((val,key) => {
+          if(this.state.dateKor === val) {
+            isToday = true;
+            insertYn = false;
           } else {
-            flag = true;
-            prevDate = val.workdate;
+            isToday = false;
           }
-          photoArray.push(val.photolist)
-          console.log(val.workdate, flag)
-          if(flag) {
-            if(this.state.dateKor === val.workdate) {
-              insertYn = false;
-              isToday = true;
-            } else {
-              isToday = false;
-            }
-            photoLast = photoArray;
-            photoArray = new Array();
-            return <View key={key}>
-              <WorkList
-                workdate={val.workdate}
-                photolist={photoLast}
-                method={this.imgupload}
-                isToday={isToday}
-              />
-            </View>
-          }
+          return <View key={key}>
+            <WorkList
+              workdate={val}
+              photolist={convertData[val]}
+              method={this.imgupload}
+              isToday={isToday}
+            />
+          </View>
         })
+        // worklist = this.state.workData.map((val, key) => {
+        //   photoLast = null;
+        //   if(prevDate === val.workdate) {
+        //     prevDate = val.workdate;
+        //     flag = false;
+        //   } else if(!prevDate){
+        //     prevDate = val.workdate;
+        //     flag = false;
+        //   } else {
+        //     flag = true;
+        //     prevDate = val.workdate;
+        //   }
+        //   photoArray.push(val.photolist)
+        //   if(flag) {
+        //     if(this.state.dateKor === val.workdate) {
+        //       insertYn = false;
+        //       isToday = true;
+        //     } else {
+        //       isToday = false;
+        //     }
+        //     photoLast = photoArray;
+        //     photoArray = new Array();
+        //     return <View key={key}>
+        //       <WorkList
+        //         workdate={val.workdate}
+        //         photolist={photoLast}
+        //         method={this.imgupload}
+        //         isToday={isToday}
+        //       />
+        //     </View>
+        //   }
+        // })
       } else {
         worklist = <View />
       }
@@ -222,7 +248,9 @@ class WorkList extends pickableImage {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.imageSource !== prevState.imageSource) {
-      this.props.method(this.state.imageSource)
+      if (!this.state.imageSource.cancelled) {
+        this.props.method(this.state.imageSource)
+      }
     }
     if (this.props.photolist !== prevProps.photolist) {
       this.setState({photolist: this.props.photolist})

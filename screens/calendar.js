@@ -43,11 +43,10 @@ export default class Calendar extends Component {
       year: changeYear
     })
 
-    const { year, month } = this.state;
     let obj = {
-      ["year"]: year,
-      ["month"]: month,
-      ["getFullDate"]: year+"-"+month
+      ["year"]: changeYear,
+      ["month"]: changeMonth,
+      ["getFullDate"]: changeYear+"-"+(changeMonth+1)
     }
     if(this.props.onChangeMonth) {
       this.props.onChangeMonth(obj)
@@ -93,7 +92,7 @@ export default class Calendar extends Component {
     if(!this.props.data) {
       return new Array();
     }
-    dateArray = this.props.data.sort();
+    dateArray = this.props.data;
     dateObj = {};
     for (var i = 0; i < dateArray.length; i++) {
       var num = dateArray[i];

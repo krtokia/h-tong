@@ -41,7 +41,6 @@ class Works extends Component{
       memId: StoreGlobal({type:'get',key:'loginId'}),
       isLoading: true,
       workData: null,
-      workDays: 0,
     }
   }
 
@@ -54,7 +53,7 @@ class Works extends Component{
 
     if(findArray) {
       //this.setState({modal:true,modalDate:date})
-      console.log(findArray)
+
     }
   }
 
@@ -90,7 +89,7 @@ class Works extends Component{
   }
 
   monthChange(month) {
-    this.getWorkList(month.dateString)
+    this.getWorkList(month.getFullDate+"-01")
   }
 
   getWorkList = async(nowDate) => {
@@ -99,8 +98,8 @@ class Works extends Component{
         dateOrigin = nowDate.getFullYear()+"-"+(nowDate.getMonth()+1)+"-"+nowDate.getDate();
         nowDate = dateOrigin;
       }
-      console.log("http://13.124.127.253/api/results.php?page=getWorkListPlan&id=" + this.state.memId + "&workdate="+nowDate)
-      return fetch("http://13.124.127.253/api/results.php?page=getWorkListPlan&id=" + this.state.memId + "&workdate="+nowDate)
+      console.log("http://13.124.127.253/api/results.php?page=getMyWorkList&id=" + this.state.memId + "&workdate="+nowDate)
+      return fetch("http://13.124.127.253/api/results.php?page=getMyWorkList&id=" + this.state.memId + "&workdate="+nowDate)
             .then((response) => response.json())
             .then((responseJson) => {
               //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -108,7 +107,6 @@ class Works extends Component{
                 this.setState({
                   isLoading: false,
                   workData: responseJson,
-                  workDays: Object.keys(responseJson).length
                 })
               } else {
                 this.setState({
@@ -137,8 +135,8 @@ class Works extends Component{
       let total = 0;
       let depositY = 0;
       let depositN = 0;
+      let markCalendar = new Array();
       if(this.state.workData) {
-
         worklist = this.state.workData.map((val, key) => {
           markCalendar = [
             ...markCalendar,
@@ -162,13 +160,7 @@ class Works extends Component{
             method={this.openModal}
           />
         })
-
       }
-      const mark = [
-      '2018-11-05',
-      '2018-11-07',
-      '2018-11-18'
-      ]
       return (
         <Container>
           <Modal
@@ -247,12 +239,12 @@ class Works extends Component{
             <View style={[styles.Box,{height:'auto',padding:0}]}>
               <Calendar
                 onDayPress={(day) => {this.modalSet(day)}}
-                onMonthChange={(month) => {this.monthChange(month)}}
+                onChangeMonth={(month) => {this.monthChange(month)}}
                 data={markCalendar}
               />
             </View>
             <View style={{flexDirection:'row',justifyContent:'space-around',paddingVertical:10}}>
-              <Text style={{fontSize:10}}>작업일 {this.state.workDays}일</Text>
+              <Text style={{fontSize:10}}>작업일 {[...new Set(markCalendar)].length}일</Text>
               <Text style={{fontSize:10}}>총금액 {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
               <Text style={{fontSize:10}}>수금 {depositY.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
               <Text style={{fontSize:10}}>미수금 {depositN.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>

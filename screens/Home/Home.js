@@ -165,7 +165,7 @@ class Home extends Component{
                 <Icon name='primitive-dot' type='Octicons' style={{color:'red',fontSize:13,alignSelf:'flex-start'}} />
                 <Text style={{fontWeight:'bold'}}>내 현장통</Text>
               </View>
-              <Text style={{fontSize:13}}>편집</Text>
+              <Text style={{fontSize:13}}></Text>
             </View>
             <ScrollView horizontal={true}>
             <View style={styles.HomeList}>
@@ -179,7 +179,7 @@ class Home extends Component{
                 <Icon name='primitive-dot' type='Octicons' style={{color:'green',fontSize:13,alignSelf:'flex-start'}} />
                 <Text style={{fontWeight:'bold'}}>내 커뮤니티통</Text>
               </View>
-              <Text style={{fontSize:13}}>편집</Text>
+              <Text style={{fontSize:13}}></Text>
             </View>
             <ScrollView horizontal={true}>
             <View style={styles.HomeList}>

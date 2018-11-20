@@ -18,7 +18,7 @@ import {
   Icon
 } from 'native-base';
 
-import {Calendar} from 'react-native-calendars';
+import Calendar from '../calendar.js';
 import { StoreGlobal } from '../../App';
 
 import styles from './styles.js';
@@ -110,14 +110,13 @@ class Works extends Component{
                   workData: responseJson,
                   workDays: Object.keys(responseJson).length
                 })
-                console.log(this.state.workData)
               } else {
                 this.setState({
                   isLoading: false,
                   workData: responseJson,
                 })
               }
-              console.log(responseJson)
+
             })
             .catch((error) => {
               console.error(error);
@@ -139,14 +138,12 @@ class Works extends Component{
       let depositY = 0;
       let depositN = 0;
       if(this.state.workData) {
+
         worklist = this.state.workData.map((val, key) => {
-          markCalendar = {
+          markCalendar = [
             ...markCalendar,
-            [val.workdate]: {
-              selected: true,
-              marked: true
-            }
-          }
+            val.workdate,
+          ]
           dateFor = val.dateFor+"("+val.weekFor+")";
           total = total+parseInt(val.money);
           if(val.deposit === "Y") {
@@ -167,11 +164,11 @@ class Works extends Component{
         })
 
       }
-      const mark = {
-      '2018-11-05': { selected: true, marked: true },
-      '2018-11-07': { selected: true, marked: true },
-      '2018-11-18': { selected: true, marked: true }
-      }
+      const mark = [
+      '2018-11-05',
+      '2018-11-07',
+      '2018-11-18'
+      ]
       return (
         <Container>
           <Modal
@@ -247,24 +244,11 @@ class Works extends Component{
             showsVerticalScrollIndicator={false}
             style={{ backgroundColor: "#f9f9f9"}}
           >
-            <View style={[styles.Box,{height:300}]}>
+            <View style={[styles.Box,{height:'auto',padding:0}]}>
               <Calendar
-                monthFormat={'yyyy년 MM월'}
-                style={{height:280}}
-                theme={{
-                  arrowColor: '#db3928',
-                  selectedDayBackgroundColor: '#db3928',
-                  textMonthFontSize: 16,
-                  textDayHeaderFontSize: 11,
-                  todayTextColor: '#db3928',
-                  'stylesheet.day.basic': {
-                    base: { width:25,height:25,alignItems:'center' },
-                  }
-                }}
-                hideExtraDays={true}
                 onDayPress={(day) => {this.modalSet(day)}}
                 onMonthChange={(month) => {this.monthChange(month)}}
-                markedDates={markCalendar}
+                data={markCalendar}
               />
             </View>
             <View style={{flexDirection:'row',justifyContent:'space-around',paddingVertical:10}}>

@@ -68,8 +68,9 @@ export default {
   },
   ImageHeader: {
     width: deviceWidth,
-    height: deviceHeight / 3,
+    height: deviceHeight / 4,
     flexDirection:'column',
+    padding:0
   },
   TongHeader: {
     flex: 1,
@@ -114,7 +115,6 @@ export default {
     width: 40,
     height: 40,
     resizeMode: 'contain',
-    borderRadius: 50,
   },
   TongContentImgs: {
     flexDirection: 'row',
@@ -272,5 +272,56 @@ export default {
     marginHorizontal: 5,
     marginBottom: 5,
     borderColor: '#999'
+  },
+  opacityBox: {
+    backgroundColor: '#fff8',
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center',
+    zIndex:1,
+    paddingHorizontal: 10,
+  },
+  tongBackBtn: {
+    fontSize:25,
+    textShadowOffset:{width:3,height:3},
+    textShadowColor:'#888'
+  },
+  tongBox: {
+    flexDirection:'row',
+    backgroundColor:'#f4f4f4',
+    marginBottom:5,
+  },
+  tongInnerBox: {
+    backgroundColor: '#fff',
+    shadowOpacity: 3,
+    shadowOffset: { width:3, height:3 },
+    shadowRadius: 3,
+    elevation: 3,
+    padding: 10
+  },
+  boxTitle: {
+    fontSize: 12,
+    fontWeight: 'bold'
+  },
+  boxSub: {
+    fontSize: 9,
+    color: '#db3928',
+  },
+  innerContent: {
+    fontSize: 11,
+    color: '#999',
+  },
+  innerBoxTitle: {
+    width:'100%',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
+    marginBottom: 10,
+  },
+  mainWorkImg: {
+    width: 76,
+    height: 76,
+    resizeMode: 'center',
+    marginHorizontal: 3
   }
 };

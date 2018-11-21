@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  ActionSheet,
   StyleSheet,
   Image,
   TouchableOpacity,
@@ -7,7 +8,9 @@ import {
   ImageBackground,
   TouchableWithoutFeedback,
   ActivityIndicator,
-  Alert
+  Alert,
+  TextInput,
+  Picker,
  } from 'react-native';
  import {
    Container,
@@ -47,6 +50,8 @@ class TongNotice extends Component{
       bbsData: null,
       tongnum: StoreGlobal({type:'get',key:'tongnum'}),
       modifyVal: null,
+      title: "",
+      readGrade: 10,
     }
   }
 
@@ -60,6 +65,8 @@ class TongNotice extends Component{
                 bbsData: responseJson,
                 parentShow: !this.state.parentShow,
                 content: null,
+                title: "",
+                readGrade: 10,
               });
             })
             .catch((error) => {
@@ -93,8 +100,15 @@ class TongNotice extends Component{
   }
 
   setModify(modifyVal) {
-    console.log("modifyVal",modifyVal)
-    this.setState({modal: true,isModify: true,content:modifyVal.notiContent,modifyVal:modifyVal});
+    this.setState({
+      modal: true,
+      isModify: true,
+      content:modifyVal.notiContent,
+      modifyVal:modifyVal,
+      title:modifyVal.notiTitle,
+      readGrade: modifyVal.readGrade,
+    });
+    console.log("readgrade::"+this.state.readGrade)
   }
 
   setDelete(deleteVal) {
@@ -144,9 +158,7 @@ class TongNotice extends Component{
 
   modify() {
     this.setState({modal:false,isModify:false})
-    console.log("modify complete",this.state.modifyVal);
-
-    const {tongnum, memId, content} = this.state;
+    const {tongnum, memId, content, title, readGrade} = this.state;
 
     let apiUrl = 'http://13.124.127.253/api/writeNoti.php?action=updateNoti';
 	   options = {
@@ -159,9 +171,11 @@ class TongNotice extends Component{
           tongnum : tongnum,
           seq: this.state.modifyVal.seq,
           notiContent: content,
-          notiTitle: 'aa'
+          notiTitle: title,
+          readGrade: readGrade,
         })
       }
+      console.log(options)
       return fetch(apiUrl, options).then((response) => response.json())
         .then((responseJson)=> {
           if(responseJson === 'succed') {
@@ -181,7 +195,7 @@ class TongNotice extends Component{
 
   write() {
     this.setState({modal:!this.state.modal,isModify:false})
-    const {tongnum, memId, content} = this.state;
+    const {tongnum, memId, content, title, readGrade} = this.state;
 
     let apiUrl = 'http://13.124.127.253/api/writeNoti.php?action=insertNoti';
 
@@ -195,7 +209,8 @@ class TongNotice extends Component{
         tongnum : tongnum,
         notiWriter: memId,
         notiContent: content,
-        notiTitle: "aa"
+        notiTitle: title,
+        readGrade: readGrade,
       })}
       return fetch(apiUrl, options).then((response) => response.json())
         .then((responseJson)=> {
@@ -224,7 +239,9 @@ class TongNotice extends Component{
           return <View key={key}>
                   <NoticeList
                     name={val.notiWriter}
+                    photo={val.photo}
                     division="관리자"
+                    title={val.notiTitle}
                     content={val.notiContent}
                     setModifyParent={this.setModify}
                     setDeleteParent={this.setDelete}
@@ -261,30 +278,40 @@ class TongNotice extends Component{
                   <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>공지사항 {this.state.isModify ? "수정" : "작성"}</Text>
                 </Body>
                 <Right  style={{flex:1}}>
-                  <Text style={{fontSize:13,color:'#fff'}} onPress={() => {this.division(this.state.isModify)}}>완료</Text>
+                  <Text style={{fontSize:13,color:'#fff'}} onPress={() => this.division(this.state.isModify)}>완료</Text>
                 </Right>
               </Header>
               <Content style={{padding:10}}>
                 <Form>
+                  <Text style={{fontSize:13}}>공지 제목:</Text>
+                  <TextInput
+                    onChangeText={(title) => this.setState({title})}
+                    value={this.state.title ? this.state.title : ""}
+                    underlineColorAndroid="transparent"
+                    style={{borderWidth:1,borderColor:'#999',borderRadius:10,marginTop:5}}
+                  />
+                  <View style={{height:20}} />
+                  <Text style={{fontSize:13}}>읽기 권한:</Text>
+                  <Picker
+                    selectedValue={this.state.readGrade}
+                    style={{width:'90%',height:30}}
+                    onValueChange={(itemValue, itemIndex) => this.setState({readGrade: itemValue})}
+                  >
+                    <Picker.Item label="시공사만" value="3" />
+                    <Picker.Item label="감리 이상" value="5" />
+                    <Picker.Item label="협력사 이상" value="7" />
+                    <Picker.Item label="전체" value="10" />
+                  </Picker>
+                  <View style={{height:20}} />
+                  <Text style={{fontSize:13}}>공지 내용</Text>
                   <ImageBackground source={require('../../assets/images/backgroundLogo.png')} style={{width:'100%'}}>
-                  <Textarea onChangeText={(content) => this.setState({ content })} rowSpan={20}
+                  <Textarea onChangeText={(content) => this.setState({ content })} rowSpan={15}
+                    style={{borderWidth:1,borderRadius:10,marginTop:10,borderColor:'#999'}}
                     value={this.state.content ? this.state.content : ""}
                   />
                   </ImageBackground>
                 </Form>
               </Content>
-              {/*<Footer>
-                <FooterTab style={{backgroundColor:'#fff'}}>
-                  <Button>
-                    <Icon type='FontAwesome' name='camera' style={{color:'#999'}} />
-                    <Text style={{color:'#ccc'}}>사진</Text>
-                  </Button>
-                  <Button>
-                    <Icon type='FontAwesome' name='video-camera' style={{color:'#999'}} />
-                    <Text style={{color:'#ccc'}}>동영상</Text>
-                  </Button>
-                </FooterTab>
-              </Footer>*/}
           </Modal>
           <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
             <Left style={{flex:1}}>
@@ -356,7 +383,9 @@ class NoticeList extends Component{
       <View style={[styles.TongContentBox]}>
         <View style={styles.TongContentHeader}>
           <View style={{flexDirection: 'row'}}>
-            <Image style={styles.ContentHeaderImg} source={require('../../assets/images/profile_no.png')} />
+            <View style={{width:40,height:40,borderRadius:50}}>
+              <Image style={[styles.ContentHeaderImg]} source={{uri: 'http://13.124.127.253/images/userProfile/'+this.props.photo}} />
+            </View>
             <View style={{marginLeft:10}}>
               <Text style={{fontSize:14,fontWeight:'bold'}}>{this.props.name}</Text>
               <Text style={{fontSize:10,color:'#aaa'}}>{this.props.division}</Text>
@@ -397,6 +426,9 @@ class NoticeList extends Component{
             }
           </View>
           }
+        </View>
+        <View style={[styles.TongContents,styles.grayBottom,{height:this.state.boxHeight}]} onLayout={this.onLayout}>
+          <Text style={{fontSize:13,fontWeight:'bold'}}>{this.props.title}</Text>
         </View>
         <View style={[styles.TongContents,{height:this.state.boxHeight}]} onLayout={this.onLayout}>
           <Text style={{fontSize:13}}>{this.props.content}</Text>

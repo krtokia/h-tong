@@ -209,7 +209,7 @@ class TongWork extends Component{
             <Left style={{flex:1}}>
             </Left>
             <Body style={{flex:1,alignItems:'center'}}>
-              <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>작업일지</Text>
+              <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>작업실명제</Text>
             </Body>
             <Right  style={{flex:1}}>
             </Right>

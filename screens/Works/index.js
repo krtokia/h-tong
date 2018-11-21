@@ -29,11 +29,11 @@ class Works extends Component{
   constructor(props) {
     super(props)
 
-    this.openModal = this.openModal.bind(this);
-
+    this.updateModal = this.updateModal.bind(this);
+    this.deleteWork = this.deleteWork.bind(this)
     this.state = {
       depositSelect:"N",
-      modalTitle: "",
+      isUpdate: false,
       modalMoney: "",
       modalName: "",
       modalSeq: "",
@@ -41,51 +41,99 @@ class Works extends Component{
       memId: StoreGlobal({type:'get',key:'loginId'}),
       isLoading: true,
       workData: null,
+      modalDate: "",
     }
   }
 
-  modalSet(day) {
-    var date=`${day.year}년${day.month}월${day.day}일`;
-    var makeArray = Object.keys(markCalendar);
-    var findArray = makeArray.findIndex((obj) => {
-      return obj === day.dateString;
+  insertModal(day) {
+    this.setState({
+      depositSelect:"N",
+      isUpdate: false,
+      modalMoney: "",
+      modalName: "",
+      modalSeq: "",
+      modalDate: day.getFullDate,
+      modal: !this.state.modal,
     })
-
-    if(findArray) {
-      //this.setState({modal:true,modalDate:date})
-
-    }
   }
 
-  openModal(seq, action, money) {
+  updateModal(seq) {
     var workObj = this.state.workData[seq];
     this.setState({
       modal:!this.state.modal,
       depositSelect:workObj.deposit,
-      modalTitle: workObj.dateFor+"("+workObj.weekFor+")",
+      isUpdate: true,
       modalMoney: workObj.money,
-      modalName: workObj.tongtitle,
+      modalName: workObj.worktitle,
       modalSeq: workObj.seq,
+      modalDate: workObj.workdate
     })
   }
 
   modalExit() {
     this.setState({
       depositSelect:"N",
-      modalTitle: "",
+      isUpdate: false,
       modalMoney: "",
       modalName: "",
       modalSeq: "",
       modal: false,
+      modalDate: "",
     })
   }
 
-  updateWork() {
-    const {depositSelect,modalTitle,modalMoney,modalName,modalSeq} = this.state;
-    console.log(depositSelect)
-    console.log(modalMoney)
-    console.log(modalSeq)
-    this.modalExit()
+  updateWork = () => {
+    const {memId,depositSelect,isUpdate,modalMoney,modalName,modalSeq,modalDate} = this.state;
+    let apiUrl = 'http://13.124.127.253/api/myworklist.php';
+    const formData = new FormData();
+    formData.append('action', isUpdate ? "update" : "insert")
+    formData.append('memId', memId)
+    formData.append('worktitle', modalName)
+    formData.append('money', modalMoney)
+    formData.append('workdate', modalDate)
+    formData.append('deposit', depositSelect)
+    formData.append('seq', modalSeq)
+
+    options = {
+      method: 'POST',
+      body: formData,
+    }
+
+    console.log(formData)
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          this.getWorkList()
+          this.modalExit()
+        } else {
+          console.log(responseJson)
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
+  }
+
+  deleteWork(seq) {
+    let apiUrl = 'http://13.124.127.253/api/myworklist.php';
+    const formData = new FormData();
+    formData.append('action', "delete")
+    formData.append('seq', seq)
+
+    options = {
+      method: 'POST',
+      body: formData,
+    }
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          this.getWorkList()
+          this.modalExit()
+        } else {
+          console.log(responseJson)
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
   }
 
   monthChange(month) {
@@ -98,7 +146,6 @@ class Works extends Component{
         dateOrigin = nowDate.getFullYear()+"-"+(nowDate.getMonth()+1)+"-"+nowDate.getDate();
         nowDate = dateOrigin;
       }
-      console.log("http://13.124.127.253/api/results.php?page=getMyWorkList&id=" + this.state.memId + "&workdate="+nowDate)
       return fetch("http://13.124.127.253/api/results.php?page=getMyWorkList&id=" + this.state.memId + "&workdate="+nowDate)
             .then((response) => response.json())
             .then((responseJson) => {
@@ -152,12 +199,12 @@ class Works extends Component{
           return <WorkList
             key={key}
             date={dateFor}
-            seq={key}
-            seq2={val.seq}
-            name={val.tongtitle}
+            seq={val.seq}
+            name={val.worktitle}
             status={val.deposit === "Y" ? "지급완료" : "미수금"}
             money={val.money.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-            method={this.openModal}
+            method={this.updateModal}
+            deleteMethod={(seq) => this.deleteWork(seq)}
           />
         })
       }
@@ -171,13 +218,13 @@ class Works extends Component{
               this.modalExit();
             }}>
             <View style={{flex:1,alignItems:'center',backgroundColor:'#0009'}}>
-              <TouchableOpacity style={{flex:1,width:'100%'}}
+              <TouchableOpacity style={{flex:2,width:'100%'}}
               onPress={() => {this.modalExit();}} />
               <View style={styles.modalContent}>
                 <View style={styles.modalHeader}>
                   <View style={{flex:1}} />
                   <View style={{flex:4,justifyContent:'center',alignItems:'center'}}>
-                    <Text style={{color:'#fff'}}>{this.state.modalTitle}</Text>
+                    <Text style={{color:'#fff'}}>작업일지 {this.state.isUpdate ? "수정" : "추가"}</Text>
                   </View>
                   <View style={{flex:1}}>
                     <TouchableOpacity style={{width:'100%',height:'100%',alignItems:'center',justifyContent:'center'}}
@@ -188,13 +235,17 @@ class Works extends Component{
                   </View>
                 </View>
                 <View style={styles.modalInner}>
+                  <View style={[{width:'100%',alignItems:'center',marginBottom:10}]}>
+                    <Text>{this.state.modalDate}</Text>
+                  </View>
                   <View style={[styles.grayUnderline,{width:'100%'}]}>
                     <Text style={{fontSize:13,marginLeft:20,marginBottom:5,}}>현장이름</Text>
                     <TextInput
-                      editable={false}
+                      editable={true}
                       style={{width:'80%',fontSize:13}}
                       underlineColorAndroid="#0000"
                       value={this.state.modalName}
+                      onChangeText={(content) => {this.setState({modalName:content})}}
                     />
                   </View>
                   <View style={[styles.grayUnderline,{width:'100%'}]}>
@@ -219,16 +270,16 @@ class Works extends Component{
                       <Picker.Item label="미수금" value="N" />
                     </Picker>
                   </View>
-                  <View style={{width:150,marginTop:30}}>
+                  <View style={{width:150,marginTop:20}}>
                   <Button rounded block small transparent style={{backgroundColor:'#db3928'}}
-                    onPress={() => {this.updateWork()}}
+                    onPress={this.updateWork}
                   >
                     <Text style={{color:'#fff',fontSize:13}}>완료</Text>
                   </Button>
                   </View>
                 </View>
               </View>
-              <TouchableOpacity style={{flex:1,width:'100%'}}
+              <TouchableOpacity style={{flex:2,width:'100%'}}
               onPress={() => {this.modalExit();}} />
             </View>
           </Modal>
@@ -238,16 +289,24 @@ class Works extends Component{
           >
             <View style={[styles.Box,{height:'auto',padding:0}]}>
               <Calendar
-                onDayPress={(day) => {this.modalSet(day)}}
+                onDayPress={(day) => {this.insertModal(day)}}
                 onChangeMonth={(month) => {this.monthChange(month)}}
                 data={markCalendar}
               />
             </View>
-            <View style={{flexDirection:'row',justifyContent:'space-around',paddingVertical:10}}>
-              <Text style={{fontSize:10}}>작업일 {[...new Set(markCalendar)].length}일</Text>
-              <Text style={{fontSize:10}}>총금액 {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
-              <Text style={{fontSize:10}}>수금 {depositY.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
-              <Text style={{fontSize:10}}>미수금 {depositN.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
+            <View style={{flexDirection:'row',paddingVertical:10}}>
+              <View style={{flex:1,alignItems:'center'}}>
+                <Text style={{fontSize:9}}>작업일 {[...new Set(markCalendar)].length}일</Text>
+              </View>
+              <View style={{flex:1}}>
+                <Text style={{fontSize:9}}>총금액 {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
+              </View>
+              <View style={{flex:1}}>
+                <Text style={{fontSize:9}}>수금 {depositY.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
+              </View>
+              <View style={{flex:1}}>
+                <Text style={{fontSize:9}}>미수금 {depositN.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
+              </View>
             </View>
             <View style={[styles.Box,{marginTop:0,paddingHorizontal:10}]}>
               {worklist}
@@ -262,14 +321,23 @@ export default Works;
 
 class WorkList extends Component{
 
-  openModal = () => {
-    this.props.method(this.props.seq, this.props.status, this.props.money)
+  updateModal = () => {
+    this.props.method(this.props.seq)
   }
-
+  deleteWork = () => {
+    Alert.alert("현장통","삭제하시겠습니까?",[
+      {text: "예", onPress: () => this.props.deleteMethod(this.props.seq)},
+      {text: "아니오", style: 'cancel'}
+    ],{
+      cancelable: true
+    })
+  }
   render(){
     return(
       <View>
-      <TouchableOpacity onPress={this.openModal}>
+      <TouchableOpacity onPress={this.updateModal}
+        onLongPress={this.deleteWork}
+      >
         <View style={{borderBottomWidth:1,borderBottomColor:'#e9e9e9',flexDirection:'row',justifyContent:'space-between',paddingVertical:5}}>
           <View>
             <Text style={[styles.smallText,{color:'#aaa'}]}>{this.props.date}</Text>

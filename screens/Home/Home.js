@@ -26,7 +26,8 @@ class Home extends Component{
       isLoading2: true,
       dataSource: null,
       dataSource2: null,
-      memId: StoreGlobal({type:'get',key:'loginId'})
+      memId: StoreGlobal({type:'get',key:'loginId'}),
+      refresh: null,
     }
   }
 
@@ -65,7 +66,7 @@ class Home extends Component{
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps !== this.props) {
+    if (this.state.refresh !== prevState.refresh) {
      this.tongList()
      this.commList()
     }
@@ -80,6 +81,10 @@ class Home extends Component{
         }}
       />
     );
+  }
+
+  refresh = refresh => {
+    this.setState({refresh})
   }
 
   navigateTong(tType, itemID) {
@@ -110,6 +115,7 @@ class Home extends Component{
                             this.props.navigation.navigate("TongMain", {
                             itemID: val.tongnum,
                             tongType: 'T',
+                            refresh: this.refresh
                             }),
                             this.navigateTong("T", val.tongnum)
                             }
@@ -136,6 +142,7 @@ class Home extends Component{
                             this.props.navigation.navigate("CommunityMain", {
                             itemID: val.tongnum,
                             tongType: 'C',
+                            refresh: this.refresh
                             }),
                             this.navigateTong("C", val.tongnum)
                             }
@@ -195,6 +202,10 @@ class Home extends Component{
             <CardItem button onPress={() => {this.props.navigation.navigate('TongSearch')}}>
               <Icon name="search" />
               <Text>현장통 찾기</Text>
+            </CardItem>
+            <CardItem button onPress={() => {this.props.navigation.navigate('SearchInvite',{refresh:this.refresh})}}>
+              <Icon name="ios-paper-plane" />
+              <Text>받은 초대장</Text>
             </CardItem>
             <CardItem button onPress={() => alert("현장통 가이드")}>
               <Icon name="help" />

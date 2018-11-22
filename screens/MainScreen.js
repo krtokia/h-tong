@@ -20,6 +20,7 @@ import FriendDetail from './Friends/FriendDetail.js';
 
 import Home from "./Home/Home.js";
 import TongSearch from "./Home/TongSearch.js";
+import SearchInvite from "./Home/SearchInvite.js";
 
 import More from './More';
 import Notice from './More/Notice.js';
@@ -49,6 +50,8 @@ import TongPaperHealth from "./Home/TongPaperHealth.js";
 import TongPaperArmor from "./Home/TongPaperArmor.js";
 import TongWork from "./Home/TongWork.js";
 import TongMap from "./Home/TongMap.js"
+import TongInvite from "./Home/TongInvite.js"
+import TongInviteDetail from "./Home/TongInviteDetail.js"
 
 import CommunityMain from "./Home/CommunityMain.js";
 import CommunityNotice from "./Home/CommunityNotice.js";
@@ -96,6 +99,8 @@ export default MainScreen;
 const TongStackNavi = createStackNavigator({
   TongMain: { screen: TongMain },
   TongInfo: { screen: TongInfo },
+  TongInvite: { screen: TongInvite },
+  TongInviteDetail: { screen: TongInviteDetail },
 },{
   navigationOptions: {
     header: null
@@ -103,7 +108,7 @@ const TongStackNavi = createStackNavigator({
 })
 
 const CommunityStackNavi = createStackNavigator({
-  CommunityMain: { screen: TongMain },
+  CommunityMain: { screen: CommunityMain },
 },{
   navigationOptions: {
     header: null
@@ -273,6 +278,7 @@ const AppStackNavigator = createStackNavigator({
   TongSearch: { screen: TongSearch },
   TongMap: { screen: TongMap },
   Test: { screen: Test },
+  SearchInvite: { screen: SearchInvite },
   HomeTab: {
     screen: HomeTabNavi,
     navigationOptions: {

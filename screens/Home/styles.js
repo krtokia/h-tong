@@ -282,8 +282,8 @@ export default {
     paddingHorizontal: 10,
   },
   tongBackBtn: {
-    fontSize:25,
-    textShadowOffset:{width:3,height:3},
+    fontSize:28,
+    textShadowOffset:{width:1,height:1},
     textShadowColor:'#888'
   },
   tongBox: {
@@ -323,5 +323,56 @@ export default {
     height: 76,
     resizeMode: 'center',
     marginHorizontal: 3
+  },
+  friendList: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: deviceWidth,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    paddingVertical: 5,
+    paddingLeft: 10,
+  },
+  inviteBox: {
+    height:120,
+    width:'100%',
+    padding:10,
+    backgroundColor:'#fff',
+    shadowOpacity: 3,
+    shadowOffset: { width:3, height:3 },
+    shadowRadius: 3,
+    elevation: 3,
+    marginBottom:10
+  },
+  inviteInnerBox: {
+    flex:3,
+    flexDirection:'row',
+  },
+  inviteHeader: {
+    flex:1,
+    borderWidth:1
+  },
+  inviteContent: {
+
+  },
+  inviteDetailItem: {
+    width:'100%',
+    paddingBottom:3,
+    paddingHorizontal:30,
+    marginBottom:10,
+    flexDirection:'row',
+    alignItems: 'center',
+    borderBottomWidth:1,
+    borderColor: '#e9e9e9'
+  },
+  inviteDetailTitle: {
+    fontSize:13,
+    flex:1
+  },
+  inviteDetailText: {
+    fontSize:12,
+    color:'#999',
+    flex:1
   }
 };

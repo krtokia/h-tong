@@ -276,7 +276,7 @@ class createTong2 extends pickableImage{
                       <Text style={{fontSize:modalFontSize}}>공사 감리자</Text>
                       <Text style={{fontSize:modalFontSize}}>발주자</Text>
                       <Text style={{fontSize:modalFontSize}}>현장 연락처</Text>
-                      <Text style={{fontSize:modalFontSize}}>공가기간</Text>
+                      <Text style={{fontSize:modalFontSize}}>공사기간</Text>
                       <Text style={{fontSize:modalFontSize}}>공사규모</Text>
                       <Text style={{fontSize:modalFontSize}}>현장주소</Text>
                     </View>

@@ -187,7 +187,7 @@ export class CommunityPeople extends Component{
             <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
               {fvalue2}
             </View>
-            <Text style={{marginVertical:10,marginLeft:10,fontSize:13}}>현장 전체 동료 ({this.state.count})</Text>
+            <Text style={{marginVertical:10,marginLeft:10,fontSize:13}}>커뮤니티 전체 동료 ({this.state.count})</Text>
             <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
               {fvalue}
             </View>

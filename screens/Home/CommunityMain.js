@@ -34,7 +34,7 @@ import { StoreGlobal } from '../../App';
 
 import pickableImage from "../common.js"
 
-export class CommunityMain extends pickableImage{
+class CommunityMain extends pickableImage{
 
   constructor(props) {
     super(props);
@@ -445,6 +445,13 @@ export class CommunityMain extends pickableImage{
       });
   }
 
+  _goBack = () => {
+    const { navigation } = this.props;
+//    navigation.navigate('TongInvite',{refresh: new Date(Date.now()).toString()});
+    navigation.navigate("Home");
+    navigation.state.params.refresh({ refresh: Date(Date.now()).toString() })
+  }
+
   createWeather() {
     const area = "서울";
     const temperature = 28;
@@ -737,18 +744,18 @@ export class CommunityMain extends pickableImage{
                 <Text style={{fontSize:20,color:'#fff'}}>{this.state.tongTitle}</Text>
               </View>
             </Animated.View>
-            <Animated.View style={{width:30,height:30,position:'absolute',top:32,left:10,backgroundColor:'#fff8',borderRadius:15,opacity:imageOpacity}}>
+            <Animated.View style={{width:30,height:30,position:'absolute',top:32,left:10,borderRadius:15,opacity:imageOpacity}}>
               <TouchableOpacity style={{width:'100%',height:'100%',justifyContent:'center',alignItems:'center'}}
-                onPress={() => {this.props.navigation.navigate("Home",{ refresh:Date(Date.now()).toString()})}}
+                onPress={this._goBack}
               >
-              <NBIcon name="angle-left" type="FontAwesome" />
+              <NBIcon name="chevron-circle-left" type="FontAwesome" style={styles.tongBackBtn} />
               </TouchableOpacity>
             </Animated.View>
             <Animated.View style={{width:30,height:30,position:'absolute',top:32,left:10,borderRadius:15,opacity:imageOpacityR}}>
               <TouchableOpacity style={{width:'100%',height:'100%',justifyContent:'center',alignItems:'center'}}
-                onPress={() => {this.props.navigation.navigate("Home",{ refresh:Date(Date.now()).toString()})}}
+                onPress={this._goBack}
               >
-              <NBIcon name="angle-left" type="FontAwesome" style={{color:'#fff'}} />
+              <NBIcon name="chevron-circle-left" type="FontAwesome" style={styles.tongBackBtn} />
               </TouchableOpacity>
             </Animated.View>
           </Animated.View>
@@ -771,6 +778,8 @@ export class CommunityMain extends pickableImage{
   }
   }
 }
+
+export default CommunityMain;
 
 const HEADER_MAX_HEIGHT = 230;
 const HEADER_MIN_HEIGHT = 68;

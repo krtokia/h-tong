@@ -272,6 +272,13 @@ class TongMain extends pickableImage{
     )
   }
 
+  _goBack = () => {
+    const { navigation } = this.props;
+//    navigation.navigate('TongInvite',{refresh: new Date(Date.now()).toString()});
+    navigation.navigate("Home");
+    navigation.state.params.refresh({ refresh: Date(Date.now()).toString() })
+  }
+
   render(){
     let weatherBox = this.createWeather();
     if (this.state.isLoading) {
@@ -312,16 +319,22 @@ class TongMain extends pickableImage{
               />
               <View style={{flex:2}}>
                 <TouchableOpacity style={{marginTop:30,marginLeft:10}}
-                  onPress={() => this.props.navigation.navigate("Home",{ refresh:Date(Date.now()).toString()})}
+                  onPress={this._goBack}
                 >
-                  <Icon name="arrow-left" type="FontAwesome" style={styles.tongBackBtn} />
+                  <Icon name="chevron-circle-left" type="FontAwesome" style={styles.tongBackBtn} />
                 </TouchableOpacity>
               </View>
               <View style={[styles.opacityBox,{flex:1}]}>
                 <View style={[{flex:1,justifyContent:'center',marginLeft:5}]}>
                   <Text style={{fontSize:23}}>{this.state.dataSource.tongtitle}</Text>
                 </View>
-                <View style={{flex:1,justifyContent:'center',alignItems:'flex-end'}}>
+                <View style={{flex:1,justifyContent:'flex-end',alignItems:'center',flexDirection:'row'}}>
+                  <TouchableOpacity style={[styles.Row,styles.center,{marginRight:10}]}
+                    onPress={() => this.props.navigation.navigate("TongInvite")}
+                  >
+                    <Icon name="ios-add-circle-outline" type="Ionicons" style={{color: '#db3928',fontSize:18}} />
+                    <Text style={[{color:'#db3928',fontSize:13}]}>동료초대</Text>
+                  </TouchableOpacity>
                   <TouchableOpacity style={[styles.Row,styles.center]}>
                     <Icon name="map-marker-circle" type="MaterialCommunityIcons" style={{color: '#db3928',fontSize:18}} />
                     <Text style={[{color:'#db3928',fontSize:13}]}>현장정보</Text>

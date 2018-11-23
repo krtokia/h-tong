@@ -374,5 +374,19 @@ export default {
     fontSize:12,
     color:'#999',
     flex:1
+  },
+  row2: {
+    flexDirection:'row'
+  },
+  dangerBox: {
+    alignSelf:'center',
+    width:'99%',
+    height:150,
+    backgroundColor:'#fff',
+    marginBottom:10,
+    shadowOpacity: 3,
+    shadowOffset: { width:3, height:3 },
+    shadowRadius: 3,
+    elevation: 3,
   }
 };

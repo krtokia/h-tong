@@ -10,6 +10,7 @@ class tong extends Component{
       data: null,
     }
     this._pickImage = this._pickImage.bind(this);
+    this._pickImage2 = this._pickImage2.bind(this);
   }
 
   _pickImage = async () => {
@@ -17,6 +18,18 @@ class tong extends Component{
       allowsEditing: true,
       aspect: [4, 4],
     });
+
+    console.log(result);
+    this.setState({imageSource:result.uri,imgresult:result});
+    //console.log("Image Source: " + this.state.imageSource);
+
+    if (!result.cancelled) {
+      this.setState({ imageSource: result.uri,imgresult:result});
+    }
+  };
+
+  _pickImage2 = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync();
 
     console.log(result);
     this.setState({imageSource:result.uri,imgresult:result});

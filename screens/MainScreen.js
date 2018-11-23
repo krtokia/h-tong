@@ -52,6 +52,8 @@ import TongWork from "./Home/TongWork.js";
 import TongMap from "./Home/TongMap.js"
 import TongInvite from "./Home/TongInvite.js"
 import TongInviteDetail from "./Home/TongInviteDetail.js"
+import TongDanger from "./Home/TongDanger.js";
+import TongDangerDetail from "./Home/TongDangerDetail.js";
 
 import CommunityMain from "./Home/CommunityMain.js";
 import CommunityNotice from "./Home/CommunityNotice.js";
@@ -101,6 +103,8 @@ const TongStackNavi = createStackNavigator({
   TongInfo: { screen: TongInfo },
   TongInvite: { screen: TongInvite },
   TongInviteDetail: { screen: TongInviteDetail },
+  TongDanger: { screen: TongDanger },
+  TongDangerDetail: { screen: TongDangerDetail }
 },{
   navigationOptions: {
     header: null

@@ -73,50 +73,6 @@ class SearchInvite extends Component{
       });
   }
 
-  getCareer = async() => {
-    this.setState({isLoading3:true})
-    return fetch("http://13.124.127.253/api/results.php?page=getCareer&id=" + this.state.friendId)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.setState({
-          isLoading3: false,
-          careerSource: responseJson,
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-
-  getInfo = async() => {
-    return fetch("http://13.124.127.253/api/results.php?page=getUser&id="+this.state.friendId)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({
-          isLoading2: false,
-  		    dataSource: responseJson[0],
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-
-  getIsInvited = async() => {
-    return fetch("http://13.124.127.253/api/results.php?page=isInvited&id="+this.state.friendId+"&tongnum="+this.state.tongnum)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({
-          isLoading4: false,
-  		    isInvited: responseJson,
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-
   gradeGetter(userGrade) {
     switch(userGrade) {
       case "0" : return "안전관리자(운영자)"; break;

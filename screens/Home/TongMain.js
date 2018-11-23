@@ -278,6 +278,9 @@ class TongMain extends pickableImage{
     navigation.navigate("Home");
     navigation.state.params.refresh({ refresh: Date(Date.now()).toString() })
   }
+  refresh = refresh => {
+    this.setState({refresh})
+  }
 
   render(){
     let weatherBox = this.createWeather();
@@ -430,6 +433,7 @@ class TongMain extends pickableImage{
                   block
                   iconLeft
                   style={{borderColor:'#db3928',borderWidth:3}}
+                  onPress={() => this.props.navigation.navigate('TongDanger',{refresh:this.refresh})}
                 >
                   <Icon name="warning" type="FontAwesome" style={{color:'#db3928'}} />
                   <Text style={{color:'#db3928'}}>위험치워줘</Text>
@@ -441,6 +445,7 @@ class TongMain extends pickableImage{
                   block
                   iconLeft
                   style={{backgroundColor:'#db3928'}}
+                  onPress={() => console.log("긴급전화")}
                 >
                   <Icon name="phone" type="FontAwesome" />
                   <Text>긴급전화</Text>

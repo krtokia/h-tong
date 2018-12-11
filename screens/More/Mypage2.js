@@ -18,6 +18,7 @@ import {
 import { Grid, Col, Row } from "react-native-easy-grid";
 
 import styles from './styles.js';
+import { StoreGlobal } from '../../App';
 
 class Mypage2 extends Component{
 
@@ -27,7 +28,7 @@ class Mypage2 extends Component{
     this.state={
       isLoading: true,
       dataSource: null,
-      id: 'sid',
+      id: StoreGlobal({type:'get',key:'loginId'}),
     }
   }
 

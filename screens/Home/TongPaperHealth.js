@@ -24,6 +24,8 @@ import styles from "./styles";
 
 var fontColor = '#555';
 
+import pickableImage from "../common.js"
+
 
 class TongPaperHealth extends Component{
   static navigationOptions = {
@@ -34,6 +36,22 @@ class TongPaperHealth extends Component{
     super();
     this.state ={
       allChecked: false,
+      checked1:false,
+      checked2:false,
+      checked3:false,
+      checked4:false,
+      checked5:false,
+      checked6:false,
+      checked7:false,
+      checked8:false,
+      checked9:false,
+      checked10:false,
+      checkedY1:false,
+      checkedY2:false,
+      checkedY3:false,
+      checkedY4:false,
+      checkedY5:false,
+      checkedY6:false,
     }
   }
 
@@ -51,7 +69,7 @@ class TongPaperHealth extends Component{
           <Left style={{flex:1}}>
           </Left>
           <Body style={{flex:6,alignItems:'center'}}>
-            <Text style={{textAlign:'center',color:'#fff',fontSize:16}}>개인정보 수집/이용 및 제공 동의서</Text>
+            <Text style={{textAlign:'center',color:'#fff',fontSize:16}}>건강문진표</Text>
           </Body>
           <Right  style={{flex:1}}>
             <Button rounded transparent onPress={() => {this.props.navigation.goBack()}}>
@@ -68,8 +86,42 @@ class TongPaperHealth extends Component{
             <Text style={{color:fontColor,fontSize:11}}>- 이름 / 연령 / 혈액형 / 경력 / 소속 / 직종</Text>
           </View>
           <View>
-            <ViewMenu1 />
-            <ViewMenu2 />
+            <ViewMenu1
+            checked1={this.state.checked1}
+            checked2={this.state.checked2}
+            checked3={this.state.checked3}
+            checked4={this.state.checked4}
+            checked5={this.state.checked5}
+            checked6={this.state.checked6}
+            checked7={this.state.checked7}
+            checked8={this.state.checked8}
+            checked9={this.state.checked9}
+            checked10={this.state.checked10}
+            method1={(checked1) => {this.setState({checked1})}}
+            method2={(checked2) => {this.setState({checked2})}}
+            method3={(checked3) => {this.setState({checked3})}}
+            method4={(checked4) => {this.setState({checked4})}}
+            method5={(checked5) => {this.setState({checked5})}}
+            method6={(checked6) => {this.setState({checked6})}}
+            method7={(checked7) => {this.setState({checked7})}}
+            method8={(checked8) => {this.setState({checked8})}}
+            method9={(checked9) => {this.setState({checked9})}}
+            method10={(checked10) => {this.setState({checked10})}}
+            />
+            <ViewMenu2
+            checkedY1={this.state.checkedY1}
+            checkedY2={this.state.checkedY2}
+            checkedY3={this.state.checkedY3}
+            checkedY4={this.state.checkedY4}
+            checkedY5={this.state.checkedY5}
+            checkedY6={this.state.checkedY6}
+            methodY1={(checkedY1) => {this.setState({checkedY1})}}
+            methodY2={(checkedY2) => {this.setState({checkedY2})}}
+            methodY3={(checkedY3) => {this.setState({checkedY3})}}
+            methodY4={(checkedY4) => {this.setState({checkedY4})}}
+            methodY5={(checkedY5) => {this.setState({checkedY5})}}
+            methodY6={(checkedY6) => {this.setState({checkedY6})}}
+            />
             <ViewMenu3 />
           </View>
           <View style={{marginTop:15,alignItems:'flex-end'}}>
@@ -106,16 +158,6 @@ class ViewMenu1 extends Component{
     super();
     this.state ={
       status:false,
-      checked1:false,
-      checked2:false,
-      checked3:false,
-      checked4:false,
-      checked5:false,
-      checked6:false,
-      checked7:false,
-      checked8:false,
-      checked9:false,
-      checked10:false,
     }
   }
   toggleStatus(){
@@ -183,28 +225,28 @@ class ViewMenu1 extends Component{
                   <Text style={{fontSize:9,color:'#999'}}>진단여부</Text>
                 </View>
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                  <TouchableOpacity onPress={() => {this.setState({checked1:!this.state.checked1})}}>
-                    <Icon name={this.state.checked1 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
+                  <TouchableOpacity onPress={() => {this.props.method1(!this.props.checked1)}}>
+                    <Icon name={this.props.checked1 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
                   </TouchableOpacity>
                 </View>
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                  <TouchableOpacity onPress={() => {this.setState({checked2:!this.state.checked2})}}>
-                    <Icon name={this.state.checked2 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
+                  <TouchableOpacity onPress={() => {this.props.method2(!this.props.checked2)}}>
+                    <Icon name={this.props.checked2 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
                   </TouchableOpacity>
                 </View>
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                  <TouchableOpacity onPress={() => {this.setState({checked3:!this.state.checked3})}}>
-                    <Icon name={this.state.checked3 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
+                  <TouchableOpacity onPress={() => {this.props.method3(!this.props.checked3)}}>
+                    <Icon name={this.props.checked3 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
                   </TouchableOpacity>
                 </View>
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                  <TouchableOpacity onPress={() => {this.setState({checked4:!this.state.checked4})}}>
-                    <Icon name={this.state.checked4 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
+                  <TouchableOpacity onPress={() => {this.props.method4(!this.props.checked4)}}>
+                    <Icon name={this.props.checked4 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
                   </TouchableOpacity>
                 </View>
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                  <TouchableOpacity onPress={() => {this.setState({checked5:!this.state.checked5})}}>
-                    <Icon name={this.state.checked5 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
+                  <TouchableOpacity onPress={() => {this.props.method5(!this.props.checked5)}}>
+                    <Icon name={this.props.checked5 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -213,28 +255,28 @@ class ViewMenu1 extends Component{
                   <Text style={{fontSize:9,color:'#999'}}>약물치료 여부</Text>
                 </View>
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                  <TouchableOpacity onPress={() => {this.setState({checked6:!this.state.checked6})}}>
-                    <Icon name={this.state.checked6 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
+                  <TouchableOpacity onPress={() => {this.props.method6(!this.props.checked6)}}>
+                    <Icon name={this.props.checked6 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
                   </TouchableOpacity>
                 </View>
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                  <TouchableOpacity onPress={() => {this.setState({checked7:!this.state.checked7})}}>
-                    <Icon name={this.state.checked7 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
+                  <TouchableOpacity onPress={() => {this.props.method7(!this.props.checked7)}}>
+                    <Icon name={this.props.checked7 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
                   </TouchableOpacity>
                 </View>
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                  <TouchableOpacity onPress={() => {this.setState({checked8:!this.state.checked8})}}>
-                    <Icon name={this.state.checked8 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
+                  <TouchableOpacity onPress={() => {this.props.method8(!this.props.checked8)}}>
+                    <Icon name={this.props.checked8 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
                   </TouchableOpacity>
                 </View>
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                  <TouchableOpacity onPress={() => {this.setState({checked9:!this.state.checked9})}}>
-                    <Icon name={this.state.checked9 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
+                  <TouchableOpacity onPress={() => {this.props.method9(!this.props.checked9)}}>
+                    <Icon name={this.props.checked9 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
                   </TouchableOpacity>
                 </View>
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                  <TouchableOpacity onPress={() => {this.setState({checked10:!this.state.checked10})}}>
-                    <Icon name={this.state.checked10 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
+                  <TouchableOpacity onPress={() => {this.props.method10(!this.props.checked10)}}>
+                    <Icon name={this.props.checked10 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -265,12 +307,7 @@ class ViewMenu2 extends Component{
     super();
     this.state ={
       status:false,
-      checkedY1:false,
-      checkedY2:false,
-      checkedY3:false,
-      checkedY4:false,
-      checkedY5:false,
-      checkedY6:false,
+
     }
   }
   toggleStatus(){
@@ -307,11 +344,11 @@ class ViewMenu2 extends Component{
                 <Text style={{fontSize:fontSize}}>1.현재 본인의 건강이 나쁘다고 생각한다.</Text>
               </View>
               <View style={{flex:1,flexDirection:'row',justifyContent:'space-between',}}>
-                <TouchableOpacity onPress={() => {this.setState({checkedY1:!this.state.checkedY1})}}>
-                  <Icon name={this.state.checkedY1 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
+                <TouchableOpacity onPress={() => {this.props.methodY1(!this.props.checkedY1)}}>
+                  <Icon name={this.props.checkedY1 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => {this.setState({checkedY1:!this.state.checkedY1})}}>
-                  <Icon name={this.state.checkedY1 ? "square-o" : "check-square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
+                <TouchableOpacity onPress={() => {this.props.methodY1(!this.props.checkedY1)}}>
+                  <Icon name={this.props.checkedY1 ? "square-o" : "check-square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -320,11 +357,11 @@ class ViewMenu2 extends Component{
                 <Text style={{fontSize:fontSize}}>2.최근 가래에 피가 섞여 나온적이 있다.</Text>
               </View>
               <View style={{flex:1,flexDirection:'row',justifyContent:'space-between',}}>
-                <TouchableOpacity onPress={() => {this.setState({checkedY2:!this.state.checkedY2})}}>
-                  <Icon name={this.state.checkedY2 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
+                <TouchableOpacity onPress={() => {this.props.methodY2(!this.props.checkedY2)}}>
+                  <Icon name={this.props.checkedY2 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => {this.setState({checkedY2:!this.state.checkedY2})}}>
-                  <Icon name={this.state.checkedY2 ? "square-o" : "check-square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
+                <TouchableOpacity onPress={() => {this.props.methodY2(!this.props.checkedY2)}}>
+                  <Icon name={this.props.checkedY2 ? "square-o" : "check-square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -333,11 +370,11 @@ class ViewMenu2 extends Component{
                 <Text style={{fontSize:fontSize}}>3.최근 작업시 가슴이 답답한 적이 있다.</Text>
               </View>
               <View style={{flex:1,flexDirection:'row',justifyContent:'space-between',}}>
-                <TouchableOpacity onPress={() => {this.setState({checkedY3:!this.state.checkedY3})}}>
-                  <Icon name={this.state.checkedY3 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
+                <TouchableOpacity onPress={() => {this.props.methodY3(!this.props.checkedY3)}}>
+                  <Icon name={this.props.checkedY3 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => {this.setState({checkedY3:!this.state.checkedY3})}}>
-                  <Icon name={this.state.checkedY3 ? "square-o" : "check-square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
+                <TouchableOpacity onPress={() => {this.props.methodY3(!this.props.checkedY3)}}>
+                  <Icon name={this.props.checkedY3 ? "square-o" : "check-square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -346,11 +383,11 @@ class ViewMenu2 extends Component{
                 <Text style={{fontSize:fontSize}}>4.최근 1년간 체중이 5kg이상 늘었다.</Text>
               </View>
               <View style={{flex:1,flexDirection:'row',justifyContent:'space-between',}}>
-                <TouchableOpacity onPress={() => {this.setState({checkedY4:!this.state.checkedY4})}}>
-                  <Icon name={this.state.checkedY4 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
+                <TouchableOpacity onPress={() => {this.props.methodY4(!this.props.checkedY4)}}>
+                  <Icon name={this.props.checkedY4 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => {this.setState({checkedY4:!this.state.checkedY4})}}>
-                  <Icon name={this.state.checkedY4 ? "square-o" : "check-square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
+                <TouchableOpacity onPress={() => {this.props.methodY4(!this.props.checkedY4)}}>
+                  <Icon name={this.props.checkedY4 ? "square-o" : "check-square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -359,11 +396,11 @@ class ViewMenu2 extends Component{
                 <Text style={{fontSize:fontSize}}>5.최근 허리에서 다리로 뻗치는 통증이 있다.</Text>
               </View>
               <View style={{flex:1,flexDirection:'row',justifyContent:'space-between',}}>
-                <TouchableOpacity onPress={() => {this.setState({checkedY5:!this.state.checkedY5})}}>
-                  <Icon name={this.state.checkedY5 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
+                <TouchableOpacity onPress={() => {this.props.methodY5(!this.props.checkedY5)}}>
+                  <Icon name={this.props.checkedY5 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => {this.setState({checkedY5:!this.state.checkedY5})}}>
-                  <Icon name={this.state.checkedY5 ? "square-o" : "check-square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
+                <TouchableOpacity onPress={() => {this.props.methodY5(!this.props.checkedY5)}}>
+                  <Icon name={this.props.checkedY5 ? "square-o" : "check-square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -372,11 +409,11 @@ class ViewMenu2 extends Component{
                 <Text style={{fontSize:fontSize}}>6.최근 1년안에 병원에 1회 이상 입원한 적이 있다.</Text>
               </View>
               <View style={{flex:1,flexDirection:'row',justifyContent:'space-between',}}>
-                <TouchableOpacity onPress={() => {this.setState({checkedY6:!this.state.checkedY6})}}>
-                  <Icon name={this.state.checkedY6 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
+                <TouchableOpacity onPress={() => {this.props.methodY6(!this.props.checkedY6)}}>
+                  <Icon name={this.props.checkedY6 ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => {this.setState({checkedY6:!this.state.checkedY6})}}>
-                  <Icon name={this.state.checkedY6 ? "square-o" : "check-square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
+                <TouchableOpacity onPress={() => {this.props.methodY6(!this.props.checkedY6)}}>
+                  <Icon name={this.props.checkedY6 ? "square-o" : "check-square-o"} type="FontAwesome" style={{fontSize:checkBoxSize,color:'#999'}} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -387,7 +424,7 @@ class ViewMenu2 extends Component{
   }
 }
 
-class ViewMenu3 extends Component{
+class ViewMenu3 extends pickableImage{
   constructor(){
     super();
     this.state ={
@@ -424,21 +461,33 @@ class ViewMenu3 extends Component{
             </View>
             <View style={styles.Row}>
               <View style={{flex:1,justifyContent:'center',alignItems:'center',height:140}}>
-                <TouchableOpacity>
-                  <View style={{width:135,height:135,backgroundColor:'#e9e9e9',alignItems:'center',justifyContent:'center',borderRadius:10}}>
-                    <Icon name="camera" type="FontAwesome" style={{color:'#999',fontSize:35}} />
-                    <View style={{height:10}} />
-                    <Text style={{color:'#999',fontSize:14}}>혈압용지 추가</Text>
-                  </View>
+                <TouchableOpacity onPress={this._pickImage2}>
+                  { this.state.imageSource ? (
+                    <View style={{width:135,height:135,backgroundColor:'#e9e9e9',alignItems:'center',justifyContent:'center',borderRadius:10}}>
+                      <Image source={{ uri: this.state.imageSource }} style={{width:135,height:135}} />
+                    </View>
+                  ) : (
+                    <View style={{width:135,height:135,backgroundColor:'#e9e9e9',alignItems:'center',justifyContent:'center',borderRadius:10}}>
+                      <Icon name="camera" type="FontAwesome" style={{color:'#999',fontSize:35}} />
+                      <View style={{height:10}} />
+                      <Text style={{color:'#999',fontSize:14}}>혈압용지 추가</Text>
+                    </View>
+                  )}
                 </TouchableOpacity>
               </View>
               <View style={{flex:1,justifyContent:'center',alignItems:'center',height:140}}>
-                <TouchableOpacity>
-                  <View style={{width:135,height:135,backgroundColor:'#e9e9e9',alignItems:'center',justifyContent:'center',borderRadius:10}}>
-                    <Icon name="camera" type="FontAwesome" style={{color:'#999',fontSize:35}} />
-                    <View style={{height:10}} />
-                    <Text style={{color:'#999',fontSize:14}}>혈압용지 추가</Text>
-                  </View>
+                <TouchableOpacity onPress={this._pickImage3}>
+                  { this.state.imageSource2 ? (
+                    <View style={{width:135,height:135,backgroundColor:'#e9e9e9',alignItems:'center',justifyContent:'center',borderRadius:10}}>
+                      <Image source={{ uri: this.state.imageSource2 }} style={{width:135,height:135}} />
+                    </View>
+                  ) : (
+                    <View style={{width:135,height:135,backgroundColor:'#e9e9e9',alignItems:'center',justifyContent:'center',borderRadius:10}}>
+                      <Icon name="camera" type="FontAwesome" style={{color:'#999',fontSize:35}} />
+                      <View style={{height:10}} />
+                      <Text style={{color:'#999',fontSize:14}}>혈압용지 추가</Text>
+                    </View>
+                  )}
                 </TouchableOpacity>
               </View>
             </View>

@@ -29,6 +29,14 @@ class TongPaperSafe extends Component{
   constructor(){
     super();
     this.state ={
+      check1: false,
+      check2: false,
+      check3: false,
+      check4: false,
+      check5: false,
+      check6: false,
+      check7: false,
+      check8: false,
     }
   }
 
@@ -59,27 +67,43 @@ class TongPaperSafe extends Component{
             <View>
               <ViewMenu
                 title="1. 현장내에서는 안전 보호구을 확실하게 착용하고, 사용 하겠습니다."
+                checked={this.state.check1}
+                method={(check1) => {this.setState({check1})}}
               />
               <ViewMenu
                 title="2. 지정된 통로를 이용하고 통제구역은 임의로 출입하지 않겠습니다."
+                checked={this.state.check2}
+                method={(check2) => {this.setState({check2})}}
               />
               <ViewMenu
                 title="3. 흡연은 지정장소 이외에서는 절대 흡연을 하지 않겠습니다."
+                checked={this.state.check3}
+                method={(check3) => {this.setState({check3})}}
               />
               <ViewMenu
                 title="4. 작업장내에서의 음주행위는 절대 하지 않겠습니다."
+                checked={this.state.check4}
+                method={(check4) => {this.setState({check4})}}
               />
               <ViewMenu
                 title="5. 작업중 위험사항이 발생하면 작업을 중지하고 안전조치를 실시 한 후, 작업을 실시 하겠습니다."
+                checked={this.state.check5}
+                method={(check5) => {this.setState({check5})}}
               />
               <ViewMenu
                 title="6. 안전사고가 발생하면 작업을 중지하고 즉시 안전담당자에게 보고 하겠습니다."
+                checked={this.state.check6}
+                method={(check6) => {this.setState({check6})}}
               />
               <ViewMenu
                 title="7. 공사 중 습득한 제반 안전 및 정보보안 사항에 대하여 비밀을 지킬 것이며, 외부에 누설하지 않겠습니다."
+                checked={this.state.check7}
+                method={(check7) => {this.setState({check7})}}
               />
               <ViewMenu
                 title="8. 산업안전보건법 제25조의 근로자 준수사항에 의거하여 현장내 안전기준 및 규정을 준수 할 것이며, 이에 불응하여 적발시 현장관리자의 지시에 따르겠으며, 제재조치에 이의를 제기하지 않겠습니다."
+                checked={this.state.check8}
+                method={(check8) => {this.setState({check8})}}
               />
             </View>
             <View style={{alignSelf:'center',marginTop:20}}>
@@ -122,9 +146,7 @@ class ViewMenu extends Component{
     }
   }
   checkBox(){
-    this.setState({
-      checked:!this.state.checked
-    });
+    this.props.method(!this.props.checked)
   }
   render(){
     return (
@@ -135,7 +157,7 @@ class ViewMenu extends Component{
               <Text style={{fontSize:9}}> {this.props.title}</Text>
             </View>
             <View style={[styles.Row,{flex:2,justifyContent:'flex-end'}]}>
-              <Icon name={this.state.checked ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
+              <Icon name={this.props.checked ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
               <Text style={{fontSize:11}}> 동의</Text>
             </View>
           </View>

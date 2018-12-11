@@ -150,7 +150,7 @@ class FriendDetail extends Component{
     if(this.props.navigation.getParam('prevPage') === 'index') {
       this.props.navigation.navigate('Friends',{refresh:Date(Date.now()).toString()})
     } else {
-      this.props.navigation.navigate('tongPeople',{refresh:Date(Date.now()).toString()});
+      this.props.navigation.navigate('TongPeople',{refresh:Date(Date.now()).toString()});
     }
   }
 

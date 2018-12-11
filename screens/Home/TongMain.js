@@ -338,7 +338,9 @@ class TongMain extends pickableImage{
                     <Icon name="ios-add-circle-outline" type="Ionicons" style={{color: '#db3928',fontSize:18}} />
                     <Text style={[{color:'#db3928',fontSize:13}]}>동료초대</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={[styles.Row,styles.center]}>
+                  <TouchableOpacity style={[styles.Row,styles.center]}
+                    onPress={() => this.props.navigation.navigate("TongInfo")}
+                  >
                     <Icon name="map-marker-circle" type="MaterialCommunityIcons" style={{color: '#db3928',fontSize:18}} />
                     <Text style={[{color:'#db3928',fontSize:13}]}>현장정보</Text>
                   </TouchableOpacity>

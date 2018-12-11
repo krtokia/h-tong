@@ -40,6 +40,18 @@ class tong extends Component{
     }
   };
 
+  _pickImage3 = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync();
+
+    console.log(result);
+    this.setState({imageSource2:result.uri,imgresult2:result});
+    //console.log("Image Source: " + this.state.imageSource);
+
+    if (!result.cancelled) {
+      this.setState({ imageSource2: result.uri,imgresult2:result});
+    }
+  };
+
 
   getData = async(seq) => {
         return fetch("http://13.124.127.253/api/results.php?page=bbs&seq=" + seq)

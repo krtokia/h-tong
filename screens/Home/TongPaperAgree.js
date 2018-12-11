@@ -34,15 +34,29 @@ class TongPaperAgree extends Component{
     super();
     this.state ={
       allChecked: false,
+      check1: false,
+      check2: false,
+      check3: false,
     }
   }
 
-  allCheckBox() {
-    this.setState({
-      allChecked: !this.state.allChecked
-    });
+  allCheckBox(check) {
+    if(check) {
+      this.setState({
+        allChecked: true,
+        check1: true,
+        check2: true,
+        check3: true
+      });
+    } else {
+      this.setState({
+        allChecked: false,
+        check1: false,
+        check2: false,
+        check3: false
+      });
+    }
   }
-
 
   render(){
     return (
@@ -74,6 +88,8 @@ class TongPaperAgree extends Component{
 (2) 개인정보 수집 및 이용 목적 - 안전사고 시 대응
 (3) 개인정보 보유 및 이용기간 - 개인정보는 유/무형 자산의 운영 관리 및 유지보수 목적으로 현장 종료 후 최대 3년 까지 보유
 (4) 개인정보 수집 및 이용과 관련하여 동의를 거부할 권리가 있으며, 동의거부시 현장 내 근로가 불가합니다.`}
+              check={this.state.check1}
+              method={(check1) => this.setState({check1})}
             />
             <ViewMenu
               title="고유식별정보의 수집 및 이용동의"
@@ -82,21 +98,25 @@ class TongPaperAgree extends Component{
 (2) 고유식별 정보 수집 및 이용 목적 - 본인 여부 확인, 건설기계 운전자격 확인, 불법 체류자, 신용 불량자, 채무 불이행자 확인 , 장비대지급, 퇴직공제 가입 사업장은 퇴직공제 신고용
 (3) 고유식별 정보 보유 및 이용기간 - 현장 종료 후 최대 3년까지 보유
 (4) 고유식별정보의 수집 및 이용과 관련하여 동의를 거부할 권리가 있으며, 동의거부 시 현장 내 근로가 불가합니다. (신분증 / 운전면허증 복사 시 주민번호 뒷자리 , 면허 번호 등 개인식별 정보는 가리고 복사)`}
+              check={this.state.check2}
+              method={(check2) => this.setState({check2})}
             />
             <ViewMenu
               title="개인정보의 제3자 제공"
               contents={`(1) 제공 받는자 - 4대보험 관리기관
 (2) 제공 받는자의 이용 목적 - 4대보험 및 임금대장 작성
 (3) 제공사항 - 성명, 주민등록번호, 연락처등`}
+              check={this.state.check3}
+              method={(check3) => this.setState({check3})}
             />
           </View>
           <View style={{marginTop:30,alignItems:'flex-end'}}>
-            <View style={[styles.Row,{marginBottom:20}]}>
-              <TouchableOpacity onPress={() => {this.allCheckBox()}}>
+            {/*<View style={[styles.Row,{marginBottom:20}]}>
+              <TouchableOpacity onPress={() => {this.allCheckBox(!this.state.allChecked)}}>
                 <Icon name={this.state.allChecked ? "check-square-o" : "square-o"} type="FontAwesome" style={{color:'#999',fontSize:15}} />
               </TouchableOpacity>
               <Text style={{fontSize:13,color:'#db3928'}}> 전체동의</Text>
-            </View>
+            </View>*/}
             <View style={[styles.Row,{marginBottom:10}]}>
               <Text style={{fontSize:13,color:fontColor}}>2018 년  10 월  25 일</Text>
             </View>
@@ -127,7 +147,6 @@ class ViewMenu extends Component{
     super();
     this.state ={
       status:false,
-      checked:false,
     }
   }
   toggleStatus(){
@@ -136,9 +155,7 @@ class ViewMenu extends Component{
       });
     }
   checkBox(){
-    this.setState({
-      checked:!this.state.checked
-    });
+    this.props.method(!this.props.check);
   }
   render(){
     return (
@@ -152,7 +169,7 @@ class ViewMenu extends Component{
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {this.checkBox()}}>
           <View style={[styles.Row]}>
-            <Icon name={this.state.checked ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
+            <Icon name={this.props.check ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:13,color:'#999'}} />
             <Text style={{fontSize:11}}> 동의</Text>
           </View>
           </TouchableOpacity>

@@ -33,7 +33,7 @@ class Papers extends pickableImage{
     this.state = {
       modalVisible: false,
       modalname: null,
-      memId: 'SID',
+      memId: StoreGlobal({type:'get',key:'loginId'}),
       isLoading: true,
       pfData: null,
       modalArray: null,
@@ -52,7 +52,7 @@ class Papers extends pickableImage{
     this.setState({
       modalVisible: false,
       modalname: null,
-      memId: 'SID',
+      memId: StoreGlobal({type:'get',key:'loginId'}),
       isLoading: true,
       pfData: null,
       modalArray: null,
@@ -62,6 +62,17 @@ class Papers extends pickableImage{
   }
 
   getProfile = async() => {
+      var nullJson = [{
+        safe:null,
+        idcard:null,
+        backbook:null,
+        cert:null,
+        machine:null,
+        insp:null,
+        insurance:null,
+        business:null,
+        car:null
+      }]
       return fetch("http://13.124.127.253/api/results.php?page=getUserPaper&seq=" + this.state.memId)
             .then((response) => response.json())
             .then((responseJson) => {
@@ -69,7 +80,7 @@ class Papers extends pickableImage{
               this.resetState();
               this.setState({
                 isLoading: false,
-                pfData: responseJson,
+                pfData: responseJson ? responseJson : nullJson,
               })
             })
             .catch((error) => {
@@ -131,11 +142,7 @@ class Papers extends pickableImage{
           console.log(responseJson);
           this.getProfile();
         } else {
-          //alert(responseJson);
-          Alert.alert(
-            '현장통',
-            responseJson
-          )
+          console.log(responseJson);
         }
       }).catch((error) => {
         console.log(error)

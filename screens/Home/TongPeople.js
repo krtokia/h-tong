@@ -248,7 +248,7 @@ class TongFriendList2 extends Component{
     const attendIcon = this.createIcon();
     return(
       <TouchableOpacity onPress={this.props.detailHref}>
-        <View style={styles.friendList}>
+        <View style={[styles.friendList,{justifyContent:'space-between'}]}>
           <View style={{flexDirection:'row',alignItems:'center'}}>
             <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
             <Text style={styles.friendName}>{this.props.name}</Text>

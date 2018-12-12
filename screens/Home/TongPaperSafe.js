@@ -29,6 +29,8 @@ class TongPaperSafe extends Component{
   constructor(){
     super();
     this.state ={
+      memId: StoreGlobal({type:'get',key:'loginId'}),
+      tongnum: StoreGlobal({type:'get',key:'tongnum'}),
       check1: false,
       check2: false,
       check3: false,
@@ -38,6 +40,77 @@ class TongPaperSafe extends Component{
       check7: false,
       check8: false,
     }
+  }
+
+  getPaperInfo = async() => {
+    var nullJson = [{
+      check1: false,
+      check2: false,
+      check3: false,
+      check4: false,
+      check5: false,
+      check6: false,
+      check7: false,
+      check8: false,
+    }]
+    return fetch("http://13.124.127.253/api/results.php?page=getPaperInfo&div=safe&id=" + this.state.memId + "&tongnum=" + this.state.tongnum)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.setState({
+          isLoading: false,
+          check1: responseJson ? (responseJson[0]['check1'] == "1" ? true : false) : false,
+          check2: responseJson ? (responseJson[0]['check2'] == "1" ? true : false) : false,
+          check3: responseJson ? (responseJson[0]['check3'] == "1" ? true : false) : false,
+          check4: responseJson ? (responseJson[0]['check4'] == "1" ? true : false) : false,
+          check5: responseJson ? (responseJson[0]['check5'] == "1" ? true : false) : false,
+          check6: responseJson ? (responseJson[0]['check6'] == "1" ? true : false) : false,
+          check7: responseJson ? (responseJson[0]['check7'] == "1" ? true : false) : false,
+          check8: responseJson ? (responseJson[0]['check8'] == "1" ? true : false) : false,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  tongPaperUpdate = () => {
+    const { tongNum, memId, check1, check2, check3, check4, check5, check6, check7, check8 } = this.state;
+    let apiUrl = 'http://13.124.127.253/api/tongPaper.php?';
+
+    const formData = new FormData();
+
+    formData.append('tongNum', tongNum);
+    formData.append('userId', memId);
+    formData.append('_safe', _safe ? 1 : 0);
+    formData.append('_idcard', _idcard ? 1 : 0);
+    formData.append('_bankbook', _bankbook ? 1 : 0);
+    formData.append('_cert', _cert ? 1 : 0);
+    formData.append('_machine', _machine ? 1 : 0);
+    formData.append('_insp', _insp ? 1 : 0);
+    formData.append('_insurance', _insurance ? 1 : 0);
+    formData.append('_business', _business ? 1 : 0);
+    formData.append('_car', _car ? 1 : 0);
+
+    options = {
+      method: 'POST',
+      body: formData,
+      headers: { Accept: 'application/json' },
+    }
+
+
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          ToastAndroid.show("저장 되었습니다.", ToastAndroid.BOTTOM)
+          this.props.navigation.goBack();
+        } else {
+          //alert(responseJson);
+          console.log(responseJson)
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
   }
 
   render(){

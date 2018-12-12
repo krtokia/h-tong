@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, ImageBackground, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { ToastAndroid, Image, ImageBackground, TouchableOpacity, ActivityIndicator } from 'react-native';
 import {
   Container,
   Content,
@@ -35,7 +35,7 @@ class TongPaperAgree extends Component{
     super();
     this.state ={
       memId: StoreGlobal({type:'get',key:'loginId'}),
-      tongNum: StoreGlobal({type:'get',key:'tongNum'}),
+      tongNum: StoreGlobal({type:'get',key:'tongnum'}),
       isLoading: true,
       isLoading2: true,
       dataSource: null,
@@ -68,6 +68,7 @@ class TongPaperAgree extends Component{
       .then((response) => response.json())
       .then((responseJson) => {
         //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
         this.setState({
           isLoading: false,
           dataSource: responseJson ? responseJson : nullJson,
@@ -95,16 +96,15 @@ class TongPaperAgree extends Component{
         //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.setState({
           isLoading2: false,
-          dataSource2: responseJson ? responseJson : nullJson,
-          _safe: responseJson ? responseJson['_safe'] : false,
-          _idcard: responseJson ? responseJson['_idcard'] : false,
-          _bankbook: responseJson ? responseJson['_bankbook'] : false,
-          _cert: responseJson ? responseJson['_cert'] : false,
-          _machine: responseJson ? responseJson['_machine'] : false,
-          _insp: responseJson ? responseJson['_insp'] : false,
-          _insurance: responseJson ? responseJson['_insurance'] : false,
-          _business: responseJson ? responseJson['_business'] : false,
-          _car: responseJson ? responseJson['_car'] : false,
+          _safe: responseJson ? (responseJson[0]['_safe'] == "1" ? true : false) : false,
+          _idcard: responseJson ? (responseJson[0]['_idcard'] == "1" ? true : false) : false,
+          _bankbook: responseJson ? (responseJson[0]['_bankbook'] == "1" ? true : false) : false,
+          _cert: responseJson ? (responseJson[0]['_cert'] == "1" ? true : false) : false,
+          _machine: responseJson ? (responseJson[0]['_machine'] == "1" ? true : false) : false,
+          _insp: responseJson ? (responseJson[0]['_insp'] == "1" ? true : false) : false,
+          _insurance: responseJson ? (responseJson[0]['_insurance'] == "1" ? true : false) : false,
+          _business: responseJson ? (responseJson[0]['_business'] == "1" ? true : false) : false,
+          _car: responseJson ? (responseJson[0]['_car'] == "1" ? true : false) : false,
         });
       })
       .catch((error) => {
@@ -114,6 +114,7 @@ class TongPaperAgree extends Component{
 
   componentDidMount() {
     this.getPaperInfo();
+    this.getCheckInfo();
   }
 
   defineKey(str) {
@@ -130,7 +131,44 @@ class TongPaperAgree extends Component{
     }
   }
 
+  tongPaperUpdate = () => {
+    const { tongNum, memId, _safe, _idcard, _bankbook, _cert, _machine, _insp, _insurance, _business, _car } = this.state;
+    let apiUrl = 'http://13.124.127.253/api/tongPaper2.php?';
 
+    const formData = new FormData();
+
+    formData.append('tongNum', tongNum);
+    formData.append('userId', memId);
+    formData.append('_safe', _safe ? 1 : 0);
+    formData.append('_idcard', _idcard ? 1 : 0);
+    formData.append('_bankbook', _bankbook ? 1 : 0);
+    formData.append('_cert', _cert ? 1 : 0);
+    formData.append('_machine', _machine ? 1 : 0);
+    formData.append('_insp', _insp ? 1 : 0);
+    formData.append('_insurance', _insurance ? 1 : 0);
+    formData.append('_business', _business ? 1 : 0);
+    formData.append('_car', _car ? 1 : 0);
+
+    options = {
+      method: 'POST',
+      body: formData,
+      headers: { Accept: 'application/json' },
+    }
+
+
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          ToastAndroid.show("저장 되었습니다.", ToastAndroid.BOTTOM)
+          this.props.navigation.goBack();
+        } else {
+          //alert(responseJson);
+          console.log(responseJson)
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
+  }
 
   render(){
     if (this.state.isLoading) {
@@ -156,7 +194,7 @@ class TongPaperAgree extends Component{
               <Text style={{fontSize:13}}> {keyName}</Text>
             </View>
             <View style={styles.Row}>
-              <Text style={{fontSize:10,color:this.state.dataSource[data] ? fontColor : '#db3928'}}>{this.state.dataSource[data] ? "있음" : "없음"} </Text>
+              <Text style={{fontSize:10,color:this.state.dataSource[0][data] ? fontColor : '#db3928'}}>{this.state.dataSource[0][data] ? "있음" : "없음"} </Text>
               <TouchableOpacity onPress={() => {this.setState({["_"+data]:!this.state["_"+data]})}}>
                 <Icon name={this.state["_"+data] ? "check-square-o" : "square-o"} type="FontAwesome" style={{fontSize:15,color:'#999'}} />
               </TouchableOpacity>
@@ -193,6 +231,7 @@ class TongPaperAgree extends Component{
                 rounded
                 block
                 style={{backgroundColor:'#db3928',paddingVertical:20}}
+                onPress={this.tongPaperUpdate}
               >
                 <Text style={{fontSize:18}}>완료</Text>
               </Button>

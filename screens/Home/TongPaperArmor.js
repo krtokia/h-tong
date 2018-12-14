@@ -199,7 +199,7 @@ class TongPaperArmor extends Component{
                 <Text style={{fontSize:11}}>위 신규채용자 교육이수 및 보호구를 수령하였음을 서약합니다.</Text>
               </View>
               <View style={[styles.Row,{marginBottom:10}]}>
-                <Text style={{fontSize:13,color:fontColor}}>2018 년  10 월  25 일</Text>
+                <Text style={{fontSize:13,color:fontColor}}>{this.state.dateTime}</Text>
               </View>
               <View style={[styles.Row]}>
                 <Text style={{fontSize:13}}>서약인 :   </Text>

@@ -115,6 +115,7 @@ class Home extends Component{
                             this.props.navigation.navigate("TongMain", {
                             itemID: val.tongnum,
                             tongType: 'T',
+                            tongname: val.tongtitle,
                             refresh: this.refresh
                             }),
                             this.navigateTong("T", val.tongnum)

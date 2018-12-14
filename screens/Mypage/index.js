@@ -74,9 +74,6 @@ class Mypage extends pickableImage{
     formData.append('nationality', dataSource.nationality);
     formData.append('email', dataSource.email);
     formData.append('cellPhone', dataSource.cellPhone);
-    formData.append('career', dataSource.career);
-    formData.append('birthDay', dataSource.birthDay);
-    formData.append('address', dataSource.address);
     formData.append('company', dataSource.company);
     formData.append('jobgroup', dataSource.jobgroup);
 
@@ -219,12 +216,14 @@ class Mypage extends pickableImage{
                   placeholder="연락처를 입력해주세요"
                   underline="false"
                   onChangeText={(content) => {
+                    var content2 = content.replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{4})([0-9]{4})/,"$1-$2-$3");
                     this.setState(prevState => ({
                       dataSource: {
                         ...prevState.dataSource,
-                        cellPhone: content
+                        cellPhone: content2
                       }
                     }));}}
+                  onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,cellPhone:""}}))}}
                 >
                   {this.state.dataSource.cellPhone}
                 </Input>

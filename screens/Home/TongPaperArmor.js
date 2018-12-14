@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, ImageBackground, TouchableOpacity } from 'react-native';
+import { Image, ImageBackground, TouchableOpacity, ActivityIndicator } from 'react-native';
 import {
   Container,
   Content,
@@ -23,7 +23,7 @@ import {RkTextInput, RkText, RkTheme} from 'react-native-ui-kitten';
 import styles from "./styles";
 
 var fontColor = '#555';
-
+import { StoreGlobal } from '../../App';
 
 class TongPaperArmor extends Component{
   static navigationOptions = {
@@ -33,6 +33,11 @@ class TongPaperArmor extends Component{
   constructor(){
     super();
     this.state ={
+      memId: StoreGlobal({type:'get',key:'loginId'}),
+      tongnum: StoreGlobal({type:'get',key:'tongnum'}),
+      tongname: StoreGlobal({type:'get',key:'tongname'}),
+      isLoading: true,
+      isLoading2: true,
       checked1: false,
       checked2: false,
       armor1: false,
@@ -50,87 +55,172 @@ class TongPaperArmor extends Component{
     });
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    let {checked1, checked2, armor1, armor2, armor3, armor4, armor5, armor6 } = this.state;
-    console.log("checked1:::",checked1)
-    console.log("checked2:::",checked2)
-    console.log("armor1:::",armor1)
-    console.log("armor2:::",armor2)
-    console.log("armor3:::",armor3)
-    console.log("armor4:::",armor4)
-    console.log("armor5:::",armor5)
-    console.log("armor6:::",armor6)
+  getPaperInfo = async() => {
+    var nowDate = new Date(Date.now());
+    var dateTime = nowDate.getFullYear()+" 년 "+(nowDate.getMonth()+1)+" 월 "+nowDate.getDate()+" 일";
+    return fetch("http://13.124.127.253/api/results.php?page=getPaperInfo&div=armor&id=" + this.state.memId + "&tongnum=" + this.state.tongnum)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.setState({
+          isLoading: false,
+          checked1: responseJson ? (responseJson[0]['checked1'] == "1" ? true : false) : false,
+          checked2: responseJson ? (responseJson[0]['checked2'] == "1" ? true : false) : false,
+          armor1: responseJson ? (responseJson[0]['armor1'] == "1" ? true : false) : false,
+          armor2: responseJson ? (responseJson[0]['armor2'] == "1" ? true : false) : false,
+          armor3: responseJson ? (responseJson[0]['armor3'] == "1" ? true : false) : false,
+          armor4: responseJson ? (responseJson[0]['armor4'] == "1" ? true : false) : false,
+          armor5: responseJson ? (responseJson[0]['armor5'] == "1" ? true : false) : false,
+          armor6: responseJson ? (responseJson[0]['armor6'] == "1" ? true : false) : false,
+          dateTime: responseJson ? responseJson[0]['dateTime'] : dateTime,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  getUserInfo = async() => {
+    return fetch("http://13.124.127.253/api/results.php?page=setting&id=" + this.state.memId)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.setState({
+          isLoading2: false,
+          dataSource: responseJson[0],
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  componentDidMount() {
+    this.getPaperInfo();
+    this.getUserInfo();
+  }
+
+  tongPaperUpdate = () => {
+    const { tongnum, memId, checked1, checked2, armor1, armor2, armor3, armor4, armor5, armor6 } = this.state;
+    let apiUrl = 'http://13.124.127.253/api/tongPaper.php?';
+
+    const formData = new FormData();
+
+    formData.append('div', 'armor');
+    formData.append('tongnum', tongnum);
+    formData.append('userId', memId);
+    formData.append('checked1', checked1 ? 1 : 0);
+    formData.append('checked2', checked2 ? 1 : 0);
+    formData.append('armor1', armor1 ? 1 : 0);
+    formData.append('armor2', armor2 ? 1 : 0);
+    formData.append('armor3', armor3 ? 1 : 0);
+    formData.append('armor4', armor4 ? 1 : 0);
+    formData.append('armor5', armor5 ? 1 : 0);
+    formData.append('armor6', armor6 ? 1 : 0);
+
+    options = {
+      method: 'POST',
+      body: formData,
+      headers: { Accept: 'application/json' },
+    }
+
+
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          ToastAndroid.show("저장 되었습니다.", ToastAndroid.BOTTOM)
+          this.props.navigation.goBack();
+        } else {
+          //alert(responseJson);
+          console.log(responseJson)
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
   }
 
   render(){
-    return (
-      <Container>
-        <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
-          <Left style={{flex:1}}>
-          </Left>
-          <Body style={{flex:6,alignItems:'center'}}>
-            <Text style={{textAlign:'center',color:'#fff',fontSize:16}}>교육이수 및 보호구 수령확인서</Text>
-          </Body>
-          <Right  style={{flex:1}}>
-            <Button rounded transparent onPress={() => {this.props.navigation.goBack()}}>
-              <Icon name="times" type="FontAwesome" />
-            </Button>
-          </Right>
-        </Header>
-        <Content
-          style={{ backgroundColor: "#fff" }}
-          padder
-        >
-          <View style={{paddingVertical:10,paddingLeft:20}}>
-            <Text style={{color:fontColor,fontSize:11,marginBottom:5}}>- 현장명 : 현장통 1</Text>
-            <Text style={{color:fontColor,fontSize:11}}>- 채용일자 : 2018 년  10 월  21 일</Text>
-          </View>
-          <View>
-            <ViewMenu1 />
-            <ViewMenu2
-              checked1={this.state.checked1}
-              checked2={this.state.checked2}
-              armor1={this.state.armor1}
-              armor2={this.state.armor2}
-              armor3={this.state.armor3}
-              armor4={this.state.armor4}
-              armor5={this.state.armor5}
-              armor6={this.state.armor6}
-              cMethod1={(checked1) => {this.setState({checked1})}}
-              cMethod2={(checked2) => {this.setState({checked2})}}
-              aMethod1={(armor1) => {this.setState({armor1})}}
-              aMethod2={(armor2) => {this.setState({armor2})}}
-              aMethod3={(armor3) => {this.setState({armor3})}}
-              aMethod4={(armor4) => {this.setState({armor4})}}
-              aMethod5={(armor5) => {this.setState({armor5})}}
-              aMethod6={(armor6) => {this.setState({armor6})}}
-            />
-          </View>
-          <View style={{marginTop:15,alignItems:'flex-end'}}>
-            <View style={[styles.Row,{marginBottom:20,alignSelf:'center'}]}>
-              <Text style={{fontSize:11}}>위 신규채용자 교육이수 및 보호구를 수령하였음을 서약합니다.</Text>
+    if(this.state.isLoading) {
+      return <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+              <ActivityIndicator />
+             </View>
+    } else if(this.state.isLoading2) {
+        return <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                <ActivityIndicator />
+               </View>
+    } else {
+      return (
+        <Container>
+          <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
+            <Left style={{flex:1}}>
+            </Left>
+            <Body style={{flex:6,alignItems:'center'}}>
+              <Text style={{textAlign:'center',color:'#fff',fontSize:16}}>교육이수 및 보호구 수령확인서</Text>
+            </Body>
+            <Right  style={{flex:1}}>
+              <Button rounded transparent onPress={() => {this.props.navigation.goBack()}}>
+                <Icon name="times" type="FontAwesome" />
+              </Button>
+            </Right>
+          </Header>
+          <Content
+            style={{ backgroundColor: "#fff" }}
+            padder
+          >
+            <View style={{paddingVertical:10,paddingLeft:20}}>
+              <Text style={{color:fontColor,fontSize:11,marginBottom:5}}>- 현장명 : {this.state.tongname}</Text>
+{/*              <Text style={{color:fontColor,fontSize:11}}>- 채용일자 : 2018 년  10 월  21 일</Text> */}
             </View>
-            <View style={[styles.Row,{marginBottom:10}]}>
-              <Text style={{fontSize:13,color:fontColor}}>2018 년  10 월  25 일</Text>
+            <View>
+              <ViewMenu1
+                dataSource={this.state.dataSource}
+              />
+              <ViewMenu2
+                checked1={this.state.checked1}
+                checked2={this.state.checked2}
+                armor1={this.state.armor1}
+                armor2={this.state.armor2}
+                armor3={this.state.armor3}
+                armor4={this.state.armor4}
+                armor5={this.state.armor5}
+                armor6={this.state.armor6}
+                cMethod1={(checked1) => {this.setState({checked1})}}
+                cMethod2={(checked2) => {this.setState({checked2})}}
+                aMethod1={(armor1) => {this.setState({armor1})}}
+                aMethod2={(armor2) => {this.setState({armor2})}}
+                aMethod3={(armor3) => {this.setState({armor3})}}
+                aMethod4={(armor4) => {this.setState({armor4})}}
+                aMethod5={(armor5) => {this.setState({armor5})}}
+                aMethod6={(armor6) => {this.setState({armor6})}}
+              />
             </View>
-            <View style={[styles.Row]}>
-              <Text style={{fontSize:13}}>서약인 :   </Text>
-              <View style={{width:100,height:50,marginRight:10,backgroundColor:'#e9e9e9'}}>
+            <View style={{marginTop:15,alignItems:'flex-end'}}>
+              <View style={[styles.Row,{marginBottom:20,alignSelf:'center'}]}>
+                <Text style={{fontSize:11}}>위 신규채용자 교육이수 및 보호구를 수령하였음을 서약합니다.</Text>
+              </View>
+              <View style={[styles.Row,{marginBottom:10}]}>
+                <Text style={{fontSize:13,color:fontColor}}>2018 년  10 월  25 일</Text>
+              </View>
+              <View style={[styles.Row]}>
+                <Text style={{fontSize:13}}>서약인 :   </Text>
+                <View style={{width:100,height:50,marginRight:10,backgroundColor:'#e9e9e9'}}>
+                </View>
               </View>
             </View>
-          </View>
-          <View style={{justifyContent:'center',alignSelf:'center',alignItems:'center',marginTop:50,width:'60%'}}>
-            <Button
-              rounded
-              block
-              style={{backgroundColor:'#db3928',paddingVertical:20}}
-            >
-              <Text style={{fontSize:18}}>완료</Text>
-            </Button>
-          </View>
-        </Content>
-      </Container>
-    );
+            <View style={{justifyContent:'center',alignSelf:'center',alignItems:'center',marginTop:50,width:'60%'}}>
+              <Button
+                rounded
+                block
+                style={{backgroundColor:'#db3928',paddingVertical:20}}
+                onPress = {this.tongPaperUpdate}
+              >
+                <Text style={{fontSize:18}}>완료</Text>
+              </Button>
+            </View>
+          </Content>
+        </Container>
+      );
+    }
   }
 }
 export default TongPaperArmor;
@@ -146,8 +236,15 @@ class ViewMenu1 extends Component{
       this.setState({
         status:!this.state.status
       });
-    }
+  }
+  getAge(birth) {
+    var birthDay = birth.substring(0,4);
+    var current = new Date().getFullYear();
+
+    return current - birthDay + 1 + "세";
+  }
   render(){
+    const { dataSource } = this.props;
     return (
       <View>
         <View style={[styles.Row,styles.grayBottom,{justifyContent:'space-between',padding:10}]}>
@@ -163,51 +260,51 @@ class ViewMenu1 extends Component{
             <View>
               <ViewMenuSub
                 title="성명"
-                content="홍길동"
+                content={dataSource.userNm}
               />
               <ViewMenuSub
                 title="성별"
-                content="남자"
+                content={dataSource.gender}
               />
               <ViewMenuSub
                 title="생년월일"
-                content="540624"
+                content={dataSource.birthDay}
               />
               <ViewMenuSub
                 title="나이"
-                content="54세"
+                content={this.getAge(dataSource.birthDay)}
               />
               <ViewMenuSub
                 title="국적"
-                content="대한민국"
+                content={dataSource.nationality}
               />
               <ViewMenuSub
                 title="경력"
-                content="15년"
+                content={dataSource.career+"년"}
               />
               <ViewMenuSub
                 title="직종"
-                content=""
+                content={dataSource.jobgroup}
               />
               <ViewMenuSub
                 title="소속 회사명"
-                content="현장통1"
+                content={dataSource.company}
               />
               <ViewMenuSub
                 title="주소"
-                content="서울특별시 서초구 방배동 905-12 2층 a호"
+                content={dataSource.address}
               />
               <ViewMenuSub
                 title="전화번호"
-                content="02-123-1234"
+                content={dataSource.phone}
               />
               <ViewMenuSub
                 title="휴대폰번호"
-                content="010-1234-1234"
+                content={dataSource.cellPhone}
               />
               <ViewMenuSub
                 title="비상연락처"
-                content="관계:      / 연락처:       "
+                content={"관계:"+dataSource.oRelation+"/ 연락처:"+dataSource.oPhone}
               />
             </View>
           </View>

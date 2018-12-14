@@ -32,8 +32,10 @@ class TongMain extends pickableImage{
     const {navigation} = this.props;
   	const itemID = navigation.getParam('itemID');
     const tongType = navigation.getParam('tongType');
+    const tongname = navigation.getParam('tongname');
   	StoreGlobal({type:'set',key:'tongnum',value:itemID});
     StoreGlobal({type:'set',key:'tongtype',value:tongType});
+    StoreGlobal({type:'set',key:'tongname',value:tongname});
     this.state = {
         isLoading: true,
         isLoading2: true,

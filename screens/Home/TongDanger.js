@@ -11,7 +11,8 @@ import {
   Alert,
   TextInput,
   Picker,
-  ScrollView
+  ScrollView,
+  ToastAndroid
  } from 'react-native';
  import {
    Container,
@@ -43,19 +44,22 @@ class TongDanger extends pickableImage{
     this.state = {
       modal: false,
       modalData: null,
+      isLoading: true,
       memId: StoreGlobal({type:'get',key:'loginId'}),
       tongnum: StoreGlobal({type:'get',key:'tongnum'}),
+      dataSource: null,
+      content: "",
     }
   }
 
-  getNoti = async() => {
-      return fetch("http://13.124.127.253/api/results.php?page=selectNotice&tongnum=" + this.state.tongnum)
+  getDanger = async() => {
+      return fetch("http://13.124.127.253/api/results.php?page=tongDanger&tongnum=" + this.state.tongnum)
             .then((response) => response.json())
             .then((responseJson) => {
               //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
               this.setState({
                 isLoading: false,
-                DataSource: responseJson,
+                dataSource: responseJson,
               });
             })
             .catch((error) => {
@@ -63,10 +67,62 @@ class TongDanger extends pickableImage{
             });
   }
   componentDidMount() {
+    this.getDanger()
   }
 
   dangerReg = () => {
-    this.setState({modal:false})
+    const { tongnum, memId, imageSource, content } = this.state;
+    let apiUrl = 'http://13.124.127.253/api/tongDanger.php?';
+
+    const formData = new FormData();
+
+    formData.append('div', 'reg');
+    formData.append('tongnum', tongnum);
+    formData.append('writeId', memId);
+    formData.append('beforeContent', content);
+
+    if (imageSource) {
+      uri = imageSource;
+      uriParts = uri.split('.');
+      fileType = uriParts[uriParts.length - 1];
+
+      formData.append('photo', {
+        uri,
+        name: `photo.${fileType}`,
+        type: `image/${fileType}`,
+      });
+    }
+    if (imageSource) {
+      options = {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+    } else {
+      options = {
+        method: 'POST',
+        body: formData,
+        headers: { Accept: 'application/json' },
+      }
+    }
+
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          ToastAndroid.show("저장 되었습니다.", ToastAndroid.BOTTOM)
+          this.setState({modal:false})
+          this.getDanger()
+        } else {
+          //alert(responseJson);
+          console.log(responseJson)
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
+
   }
 
   refresh = refresh => {
@@ -82,7 +138,6 @@ class TongDanger extends pickableImage{
     this.setState({width,height})
   }
   render(){
-    const { modalData } = this.state;
     if (this.state.isLoading) {
       return (
         <View Style={{flex:1, paddingTop:20}}>
@@ -90,6 +145,19 @@ class TongDanger extends pickableImage{
         </View>
       )
     } else {
+      let datas;
+      if (this.state.dataSource) {
+        datas = this.state.dataSource.map((data, key) => {
+          return <DangerList
+            key={key}
+            dataSource={data}
+            complete={data.solveYn == "Y" || data.rejectYn == "Y" ? true : false}
+            detail={(data) => this.props.navigation.navigate("TongDangerDetail",{dangerData:data,refresh:this.refresh})}
+          />
+        })
+      } else {
+        datas = <View style={{padding:20}}><Text>등록된 위험이 없습니다.</Text></View>
+      }
       return (
         <Container>
           <Modal
@@ -130,7 +198,11 @@ class TongDanger extends pickableImage{
                   <Text style={{fontSize:13}}>내용입력 : </Text>
                   <TextInput
                     underlineColorAndroid="transparent"
-                    style={{backgroundColor:'#0001',width:'70%'}} />
+                    style={{backgroundColor:'#0001',width:'70%'}}
+                    onChangeText={(content) => {
+                      this.setState({content})
+                    }}
+                  />
                 </View>
                 <ModalOut closeModal={(modal) => this.setState({modal})} />
               </View>
@@ -195,18 +267,7 @@ class TongDanger extends pickableImage{
                 </Button>
               </View>
             </View>
-            <DangerList
-              detail={(data) => this.props.navigation.navigate("TongDangerDetail",{dangerData:data,refresh:this.refresh})}
-            />
-            <DangerList
-              detail={(data) => this.props.navigation.navigate("TongDangerDetail",{dangerData:data,refresh:this.refresh})}
-            />
-            <DangerList
-              detail={(data) => this.props.navigation.navigate("TongDangerDetail",{dangerData:data,refresh:this.refresh})}
-            />
-            <DangerList
-              detail={(data) => this.props.navigation.navigate("TongDangerDetail",{dangerData:data,refresh:this.refresh})}
-            />
+            {datas}
           </Content>
           <View style={{position:'absolute',bottom:8,right:8}}>
             <Button
@@ -247,35 +308,52 @@ class DangerList extends Component {
     }
   },2000)
   render() {
-    const { complete, detail } = this.props;
+    const { complete, detail, dataSource } = this.props;
     return (
       <View style={styles.dangerBox}>
         <TouchableOpacity style={[{width:'100%',height:'100%'}]}
-          onPress={() => detail("null!!!!")}
+          onPress={complete ? () => console.log("NONO") : () => detail(dataSource.seq)}
         >
           <View style={{paddingLeft:20,paddingVertical:3,justifyContent:'center'}}>
-            <Text style={{fontSize:10,color:'#666'}}>등록일시 : 2018-11-11 11:11:11</Text>
+            <Text style={{fontSize:10,color:'#666'}}>등록일시 : {dataSource.beforeDt}</Text>
           </View>
           <View style={[styles.row2,{flex:1}]}>
             <View style={{flex:1,padding:5}}>
               <View style={{flex:3}}>
-                <Image source={{uri: 'http://13.124.127.253/images/tongHead/photo_3.jpg'}}
+                {this.props.dataSource.beforeImg ? (
+                <Image source={{uri: "http://13.124.127.253/images/danger/"+dataSource.beforeImg}}
                   style={{flex:1}} />
+                ) : (
+                  <Image source={{uri: "http://13.124.127.253/images/danger/noImage.png"}}
+                    style={{flex:1}} />
+                )}
               </View>
               <View style={{flex:1,marginTop:3}}>
-                <Text style={{fontSize:11}}>내용</Text>
+                <Text style={{fontSize:11}}>{dataSource.beforeContent}</Text>
               </View>
             </View>
             <View style={{flex:1.5}}>
               { this.props.complete ? (
                 <View style={[styles.row2,{flex:1}]}>
                   <View style={{flex:2,padding:5}}>
-                    <View style={{flex:3}}>
-                      <Image source={{uri: 'http://13.124.127.253/images/tongHead/photo_3.jpg'}}
-                        style={{flex:1}} />
+                  { dataSource.rejectYn === "Y" ? (
+                    <View style={[styles.center,{flex:3}]}>
+                      <Text style={{marginBottom:10}}>위험 삭제됨</Text>
+                      <Text style={{fontSize:11}}>{dataSource.reject}</Text>
                     </View>
+                  ) : (
+                    <View style={{flex:3}}>
+                      {this.props.dataSource.afterImg ? (
+                      <Image source={{uri: "http://13.124.127.253/images/danger/"+dataSource.afterImg}}
+                        style={{flex:1}} />
+                      ) : (
+                        <Image source={{uri: "http://13.124.127.253/images/danger/noImage.png"}}
+                          style={{flex:1}} />
+                      )}
+                    </View>
+                    )}
                     <View style={{flex:1,marginTop:3}}>
-                      <Text style={{fontSize:11}}>내용</Text>
+                      <Text style={{fontSize:11}}>{dataSource.afterContent}</Text>
                     </View>
                   </View>
                   <View style={[styles.center,{flex:1,paddingBottom:30}]}>

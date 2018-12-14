@@ -102,6 +102,7 @@ class SearchInvite extends Component{
         tongOwnId: invData.creator,
         tongMemId: invData.userId,
         userGrade: invData.userGrade,
+        jobGrade: invData.jobGrade,
       })
     }
     return fetch(apiUrl, options).then((response) => response.json())

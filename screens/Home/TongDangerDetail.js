@@ -11,7 +11,8 @@ import {
   Alert,
   TextInput,
   Picker,
-  ScrollView
+  ScrollView,
+  ToastAndroid
  } from 'react-native';
  import {
    Container,
@@ -43,19 +44,22 @@ class TongDangerDetail extends pickableImage{
     this.state = {
       modal: false,
       modalData: null,
+      isLoading: true,
       memId: StoreGlobal({type:'get',key:'loginId'}),
       tongnum: StoreGlobal({type:'get',key:'tongnum'}),
+      dataSource: null,
+      imageSource: null,
     }
   }
 
-  getNoti = async() => {
-      return fetch("http://13.124.127.253/api/results.php?page=selectNotice&tongnum=" + this.state.tongnum)
+  getDanger = async() => {
+      return fetch("http://13.124.127.253/api/results.php?page=tongDanger&tongnum=" + this.state.tongnum + "&seq=" + this.props.navigation.getParam('dangerData'))
             .then((response) => response.json())
             .then((responseJson) => {
               //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
               this.setState({
                 isLoading: false,
-                DataSource: responseJson,
+                dataSource: responseJson[0],
               });
             })
             .catch((error) => {
@@ -63,7 +67,91 @@ class TongDangerDetail extends pickableImage{
             });
   }
   componentDidMount() {
-    console.log(this.props.navigation.getParam('dangerData'))
+    this.getDanger()
+  }
+
+  dangerSolve = () => {
+    const { dataSource, afterContent, imageSource, memId } = this.state;
+    let apiUrl = 'http://13.124.127.253/api/tongDanger.php?';
+
+    const formData = new FormData();
+
+    formData.append('div', 'solve');
+    formData.append('solveId', memId);
+    formData.append('seq', this.props.navigation.getParam('dangerData'));
+    formData.append('afterContent', afterContent);
+
+    if (imageSource) {
+      uri = imageSource;
+      uriParts = uri.split('.');
+      fileType = uriParts[uriParts.length - 1];
+
+      formData.append('photo', {
+        uri,
+        name: `photo.${fileType}`,
+        type: `image/${fileType}`,
+      });
+    }
+    if (imageSource) {
+      options = {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+    } else {
+      options = {
+        method: 'POST',
+        body: formData,
+        headers: { Accept: 'application/json' },
+      }
+    }
+
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          ToastAndroid.show("저장 되었습니다.", ToastAndroid.BOTTOM)
+          this._goBack();
+        } else {
+          //alert(responseJson);
+          console.log(responseJson)
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
+  }
+
+  dangerDel = () => {
+    const { content, memId } = this.state;
+    let apiUrl = 'http://13.124.127.253/api/tongDanger.php?';
+
+    const formData = new FormData();
+
+    formData.append('div', 'reject');
+    formData.append('solveId', memId);
+    formData.append('seq', this.props.navigation.getParam('dangerData'));
+    formData.append('reject', content);
+    options = {
+      method: 'POST',
+      body: formData,
+      headers: { Accept: 'application/json' },
+    }
+
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          ToastAndroid.show("저장 되었습니다.", ToastAndroid.BOTTOM)
+          this.setState({modal:false})
+          this._goBack();
+        } else {
+          //alert(responseJson);
+          console.log(responseJson)
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
   }
 
   _goBack = () => {
@@ -72,7 +160,6 @@ class TongDangerDetail extends pickableImage{
     navigation.state.params.refresh({ refresh: Date(Date.now()).toString() })
   }
   render(){
-    const { modalData } = this.state;
     if (this.state.isLoading) {
       return (
         <View Style={{flex:1, paddingTop:20}}>
@@ -80,6 +167,7 @@ class TongDangerDetail extends pickableImage{
         </View>
       )
     } else {
+      const { dataSource } = this.state;
       return (
         <Container>
           <Modal
@@ -89,6 +177,39 @@ class TongDangerDetail extends pickableImage{
             onRequestClose={() => {
               this.setState({modal:!this.state.modal});
             }}>
+            <View style={[{flex:1,backgroundColor:'#0008'}]}>
+              <ModalOut closeModal={(modal) => this.setState({modal})} />
+              <View style={[styles.row2]}>
+                <ModalOut closeModal={(modal) => this.setState({modal})} />
+                <View style={[styles.row2,{width:'70%',backgroundColor:'#fff',padding:10,alignItems:'center',borderRadius:10}]}>
+                  <Text style={{fontSize:13}}>삭제 사유 : </Text>
+                  <TextInput
+                    underlineColorAndroid="transparent"
+                    style={{backgroundColor:'#0001',width:'70%'}}
+                    multiline={true}
+                    numberOfLines={4}
+                    onChangeText={(content) => {
+                      this.setState({content})
+                    }}
+                  />
+                </View>
+                <ModalOut closeModal={(modal) => this.setState({modal})} />
+              </View>
+              <View style={{alignSelf:'center',width:'50%',marginTop:10}}>
+                <Button
+                  style={{backgroundColor:'#db3928'}}
+                  rounded
+                  block
+                  iconLeft
+                  small
+                  onPress={this.dangerDel}
+                >
+                  <Icon type="FontAwesome" name="exclamation-circle" />
+                  <Text>위험 삭제</Text>
+                </Button>
+              </View>
+              <ModalOut closeModal={(modal) => this.setState({modal})} />
+            </View>
           </Modal>
           <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
             <Left style={{flex:1}}>
@@ -111,14 +232,14 @@ class TongDangerDetail extends pickableImage{
           >
             <View style={[styles.Box,styles.row2,{height:70,marginBottom:10}]}>
               <View style={{width:50,height:50,borderWidth:1,borderRadius:40,borderColor:'#999',padding:2}}>
-                <Image source={{uri: 'http://13.124.127.253/images/tongHead/photo_3.jpg'}}
+                <Image source={{uri: 'http://13.124.127.253/images/userProfile/'+dataSource.userImg}}
                   style={{flex:1,borderRadius:40}}
                 />
               </View>
               <View style={{flex:3,justifyContent:'space-between',paddingLeft:30}}>
-                <Text style={{fontWeight:'bold',fontSize:12}}>작성자</Text>
-                <Text style={{fontSize:11,color:'#999'}}>어디회사 / 직급</Text>
-                <Text style={{fontSize:11,color:'#999'}}>010-1111-1111</Text>
+                <Text style={{fontWeight:'bold',fontSize:12}}>{dataSource.userNm}</Text>
+                <Text style={{fontSize:11,color:'#999'}}>{dataSource.company} / {dataSource.jobGrade}</Text>
+                <Text style={{fontSize:11,color:'#999'}}>{dataSource.cellPhone}</Text>
               </View>
             </View>
             {/* 처리 전 */}
@@ -126,7 +247,7 @@ class TongDangerDetail extends pickableImage{
               <Text style={{fontSize:15,color:'#db3928',position:'absolute',top:5,left:5}}>처리 전</Text>
               <View style={{flex:1}}>
                 <View style={{flex:1}}>
-                  <Image source={{uri: 'http://13.124.127.253/images/tongHead/photo_3.jpg'}}
+                  <Image source={{uri: 'http://13.124.127.253/images/danger/'+dataSource.beforeImg}}
                     style={{flex:1}}
                     resizeMode="contain" />
                 </View>
@@ -137,7 +258,11 @@ class TongDangerDetail extends pickableImage{
                   <View style={[styles.grayBottom,{flex:1}]}>
                     <TextInput style={{fontSize:13}}
                       underlineColorAndroid="transparent"
-                      editable={"id" === "id" ? true : false }
+                      editable={false}
+                      value={dataSource.beforeContent}
+                      onChangeText={(content) => {
+                        this.setState({beforeContent: content})
+                      }}
                     />
                   </View>
                 </View>
@@ -174,6 +299,10 @@ class TongDangerDetail extends pickableImage{
                     <TextInput style={{fontSize:13}}
                       underlineColorAndroid="transparent"
                       editable={"id" === "id" ? true : false }
+                      value={this.state.afterContent}
+                      onChangeText={(content) => {
+                        this.setState({afterContent: content})
+                      }}
                     />
                   </View>
                 </View>
@@ -188,6 +317,7 @@ class TongDangerDetail extends pickableImage{
                 iconLeft
                 success
                 small
+                onPress={this.dangerSolve}
               >
                 <Icon name="check" type="FontAwesome" />
                 <Text>완료</Text>
@@ -200,6 +330,7 @@ class TongDangerDetail extends pickableImage{
                 iconLeft
                 danger
                 small
+                onPress={() => this.setState({modal:!this.state.modal})}
               >
                 <Icon name="close" type="FontAwesome"/>
                 <Text>삭제</Text>
@@ -213,3 +344,15 @@ class TongDangerDetail extends pickableImage{
   }
 }
 export default TongDangerDetail;
+
+class ModalOut extends Component {
+  render() {
+    return(
+      <View style={{flex:1}}>
+        <TouchableWithoutFeedback onPress={() => {this.props.closeModal(false)}}>
+          <View style={{flex:1}} />
+        </TouchableWithoutFeedback>
+      </View>
+    )
+  }
+}

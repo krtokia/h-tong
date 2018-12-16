@@ -20,36 +20,49 @@ import {
 } from 'native-base';
 
 import styles from './styles.js';
-import { GiftedChat } from 'react-native-gifted-chat'
+import { GiftedChat } from 'react-native-gifted-chat';
+import ActionCable from 'react-native-actioncable';
+import axios from 'axios';
 
 class ChatRoom extends Component{
-  state = {
-    messages: [],
+  constructor(props) {
+    super(props);
+    this.state = {
+      messages: [],
+      _id: 'tongid',
+      text: "test",
+      createdAt: new Date(),
+      refreshing:true,
+    }
   }
-  componmentWillMount() {
-    this.setState({
-      messages: [
-        {
-          _id:1,
-          text: "test",
-          createdAt: new Date(),
-          user: {
-            _id:2,
-            name: 'test2',
-            avatar: 'https://placeimg.com/140/140/any',
-          },
-        },
-      ],
-    })
+
+  componentWillMount() {
+    //this.createSocket();
+    this.fetchMessage();
   }
+
+  static navigationOptions = ({
+    header: null
+  });
+
   onSend(messages=[]) {
     this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }))
+    this.saveChat(messages);
+    console.log(messages);
   }
-  static navigationOptions = ({
-    header: null
-  });
+
+  saveChat(messages) {
+
+    axios.post('http://h-tong.kr/api/saveChat.php', {
+      user: messages[0]._id,
+      message: messages[0].text,
+    })
+    .then( response => { } )
+    .catch( response => { } )
+  }
+
   render(){
     return (
       <Container>
@@ -69,11 +82,53 @@ class ChatRoom extends Component{
           messages={this.state.messages}
           onSend={messages => this.onSend(messages)}
           user={{
-            _id: 1,
+            _id: this.state._id,
           }}
+          loadEarlier={this.state.refreshing}
         />
       </Container>
     );
   }
+
+  fetchMessage() {
+    console.log("START FETCH");
+    axios.get('http://h-tong.kr/api/fetchChat.php')
+    .then(res => {
+      data_messages = res.data;
+      
+      this.setState(prevState => ({
+        messages: GiftedChat.prepend(prevState.messages, data_messages),
+        refreshing: false,
+      }));
+
+    })
+    .catch(err => {
+      alert(err);
+    });1
+  }
+
+  createSocket() {
+  let cable = ActionCable.createConsumer('ws://10.0.2.2:3001/cable');
+
+  this.chats = cable.subscriptions.create(
+    {
+      channel: 'ChatChannel'
+    },
+    {
+      connected: () => {
+        console.log('Connected!');
+      },
+      received: (messages) => {
+        this.setState(prevState => ({
+          messages: GiftedChat.append(prevState.messages, messages)
+        }));
+      },
+      create: function(messages){
+        this.perform('create', {content: messages});
+      }
+    }
+  )
+  }
+
 }
 export default ChatRoom;

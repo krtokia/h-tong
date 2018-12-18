@@ -119,7 +119,6 @@ class Friends extends Component{
         <Content
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#f9f9f9",}}
-          contentContainerStyle={{ flex: 1 }}
         >
           <View style={{width:'100%',padding:10,}}>
             <Item rounded style={{alignSelf:'center',width:'90%',height:40,backgroundColor:'#aaa1'}}>

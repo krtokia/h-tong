@@ -59,6 +59,7 @@ import CommunityMain from "./Home/CommunityMain.js";
 import CommunityNotice from "./Home/CommunityNotice.js";
 import CommunityPeople from "./Home/CommunityPeople.js";
 import CommunitySetting from "./Home/CommunitySetting.js";
+import CommnunityInvite from "./Home/CommnunityInvite.js"
 
 import Mypage from './Mypage';
 import MyInfo from './Mypage/MyInfo.js';
@@ -113,6 +114,7 @@ const TongStackNavi = createStackNavigator({
 
 const CommunityStackNavi = createStackNavigator({
   CommunityMain: { screen: CommunityMain },
+  CommunityInvite: { screen: CommnunityInvite },
 },{
   navigationOptions: {
     header: null

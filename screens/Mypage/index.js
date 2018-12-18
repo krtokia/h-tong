@@ -67,7 +67,7 @@ class Mypage extends pickableImage{
       this.setState(prevStates => ({
         dataSource: {
           ...prevStates.dataSource,
-          nationality: prevState.dataSource.nationality
+          nationality: prevState.dataSource ? prevState.dataSource.nationality : "내국인"
         }
       }))
     }

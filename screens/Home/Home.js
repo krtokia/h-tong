@@ -66,7 +66,8 @@ class Home extends Component{
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.refresh !== prevState.refresh) {
+    if (this.state.refresh !== this.props.navigation.getParam('refresh')) {
+     this.setState({refresh:this.props.navigation.getParam('refresh')})
      this.tongList()
      this.commList()
     }
@@ -202,7 +203,7 @@ class Home extends Component{
             </CardItem>
             <CardItem button onPress={() => {this.props.navigation.navigate('TongSearch')}}>
               <Icon name="search" />
-              <Text>현장통 찾기</Text>
+              <Text>커뮤니티 찾기</Text>
             </CardItem>
             <CardItem button onPress={() => {this.props.navigation.navigate('SearchInvite',{refresh:this.refresh})}}>
               <Icon name="ios-paper-plane" />

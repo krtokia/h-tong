@@ -16,6 +16,7 @@ const bg = require("../../assets/images/bg.png");
 const logo = require("../../assets/images/loginLogo.png");
 
 import styles from './styles';
+import { StoreGlobal } from '../../App';
 
 export default class Signup extends Component {
   static navigationOptions = ({
@@ -65,7 +66,8 @@ export default class Signup extends Component {
                 '현장통',
                 "가입이 완료 되었습니다"
               )
-              this.props.navigation.navigate("Login");
+              StoreGlobal({type:'set',key:'loginId',value:userId})
+              this.props.navigation.navigate("HomeMore");
             } else {
               //alert(responseJson);
               Alert.alert(

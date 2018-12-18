@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, AppRegistry, ListView, ImageBackground, TouchableOpacity, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { ToastAndroid, StyleSheet, Image, AppRegistry, ListView, ImageBackground, TouchableOpacity, TouchableHighlight, ActivityIndicator } from 'react-native';
 import {
   View,
   Button,
@@ -19,7 +19,7 @@ import {
 import styles from './styles.js';
 import { StoreGlobal } from '../../App';
 
-class TongInvite extends Component{
+class CommnunityInvite extends Component{
   constructor(props) {
     super(props);
     this.state = {
@@ -110,8 +110,7 @@ class TongInvite extends Component{
               <FriendList
                 name={data.friendNm}
                 type={data.friendJob}
-                detailHref={() => {this.props.navigation.navigate('TongInviteDetail', {friendId:data.friendId,refresh:this.refresh})}}
-                chatHref={() => {this.props.navigation.navigate('ChatRoom', {friendId:data.friendId,refresh:Date(Date.now()).toString()})}}
+                detailHref={() => {ToastAndroid.show("커뮤니티 초대 기능",ToastAndroid.SHORT)}}
               />
             </View>
     	  });
@@ -123,8 +122,7 @@ class TongInvite extends Component{
             <FriendList
               name={data.userNm}
               type={data.jobgroup}
-              detailHref={() => {this.props.navigation.navigate('TongInviteDetail', {friendId:data.userId,refresh:this.refresh})}}
-              chatHref={() => {this.props.navigation.navigate('ChatRoom', {friendId:data.userId,refresh:Date(Date.now()).toString()})}}
+              detailHref={() => {ToastAndroid.show("커뮤니티 초대 기능",ToastAndroid.SHORT)}}
             />
           </View>
   	  });
@@ -182,4 +180,4 @@ class FriendList extends Component{
     )
   }
 }
-export default TongInvite;
+export default CommnunityInvite;

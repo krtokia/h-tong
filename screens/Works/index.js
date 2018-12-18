@@ -199,7 +199,7 @@ class Works extends Component{
           return <WorkList
             key={key}
             date={dateFor}
-            seq={val.seq}
+            seq={key}
             name={val.worktitle}
             status={val.deposit === "Y" ? "지급완료" : "미수금"}
             money={val.money.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}

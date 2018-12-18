@@ -341,11 +341,13 @@ class createTong2 extends pickableImage{
                  </View>
                  </TouchableOpacity>
             </View>
+{/*
             <View style={{marginTop:20,alignItems:'center',justifyContent:'center'}}>
                  <TouchableOpacity onPress={this.uploadImage}>
                  <Text style={{fontSize:15,color:'#db3928'}}>{tongDiv}통 공개 타입을 설정하세요. <NBIcon name='cogs' type="FontAwesome" style={{color:'#db3928',fontSize:20,alignSelf:'center'}} /></Text>
                  </TouchableOpacity>
             </View>
+*/}
             <View style={{marginTop:50,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
               <Button iconLeft rounded style={{backgroundColor:'#db3928',paddingHorizontal:50,paddingVertical:20}} onPress={() => _this.division(tongType)}>
                 <Image source={require('../../assets/images/addButton.png')} />

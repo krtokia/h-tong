@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableWithoutFeedback,Animated,ImageBackground, TouchableOpacity, Image, Modal,ScrollView, TouchableHighlight, Alert, ActivityIndicator } from 'react-native';
+import { ToastAndroid,TouchableWithoutFeedback,Animated,ImageBackground, TouchableOpacity, Image, Modal,ScrollView, TouchableHighlight, Alert, ActivityIndicator } from 'react-native';
 import {
   Container,
   Content,
@@ -71,6 +71,7 @@ class CommunityMain extends pickableImage{
         parentShow: false,
         deleteimg: false,
         count: 0,
+        isMember:0,
 		}
 
 
@@ -101,13 +102,14 @@ class CommunityMain extends pickableImage{
 
 
   getTong = async() => {
-    return fetch("http://13.124.127.253/api/results.php?page=tong&seq=" + this.state.tongnum)
+    return fetch("http://13.124.127.253/api/results.php?page=community&seq=" + this.state.tongnum + "&id=" + this.state.memId)
       .then((response) => response.json())
       .then((responseJson) => {
         //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.setState({
           isLoading: false,
           dataSource: responseJson,
+          isMember: responseJson ? responseJson[0]['isMember'] : 0
         });
       })
       .catch((error) => {
@@ -448,8 +450,7 @@ class CommunityMain extends pickableImage{
   _goBack = () => {
     const { navigation } = this.props;
 //    navigation.navigate('TongInvite',{refresh: new Date(Date.now()).toString()});
-    navigation.navigate("Home");
-    navigation.state.params.refresh({ refresh: Date(Date.now()).toString() })
+    navigation.navigate("Home",{refresh:Date(Date.now()).toString()});
   }
 
   createWeather() {
@@ -716,14 +717,15 @@ class CommunityMain extends pickableImage{
                       <Text style={{fontSize:13}}>{TongType === 'T' ? '현장' : '커뮤니티'}동료({this.state.count})</Text>
                     </View>
                     <View style={{flexDirection:'row',paddingRight:10}}>
-                      <TouchableOpacity onPress={() => {this.props.navigation.navigate('Test')}}>
+                    { this.state.isMember > 0 ? (
+                      <TouchableOpacity onPress={() => {this.props.navigation.navigate('CommunityInvite')}}>
                         <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="plus-circle" /> 동료초대</Text>
                       </TouchableOpacity>
-                      {TongType === 'T' &&
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('TongInfo')}>
-                          <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="map-marker" /> 현장위치</Text>
-                        </TouchableOpacity>
-                      }
+                    ) : (
+                      <TouchableOpacity onPress={() => {ToastAndroid.show("커뮤니티 가입 기능", ToastAndroid.SHORT)}}>
+                        <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="plus-circle" /> 커뮤니티 가입</Text>
+                      </TouchableOpacity>
+                    )}
                     </View>
                   </View>
                 </View>
@@ -732,7 +734,7 @@ class CommunityMain extends pickableImage{
                     small
                     rounded
                     style={{backgroundColor:'#db3928'}}
-                    onPress={() => {this.setwriteModal(!this.state.writeModal)}}
+                    onPress={() => {this.state.isMember > 0 ? this.setwriteModal(!this.state.writeModal) : ToastAndroid.show("가입한 회원만 작성 가능합니다.", ToastAndroid.SHORT)}}
                   >
                     <Text>글쓰기</Text>
                   </Button>

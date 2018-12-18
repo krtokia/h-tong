@@ -62,6 +62,17 @@ class Mypage extends pickableImage{
     this.getUser()
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if(!this.state.dataSource.nationality) {
+      this.setState(prevStates => ({
+        dataSource: {
+          ...prevStates.dataSource,
+          nationality: prevState.dataSource.nationality
+        }
+      }))
+    }
+  }
+
   userUpdate() {
     const { id, dataSource, imageSource, imgresult } = this.state;
 
@@ -236,6 +247,7 @@ class Mypage extends pickableImage{
                 onPress={() => ActionSheet.show(
                   {
                     options: BUTTONS,
+                    cancelButtonIndex: 3,
                     title: "국적을 선택하세요"
                   },
                   (buttonIndex) => {

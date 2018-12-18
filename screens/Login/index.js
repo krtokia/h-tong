@@ -10,7 +10,8 @@ import {
   Dimensions,
   TouchableHighlight,
   Text,
-  StatusBar
+  StatusBar,
+  KeyboardAvoidingView
 } from 'react-native';
 import { Header } from 'react-navigation';
 
@@ -77,6 +78,7 @@ export default class App extends Component {
   render() {
     const navigation = this.props.navigation;
     return (
+      <KeyboardAvoidingView behavior='padding'  enabled>
       <ImageBackground source={bg} style={styles.background}>
       <View style={styles.container}>
         <Image source={logo} style={styles.logo} />
@@ -116,6 +118,7 @@ export default class App extends Component {
         </View>
       </View>
       </ImageBackground>
+      </KeyboardAvoidingView>
     );
   }
 }

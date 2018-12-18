@@ -95,7 +95,7 @@ class ChatRoom extends Component{
     axios.get('http://h-tong.kr/api/fetchChat.php')
     .then(res => {
       data_messages = res.data;
-      
+
       this.setState(prevState => ({
         messages: GiftedChat.prepend(prevState.messages, data_messages),
         refreshing: false,

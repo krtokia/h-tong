@@ -7,6 +7,7 @@ import {
   ScrollView,
   DatePickerAndroid,
   TextInput,
+  KeyboardAvoidingView
  } from 'react-native';
  import {
    View,
@@ -255,6 +256,7 @@ class More extends pickableImage{
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#f4f4f4" }}
         >
+        <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={100} enabled>
           <View style={[styles.Box,{marginTop:0,paddingTop:30}]}>
             <View style={{flexDirection:'row',borderColor:'#e9e9e9',borderBottomWidth:1}}>
               <View style={{marginBottom:10,alignSelf:'center',alignItems:'center'}}>
@@ -325,7 +327,6 @@ class More extends pickableImage{
                       <View style={{width:'65%'}}>
                         <TextInput
                           onChangeText={(career) => this.setState({ career })}
-                          onBlur={this.insertCareer}
                           underlineColorAndroid="transparent"
                           placeholder="경력 입력"
                           style={{fontSize:13}}
@@ -349,6 +350,7 @@ class More extends pickableImage{
               </View>
             </View>
           </View>
+        </KeyboardAvoidingView>
         </Content>
       </Container>
     );

@@ -7,7 +7,8 @@ import {
   ImageBackground,
   Image,
   Dimensions,
-  StatusBar
+  StatusBar,
+  KeyboardAvoidingView
 } from 'react-native';
 import { Header } from 'react-navigation';
 
@@ -85,6 +86,7 @@ export default class Signup extends Component {
 
   render() {
     return (
+      <KeyboardAvoidingView behavior = 'padding'  enabled>
       <ImageBackground source={bg} style={styles.background}>
       <View style={styles.container}>
         <Image source={logo} style={styles.logo} />
@@ -123,6 +125,7 @@ export default class Signup extends Component {
         </View>
       </View>
       </ImageBackground>
+      </KeyboardAvoidingView>
     );
   }
 }

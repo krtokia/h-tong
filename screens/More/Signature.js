@@ -22,9 +22,9 @@ import { ImagePicker } from 'expo';
 import styles from "./styles";
 
 
-import RNDraw from 'rn-draw'
-import pickableImage from "../common.js"
+import SignaturePad from 'react-native-signature-pad';
 
+import pickableImage from "../common.js";
 
 class Signature extends Component{
 
@@ -43,12 +43,21 @@ class Signature extends Component{
     header: null
   });
 
-  onDraw() {
-    console.log("draw");
-  }
+  _signaturePadError = (error) => {
+     console.error(error);
+   };
+
+   _signaturePadChange = ({base64DataUrl}) => {
+     console.log("Got new signature: " + base64DataUrl);
+     this.setState({
+       imageSource: base64DataUrl,
+     });
+
+   };
+
   uploadSignature() {
     const {id, type, imageSource} = this.state;
-    let apiUrl = 'http://13.124.127.253/api/uploadImage.php';
+    let apiUrl = 'http://13.124.127.253/api/uploadSign.php';
     let options = null;
 
     if (imageSource) {
@@ -58,36 +67,17 @@ class Signature extends Component{
       formData.append('id', id);
       formData.append('type', type);
       formData.append('photo', {
-        uri: imageSource,
+        //uri: imageSource,
+        uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6',
         name: `testone`,
-        type: `image/png;base64`,
+        type: 'image/png',
       });
       options = {
         method: 'POST',
         body: formData,
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'multipart/form-data',
-        },
       };
     } else {
     }
-
-    return fetch(apiUrl, options).then((response) => response.json())
-      .then((responseJson)=> {
-        if(responseJson === 'data matched') {
-          console.log(responseJson);
-          //this.props.navigation.navigate("Main");
-        } else {
-          //alert(responseJson);
-          Alert.alert(
-            '현장통',
-            responseJson
-          )
-        }
-      }).catch((error) => {
-        console.log("EE: " + error)
-      });
 
   }
 
@@ -112,10 +102,13 @@ class Signature extends Component{
         >
         <View style={[styles.container,{marginTop:10,padding:20}]}>
         <View style={{flex:5,width:'100%',borderWidth:5,borderColor:'#ccc',borderRadius:10}}>
-        <RNDraw
-          containerStyle={{backgroundColor: 'rgba(0,0,0,0.01)'}}
-            onChangeStrokes={this.onDraw}
+
+        <SignaturePad
+          onError={this._signaturePadError}
+          onChange={this._signaturePadChange}
+          style={{flex: 1, backgroundColor: 'white'}}
         />
+
         </View>
 
         <View style={{alignItems:'flex-end',width:'100%',flex:1,justifyContent:'flex-end'}}>

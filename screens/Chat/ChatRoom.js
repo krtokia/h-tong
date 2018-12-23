@@ -23,21 +23,32 @@ import styles from './styles.js';
 import { GiftedChat } from 'react-native-gifted-chat';
 import ActionCable from 'react-native-actioncable';
 import axios from 'axios';
+import { StoreGlobal } from '../../App';
 
 class ChatRoom extends Component{
   constructor(props) {
     super(props);
     this.state = {
       messages: [],
-      _id: 'tongid',
-      text: "test",
-      createdAt: new Date(),
-      refreshing:true,
     }
   }
 
   componentWillMount() {
     //this.createSocket();
+    this.setState({
+      messages: [
+        {
+        _id: 1,
+        text: "this is test",
+        createdAt: null,
+        user: {
+          _id: "acc1",
+          name: "acc1",
+          avartar: "https://placeimg.com/140/140/any",
+        }
+      }
+      ]
+    });
     this.fetchMessage();
   }
 
@@ -54,7 +65,8 @@ class ChatRoom extends Component{
   }
 
   saveChat(messages) {
-
+    tongNum = StoreGlobal({type:'get',key:'tongum'})
+    console.log("tongNum: " + tongNum);
     axios.post('http://h-tong.kr/api/saveChat.php', {
       user: messages[0]._id,
       message: messages[0].text,
@@ -81,9 +93,6 @@ class ChatRoom extends Component{
           placeholder='이곳에 입력해 주세요'
           messages={this.state.messages}
           onSend={messages => this.onSend(messages)}
-          user={{
-            _id: this.state._id,
-          }}
           loadEarlier={this.state.refreshing}
         />
       </Container>
@@ -95,16 +104,17 @@ class ChatRoom extends Component{
     axios.get('http://h-tong.kr/api/fetchChat.php')
     .then(res => {
       data_messages = res.data;
+      console.log("data: " + data_messages);
 
       this.setState(prevState => ({
-        messages: GiftedChat.prepend(prevState.messages, data_messages),
+        messages: GiftedChat.append(prevState.messages, data_messages),
         refreshing: false,
       }));
 
     })
     .catch(err => {
       alert(err);
-    });1
+    });
   }
 
   createSocket() {

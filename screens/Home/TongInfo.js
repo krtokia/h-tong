@@ -53,6 +53,10 @@ class TongInfo extends Component{
     		scale: '',
     		addr: '',
         refresh: "",
+        markerPosition: {
+            latitude: 37.78825,
+            longitude: -122.4324,
+        },
       };
   }
 
@@ -164,7 +168,9 @@ class TongInfo extends Component{
                   style={{flex:1}}
                   onRegionChange={this.onRegionChange}
                 >
-                  <Marker />
+                  <Marker
+                    coordinate={this.state.markerPosition}
+                  />
                 </MapView>
               </View>
               <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>

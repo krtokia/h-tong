@@ -21,22 +21,25 @@ import Icon  from 'react-native-vector-icons/FontAwesome';
 import { ImagePicker } from 'expo';
 import styles from "./styles";
 
-
 import SignaturePad from 'react-native-signature-pad';
-
+import axios from 'axios';
 import pickableImage from "../common.js";
+import { StoreGlobal } from '../../App';
 
 class Signature extends Component{
 
   constructor(props) {
       super(props);
       this.state = {
-        id:'sid',
-        type:'signature',
+        memId: StoreGlobal({type:'get',key:'loginId'}),
         imageSource:null
       }
       this.uploadSignature = this.uploadSignature.bind(this);
   //.    this.uploadImage = this.uploadImage.bind(this);
+  }
+
+  componentWillMount() {
+
   }
 
   static navigationOptions = ({
@@ -55,31 +58,18 @@ class Signature extends Component{
 
    };
 
+
+
   uploadSignature() {
-    const {id, type, imageSource} = this.state;
-    let apiUrl = 'http://13.124.127.253/api/uploadSign.php';
-    let options = null;
 
-    if (imageSource) {
-      console.log("upload:" + imageSource);
-
-      const formData = new FormData();
-      formData.append('id', id);
-      formData.append('type', type);
-      formData.append('photo', {
-        //uri: imageSource,
-        uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6',
-        name: `testone`,
-        type: 'image/png',
-      });
-      options = {
-        method: 'POST',
-        body: formData,
-      };
-    } else {
-    }
+     axios.get('http://h-tong.kr/api/uploadSign.php?id=' + this.state.memId + '&sign=' + this.state.imageSource)
+     .then( response => {
+       alert("전자 서명이 등록 되었습니다");
+     })
+     .catch( response => { } )
 
   }
+
 
     render(){
 

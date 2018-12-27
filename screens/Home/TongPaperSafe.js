@@ -20,6 +20,7 @@ import styles from "./styles";
 
 var fontColor = '#555';
 
+import axios from 'axios';
 import { StoreGlobal } from '../../App';
 
 class TongPaperSafe extends Component{
@@ -42,6 +43,7 @@ class TongPaperSafe extends Component{
       check7: false,
       check8: false,
       dateTime: null,
+      signUrl : null,
     }
   }
 
@@ -70,8 +72,21 @@ class TongPaperSafe extends Component{
       });
   }
 
+  fetchSign() {
+
+     axios.get('http://h-tong.kr/api/getSign.php?id=' + this.state.memId)
+     .then( response => {
+       this.setState({
+          signUrl: 'http://h-tong.kr/images/sign/_' + response.data[0].base + '.png',
+       });
+     })
+     .catch( response => { } )
+
+  }
+
   componentDidMount() {
     this.getPaperInfo();
+    this.fetchSign();
   }
 
   tongPaperUpdate = () => {
@@ -191,8 +206,10 @@ class TongPaperSafe extends Component{
               </View>
               <View style={[styles.Row]}>
                 <Text style={{fontSize:13}}>서약인 :   </Text>
-                <View style={{width:100,height:50,marginRight:10,backgroundColor:'#e9e9e9'}}>
-                </View>
+                <Image
+                  style={{width:100,height:50,marginRight:10}}
+                  source={{uri: this.state.signUrl}}
+                />
               </View>
             </View>
             <View style={{justifyContent:'center',alignSelf:'center',alignItems:'center',marginTop:20,width:'60%'}}>

@@ -30,28 +30,18 @@ class ChatRoom extends Component{
     super(props);
     this.state = {
       messages: [],
-      toId: this.props.navigation.getParam('friendId')
+      toId: this.props.navigation.getParam('friendId'),
+      memId: StoreGlobal({type:'get',key:'loginId'}),
+      refreshing: true,
     }
   }
 
   componentWillMount() {
     //this.createSocket();
     this.setState({
-      messages: [
-        {
-        _id: 1,
-        text: "this is test",
-        createdAt: null,
-        user: {
-          _id: "acc1",
-          name: "acc1",
-          avartar: "https://placeimg.com/140/140/any",
-        }
-      }
-      ]
+      messages: [],
     });
     this.fetchMessage();
-    console.log("toId::",this.state.toId)
   }
 
   static navigationOptions = ({
@@ -63,18 +53,31 @@ class ChatRoom extends Component{
       messages: GiftedChat.append(previousState.messages, messages),
     }))
     this.saveChat(messages);
-    console.log(messages);
   }
 
   saveChat(messages) {
-    tongNum = StoreGlobal({type:'get',key:'tongum'})
-    console.log("tongNum: " + tongNum);
     axios.post('http://h-tong.kr/api/saveChat.php', {
-      user: messages[0]._id,
+      user: this.state.memId,
+      _id: messages[0]._id,
       message: messages[0].text,
+      toId: this.state.toId,
     })
     .then( response => { } )
     .catch( response => { } )
+  }
+
+  fetchMessage() {
+    axios.get('http://h-tong.kr/api/fetchChat.php?user=' + this.state.memId + '&toId=' + this.state.toId)
+    .then(res => {
+      data_messages = res.data;
+      this.setState(prevState => ({
+        messages: GiftedChat.prepend(prevState.messages, data_messages),
+        refreshing: false,
+      }));
+    })
+    .catch(err => {
+      alert(err);
+    });
   }
 
   render(){
@@ -83,7 +86,7 @@ class ChatRoom extends Component{
         <Header style={{backgroundColor:'#db3928',justifyContent:'space-between'}}>
           <Left style={{flex:1}} />
           <Body style={{justifyContent:'center',alignItems:'center',alignSelf:'flex-end',paddingBottom:10}}>
-            <Text style={{fontSize:20,color:'#fff'}}>홍길동</Text>
+            <Text style={{fontSize:20,color:'#fff'}}>{this.state.toId}</Text>
           </Body>
           <Right style={{alignSelf:'flex-end',flex:1}}>
             <Button transparent rounded onPress={() => {this.props.navigation.goBack()}}>
@@ -99,24 +102,6 @@ class ChatRoom extends Component{
         />
       </Container>
     );
-  }
-
-  fetchMessage() {
-    console.log("START FETCH");
-    axios.get('http://h-tong.kr/api/fetchChat.php')
-    .then(res => {
-      data_messages = res.data;
-      console.log("data: " + data_messages);
-
-      this.setState(prevState => ({
-        messages: GiftedChat.append(prevState.messages, data_messages),
-        refreshing: false,
-      }));
-
-    })
-    .catch(err => {
-      alert(err);
-    });
   }
 
   createSocket() {

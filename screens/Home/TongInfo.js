@@ -32,6 +32,8 @@ import { StoreGlobal } from '../../App';
 
 var fontColor = '#888';
 
+let id = 0;
+
 class TongInfo extends Component{
   constructor(props) {
     super(props);
@@ -53,10 +55,16 @@ class TongInfo extends Component{
     		scale: '',
     		addr: '',
         refresh: "",
+        fLatitude: '',
+        fLongitude: '',
         markerPosition: {
-            latitude: 37.78825,
-            longitude: -122.4324,
+            latitude: '37.715133',
+            longitude: '126.734086',
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
         },
+        markers: [],
+
       };
   }
 
@@ -66,9 +74,21 @@ class TongInfo extends Component{
   }
 
   onRegionChange = (data) => {
+    this.markerPosition = data;
     console.log(data)
   }
-
+  onMapPress(e) {
+    this.setState({
+      fLatitude: e.nativeEvent.coordinate.latitude,
+      fLongitude: e.nativeEvent.coordinate.longitude,
+      markers:[
+        {
+          coordinate: e.nativeEvent.coordinate,
+          key: id++,
+        }
+      ],
+    });
+  }
   componentDidMount() {
     this.getTong();
   }
@@ -84,16 +104,25 @@ class TongInfo extends Component{
     return fetch("http://13.124.127.253/api/results.php?page=tong&seq=" + this.state.tongnum)
       .then((response) => response.json())
       .then((responseJson) => {
+
         //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.setState({
           isLoading: false,
           dataSource: responseJson,
+          markerPosition:{
+            latitude: Number(responseJson[0].latitude),
+            longitude: Number(responseJson[0].longitude),
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          },
         })
-        console.log("updateGetTong")
+        console.log("updateGetTong");
+        console.log(typeof(this.state.markerPosition.latitude))
       })
       .catch((error) => {
         console.error(error);
       });
+
   }
 
   updateTongInfo() {
@@ -113,6 +142,9 @@ class TongInfo extends Component{
     formData.append('term', term ? term : dataSource[0].term);
     formData.append('scale', scale ? scale : dataSource[0].scale);
     formData.append('addr', addr ? addr : dataSource[0].addr);
+    formData.append('latitude',this.state.fLatitude ? this.state.fLatitude : this.state.fLatitude);
+    formData.append('longitude', this.state.fLongitude ? this.state.fLongitude : this.state.fLongitude);
+
 
     formData.append('type', 'none');
     options = {
@@ -165,12 +197,17 @@ class TongInfo extends Component{
             <View style={{flex:1}}>
               <View style={{flex:7}}>
                 <MapView
+                  initialRegion={this.state.markerPosition}
+                  onPress={(e) => this.onMapPress(e)}
                   style={{flex:1}}
                   onRegionChange={this.onRegionChange}
                 >
+                {this.state.markers.map(marker => (
                   <Marker
-                    coordinate={this.state.markerPosition}
+                  key={marker.key}
+                  coordinate={marker.coordinate}
                   />
+                ))}
                 </MapView>
               </View>
               <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
@@ -298,7 +335,7 @@ class TongInfo extends Component{
                 <View style={[styles.Box,{marginTop:3,padding:0}]}>
                   <MapView
                     style={{height: '100%' }}
-                    region={this.state.mapRegion}
+                    initialRegion={this.state.markerPosition}
                     onRegionChange={this._handleMapRegionChange}
                   />
                   <View style={{position:'absolute',bottom:0,width:'100%',height:45,backgroundColor:'#fffa',justifyContent:'center'}}>

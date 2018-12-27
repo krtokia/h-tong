@@ -150,7 +150,7 @@ class FriendList extends Component{
           <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
           <Text style={styles.friendName}>{this.props.name}</Text>
           <Text style={styles.friendInfo}>{this.props.type}</Text>
-          <Button transparent style={styles.friendChatBtn} onPress={this.props.chat}>
+          <Button transparent style={styles.friendChatBtn} onPress={this.props.chatHref}>
             <Icon name="commenting-o" type="FontAwesome" style={styles.friendChat} />
           </Button>
         </View>

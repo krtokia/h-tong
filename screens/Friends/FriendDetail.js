@@ -234,7 +234,7 @@ class FriendDetail extends Component{
                     <Text style={{fontSize:13,color:"#555"}}>관심동료</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems:'center',borderRightWidth:1,borderLeftWidth:1,borderColor:'#f9f9f9'}}
-                  onPress={() => this.props.navigation.navigate("ChatRoom")}
+                  onPress={() => this.props.navigation.navigate("ChatRoom",{friendId:this.state.friendId})}
                 >
                   <Icon name="comments-o" type="FontAwesome" style={styles.friendIcon} />
                   <Text style={{fontSize:13,color:"#555"}}>1:1 대화</Text>

@@ -30,6 +30,7 @@ class ChatRoom extends Component{
     super(props);
     this.state = {
       messages: [],
+      toId: this.props.navigation.getParam('friendId')
     }
   }
 
@@ -50,6 +51,7 @@ class ChatRoom extends Component{
       ]
     });
     this.fetchMessage();
+    console.log("toId::",this.state.toId)
   }
 
   static navigationOptions = ({

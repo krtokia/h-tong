@@ -18,6 +18,7 @@ import {
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { NavigationActions } from "react-navigation";
 
+import axios from 'axios';
 import {RkTextInput, RkText, RkTheme} from 'react-native-ui-kitten';
 
 import styles from "./styles";
@@ -41,6 +42,8 @@ class TongPaperAgree extends Component{
       check2: false,
       check3: false,
       dateTime: null,
+      isLoading: true,
+      isLoading2: true,
     }
   }
 
@@ -64,8 +67,22 @@ class TongPaperAgree extends Component{
       });
   }
 
+  fetchSign() {
+
+     axios.get('http://h-tong.kr/api/getSign.php?id=' + this.state.memId)
+     .then( response => {
+       this.setState({
+        isLoading2: false,
+        signUrl: 'http://h-tong.kr/images/sign/' + (response.data[0] ? response.data[0].file : 'noImage') + '.png',
+       });
+     })
+     .catch( response => { } )
+
+  }
+
   componentDidMount() {
     this.getPaperInfo();
+    this.fetchSign();
   }
 
   tongPaperUpdate = () => {
@@ -106,6 +123,10 @@ class TongPaperAgree extends Component{
 
   render(){
     if(this.state.isLoading) {
+      return <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+              <ActivityIndicator />
+             </View>
+    } else if(this.state.isLoading2) {
       return <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
               <ActivityIndicator />
              </View>
@@ -173,8 +194,10 @@ class TongPaperAgree extends Component{
               </View>
               <View style={[styles.Row]}>
                 <Text style={{fontSize:13}}>서약인 :   </Text>
-                <View style={{width:100,height:50,marginRight:10,backgroundColor:'#e9e9e9'}}>
-                </View>
+                <Image
+                  style={{width:100,height:50,marginRight:10}}
+                  source={{uri: this.state.signUrl}}
+                />
               </View>
             </View>
             <View style={{justifyContent:'center',alignSelf:'center',alignItems:'center',marginTop:50,width:'60%'}}>

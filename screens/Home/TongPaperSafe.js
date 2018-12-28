@@ -34,6 +34,8 @@ class TongPaperSafe extends Component{
       memId: StoreGlobal({type:'get',key:'loginId'}),
       tongnum: StoreGlobal({type:'get',key:'tongnum'}),
       tongname: StoreGlobal({type:'get',key:'tongname'}),
+      isLoading: true,
+      isLoading2: true,
       check1: false,
       check2: false,
       check3: false,
@@ -76,8 +78,10 @@ class TongPaperSafe extends Component{
 
      axios.get('http://h-tong.kr/api/getSign.php?id=' + this.state.memId)
      .then( response => {
+       console.log(response)
        this.setState({
-          signUrl: 'http://h-tong.kr/images/sign/_' + response.data[0].base + '.png',
+        isLoading2: false,
+        signUrl: 'http://h-tong.kr/images/sign/' + (response.data[0] ? response.data[0].file : 'noImage') + '.png',
        });
      })
      .catch( response => { } )
@@ -125,6 +129,10 @@ class TongPaperSafe extends Component{
 
   render(){
     if(this.state.isLoading) {
+      return <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+              <ActivityIndicator />
+             </View>
+    } else if(this.state.isLoading2) {
       return <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
               <ActivityIndicator />
              </View>

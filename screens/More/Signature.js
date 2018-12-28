@@ -51,7 +51,6 @@ class Signature extends Component{
    };
 
    _signaturePadChange = ({base64DataUrl}) => {
-     console.log("Got new signature: " + base64DataUrl);
      this.setState({
        imageSource: base64DataUrl,
      });

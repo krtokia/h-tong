@@ -22,6 +22,7 @@ import {RkTextInput, RkText, RkTheme} from 'react-native-ui-kitten';
 
 import styles from "./styles";
 
+import axios from 'axios';
 var fontColor = '#555';
 
 import pickableImage from "../common.js"
@@ -41,6 +42,7 @@ class TongPaperHealth extends pickableImage{
       allcheck: false,
       isLoading:true,
       isLoading2:true,
+      isLoading3:true,
       dataSource: null,
       check1:false,
       check2:false,
@@ -118,9 +120,23 @@ class TongPaperHealth extends pickableImage{
       });
   }
 
+  fetchSign() {
+
+     axios.get('http://h-tong.kr/api/getSign.php?id=' + this.state.memId)
+     .then( response => {
+       this.setState({
+        isLoading3: false,
+        signUrl: 'http://h-tong.kr/images/sign/' + (response.data[0] ? response.data[0].file : 'noImage') + '.png',
+       });
+     })
+     .catch( response => { } )
+
+  }
+
   componentDidMount() {
     this.getPaperInfo();
     this.getUserInfo();
+    this.fetchSign();
   }
 
   tongPaperUpdate = () => {
@@ -212,6 +228,10 @@ class TongPaperHealth extends pickableImage{
         return <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                 <ActivityIndicator />
                </View>
+    } else if(this.state.isLoading3) {
+        return <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                <ActivityIndicator />
+               </View>
     } else {
       return (
         <Container>
@@ -289,8 +309,10 @@ class TongPaperHealth extends pickableImage{
               </View>
               <View style={[styles.Row]}>
                 <Text style={{fontSize:13}}>서약인 :   </Text>
-                <View style={{width:100,height:50,marginRight:10,backgroundColor:'#e9e9e9'}}>
-                </View>
+                <Image
+                  style={{width:100,height:50,marginRight:10}}
+                  source={{uri: this.state.signUrl}}
+                />
               </View>
             </View>
             <View style={{justifyContent:'center',alignSelf:'center',alignItems:'center',marginTop:50,width:'60%'}}>

@@ -278,7 +278,7 @@ class TongFriendList2 extends Component{
             <Button transparent style={styles.friendChatBtn} onPress={this.props.chatHref}>
               <Icon name="commenting-o" type="FontAwesome" style={styles.friendChat} />
             </Button>
-            { StoreGlobal({type:'get',key:'userGrade'}) < 3 &&
+            { StoreGlobal({type:'get',key:'userGrade'}) < 2 &&
               <Button transparent style={[styles.friendChatBtn]} onPress={this.attendCheckParent}>
                 {attendIcon}
               </Button>

@@ -109,9 +109,6 @@ class More extends pickableImage{
     this.getUser()
     this.getImages()
     this.getCareer()
-
-
-
   }
 
   componentDidUpdate(prevProps, prevState) {

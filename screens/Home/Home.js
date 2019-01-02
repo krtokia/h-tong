@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StatusBar, Image, AppRegistry, ListView, ImageBackground, TouchableOpacity, TouchableHighlight, ActivityIndicator, ScrollView } from 'react-native';
+import { ToastAndroid, StatusBar, Image, AppRegistry, ListView, ImageBackground, TouchableOpacity, TouchableHighlight, ActivityIndicator, ScrollView, Alert } from 'react-native';
 import {
   Container,
   Content,
@@ -110,9 +110,11 @@ class Home extends Component{
       if (this.state.dataSource) {
       tongs = this.state.dataSource.map((val, key) => {
         let tongimg = val.tongimg ? val.tongimg : 'noImage.png';
-        return <View key={key} style={styles.tongView}>
+        let tongStatus = val.status === "service" ? true : false;
+        return <View key={key} style={[styles.tongView]}>
                   <TouchableOpacity
                           onPress = {() => {
+                            tongStatus ? (
                             this.props.navigation.navigate("TongMain", {
                             itemID: val.tongnum,
                             tongType: 'T',
@@ -120,13 +122,21 @@ class Home extends Component{
                             refresh: this.refresh
                             }),
                             this.navigateTong("T", val.tongnum)
+                            )
+                            :
+                            //Alert.alert('현장통','승인 대기중인 현장입니다.');
+                            ToastAndroid.show("승인 대기중인 현장입니다.", ToastAndroid.BOTTOM);
                             }
                           }
                   >
-                  <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + tongimg}} />
+                  <Image resizeMode={'cover'} style={[styles.tongImage]} source={{uri: `http://13.124.127.253/images/tongHead/` + tongimg}} />
+                  { !tongStatus &&
+                  <View style={[styles.tongImage,{position:'absolute',top:0,left:0,justifyContent:'center',alignItems:'center',backgroundColor:'#000c'}]}>
+                    <Text style={{fontSize:17,color:'#fff'}}>승인 대기중</Text>
+                  </View>
+                  }
                   <View style={styles.tongContent}>
                     <Text style={styles.tongName}>{val.tongtitle}</Text>
-
                   </View>
                   </TouchableOpacity>
                 </View>
@@ -150,10 +160,9 @@ class Home extends Component{
                             }
                           }
                   >
-                  <Image resizeMode={'cover'} style={styles.tongImage} source={{uri: `http://13.124.127.253/images/tongHead/` + tongimg}} />
+                  <Image resizeMode={'cover'} style={[styles.tongImage]} source={{uri: `http://13.124.127.253/images/tongHead/` + tongimg}} />
                   <View style={styles.tongContent}>
                     <Text style={styles.tongName}>{val.tongtitle}</Text>
-
                   </View>
                   </TouchableOpacity>
                 </View>

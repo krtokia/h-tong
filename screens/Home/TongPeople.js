@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet,Image,TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { ToastAndroid,StyleSheet,Image,TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import {
   View,
   Button,
@@ -29,6 +29,7 @@ class TongPeople extends Component{
     this.state = {
       isLoading: true,
       isLoading2: true,
+      isLoading3: true,
       dataSource2: null,
       searchTxt: null,
       tongnum: StoreGlobal({type:'get',key:'tongnum'}),
@@ -94,17 +95,37 @@ class TongPeople extends Component{
     }
   }
 
-  attendCheck(name) {
-    Alert.alert(
-      '출근 체크',
-      name+' 출근 체크 하시겠습니까?',
-      [
-        {text: '확인', onPress: () => console.log(name,'확인')},
-        {text: '취소', onPress: () => console.log(name,'취소')},
-      ],
-      { cancelable: false }
-    )
+  attendCheck(data) {
+    const { memId, tongnum } = this.state;
+
+    let apiUrl = 'http://13.124.127.253/api/tongMemAttend.php?action=update';
+
+    const formData = new FormData();
+
+    formData.append('tongnum', tongnum);
+    formData.append('userId', data.tongMemId);
+    formData.append('attendId', memId);
+    formData.append('attend', 3);
+
+    options = {
+      method: 'POST',
+      body: formData,
+    }
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          ToastAndroid.show("출석 체크 완료 되었습니다.", ToastAndroid.BOTTOM)
+          this.getFriend()
+        } else {
+          //alert(responseJson);
+            console.log(responseJson)
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
   }
+
+
   render(){
     if(this.state.isLoading) {
       return <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
@@ -125,21 +146,26 @@ class TongPeople extends Component{
               />
             )
           } else {
-            if(key.attendYn === "Y") {
-              checky = true
-            } else {
-              checky = false
-            }
             return (
               <TongFriendList2
                 key={val}
                 name={key.tongMemNm}
                 type={key.jobgroup}
+                data={key}
                 detailHref={() => {this.props.navigation.navigate('FriendDetail',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
                 chatHref={() => {this.props.navigation.navigate('ChatRoom',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
-                attend = {checky}
-                parentMethod = {this.attendCheck}
-                attendRequest = {true}
+                attend = {key.attend}
+                parentMethod = {(data) => {
+                  Alert.alert(
+                    '출근 체크',
+                    data.tongMemNm+' 출근 체크 하시겠습니까?',
+                    [
+                      {text: '확인', onPress: () => this.attendCheck(data)},
+                      {text: '취소' },
+                    ],
+                    { cancelable: false }
+                  )
+                }}
               />
             )
           }
@@ -154,11 +180,6 @@ class TongPeople extends Component{
       } else {
         if(this.state.dataSource2) {
           fvalue2 = this.state.dataSource2.map((key, val) => {
-            if(key.attendYn === "Y") {
-              checky = true
-            } else {
-              checky = false
-            }
             return (
               <TongFriendList2
                 key={val}
@@ -166,9 +187,8 @@ class TongPeople extends Component{
                 type={key.jobgroup}
                 detailHref={() => {this.props.navigation.navigate('FriendDetail',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
                 chatHref={() => {this.props.navigation.navigate('ChatRoom',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
-                attend = {checky}
+                attend = {key.attendYn}
                 parentMethod = {this.attendCheck}
-                attendRequest = {true}
               />
             )
           });
@@ -230,16 +250,14 @@ class TongFriendList extends Component{
 }
 class TongFriendList2 extends Component{
   attendCheckParent = () => {
-    this.props.parentMethod(this.props.name);
+    this.props.parentMethod(this.props.data);
   }
 
   createIcon() {
-    if (this.props.attendRequest) {
-      if (this.props.attend) {
-        return <Icon name="check-circle" type="FontAwesome" style={{color: '#00f'}} />
-      } else {
-        return <Icon name="exclamation-circle" type="FontAwesome" style={{color: '#db3928'}} />
-      }
+    if (this.props.attend === "3") {
+      return <Icon name="check-circle" type="FontAwesome" style={{color: '#00f'}} />
+    } else if(this.props.attend === "2") {
+      return <Icon name="exclamation-circle" type="FontAwesome" style={{color: '#db3928'}} />
     } else {
       return <Icon name="minus-circle" type="FontAwesome" style={{color: '#aaa'}} />
     }
@@ -258,9 +276,11 @@ class TongFriendList2 extends Component{
             <Button transparent style={styles.friendChatBtn} onPress={this.props.chatHref}>
               <Icon name="commenting-o" type="FontAwesome" style={styles.friendChat} />
             </Button>
-            <Button transparent style={[styles.friendChatBtn]} onPress={this.attendCheckParent}>
-              {attendIcon}
-            </Button>
+            { StoreGlobal({type:'get',key:'userGrade'}) < 3 &&
+              <Button transparent style={[styles.friendChatBtn]} onPress={this.attendCheckParent}>
+                {attendIcon}
+              </Button>
+            }
           </View>
         </View>
       </TouchableOpacity>

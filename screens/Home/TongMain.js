@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableWithoutFeedback,Animated, ImageBackground, TouchableOpacity, Image, Modal,ScrollView, TouchableHighlight, Alert, ActivityIndicator } from 'react-native';
+import { ToastAndroid, TouchableWithoutFeedback,Animated, ImageBackground, TouchableOpacity, Image, Modal,ScrollView, TouchableHighlight, Alert, ActivityIndicator } from 'react-native';
 import {
   Container,
   Content,
@@ -41,6 +41,7 @@ class TongMain extends pickableImage{
         isLoading2: true,
         isLoading3: true,
         isLoading4: true,
+        isLoading5: true,
         notiSource: null,
         dataSource: null,
         workSource: null,
@@ -53,6 +54,8 @@ class TongMain extends pickableImage{
         memCount: 0,
         friendSource: null,
         notiCount: 0,
+        attendModal: true,
+        clicked: 0,
 		}
   }
   getTong = async() => {
@@ -120,6 +123,11 @@ class TongMain extends pickableImage{
     return fetch("http://13.124.127.253/api/results.php?page=selectMembers&tongnum=" + tongnum)
       .then((response) => response.json())
       .then((responseJson) => {
+        for(i=0;i<Object.keys(responseJson).length;i++) {
+          if(responseJson[i]['tongMemId'] === this.state.memId) {
+            StoreGlobal({type:'set',key:'userGrade',value:responseJson[i]['userGrade']})
+          }
+        }
         if(responseJson) {
           this.setState({
             isLoading4: false,
@@ -133,6 +141,21 @@ class TongMain extends pickableImage{
             friendSource: responseJson,
           })
         }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  getAttend = async() => {
+    const { tongnum, memId } = this.state;
+    return fetch("http://13.124.127.253/api/results.php?page=tongAttend&tongnum=" + tongnum + "&id=" + memId)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({
+          isLoading5: false,
+          attendModal: responseJson ? (responseJson.attend < 2 ? true : false) : true
+        });
       })
       .catch((error) => {
         console.error(error);
@@ -197,6 +220,7 @@ class TongMain extends pickableImage{
     this.getNoti()
     this.getWork()
     this.getFriend()
+    this.getAttend()
   }
 
   createWorkList() {
@@ -277,11 +301,40 @@ class TongMain extends pickableImage{
   _goBack = () => {
     const { navigation } = this.props;
 //    navigation.navigate('TongInvite',{refresh: new Date(Date.now()).toString()});
-    navigation.navigate("Home");
+    navigation.navigate("Home", {refresh: Date(Date.now()).toString()});
     navigation.state.params.refresh({ refresh: Date(Date.now()).toString() })
   }
   refresh = refresh => {
     this.setState({refresh})
+  }
+
+  attendCheck() {
+    const { clicked, memId, tongnum } = this.state;
+    this.setState({attendModal:false});
+
+    let apiUrl = 'http://13.124.127.253/api/tongMemAttend.php?action=insert';
+
+    const formData = new FormData();
+
+    formData.append('tongnum', tongnum);
+    formData.append('userId', memId);
+    formData.append('attend', clicked);
+
+    options = {
+      method: 'POST',
+      body: formData,
+    }
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          ToastAndroid.show("저장 되었습니다.", ToastAndroid.BOTTOM)
+        } else {
+          //alert(responseJson);
+            console.log(responseJson)
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
   }
 
   render(){
@@ -304,6 +357,12 @@ class TongMain extends pickableImage{
           <ActivityIndicator />
         </View>
       )
+    } else if (this.state.isLoading5) {
+      return (
+        <View Style={[styles.center,{flex:1}]}>
+          <ActivityIndicator />
+        </View>
+      )
     } else {
       let notiList = this.createNotiList();
       let workList = this.createWorkList();
@@ -311,6 +370,58 @@ class TongMain extends pickableImage{
       let today = d.getFullYear()+"년 "+(d.getMonth()+1)+"월 "+d.getDate()
       return (
         <Container>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.attendModal}
+            onRequestClose={() => {
+            }}>
+            <View style={[styles.center,{flex:1,backgroundColor:'#0008'}]}>
+              <View style={{flex:1}} />
+              <View style={[{flex:1.5,backgroundColor:'#fff',width:'50%'}]}>
+                <View style={[styles.center,{flex:0.7,backgroundColor:'#db3928',padding:10}]}>
+                  <Text style={{fontSize:15,color:'#fff',fontWeight:'bold'}}>출근 확인</Text>
+                </View>
+                <View style={{flex:3,padding:10}}>
+                  <TouchableOpacity style={[styles.center,styles.row2,{flex:1,borderBottomWidth:1,borderBottomColor:'#999'}]}
+                    onPress={() => {this.setState({clicked:2})}}
+                  >
+                    <Icon type="MaterialCommunityIcons" name="check-circle-outline" style={{fontSize:20,marginRight:10,color:this.state.clicked === 2 ? '#db3928' : '#aaa'}} />
+                    <Text style={{fontSize:15,color:this.state.clicked === 2 ? '#db3928' : '#aaa'}}>출근 완료</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.center,styles.row2,{flex:1,borderBottomWidth:1,borderBottomColor:'#999'}]}
+                    onPress={() => {this.setState({clicked:1})}}
+                  >
+                    <Icon type="MaterialCommunityIcons" name="check-circle-outline" style={{fontSize:20,marginRight:10,color:this.state.clicked === 0 ? '#db3928' : '#aaa'}} />
+                    <Text style={{fontSize:15,color:this.state.clicked === 0 ? '#db3928' : '#aaa'}}>아직 안함</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.center,styles.row2,{flex:1}]}
+                    onPress={() => {this.setState({clicked:3})}}
+                  >
+                    <Icon type="MaterialCommunityIcons" name="check-circle-outline" style={{fontSize:20,marginRight:10,color:this.state.clicked === 1 ? '#db3928' : '#aaa'}} />
+                    <Text style={{fontSize:15,color:this.state.clicked === 1 ? '#db3928' : '#aaa'}}>오늘 안함</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={{flex:1,padding:10}}>
+                  <Button
+                    rounded
+                    block
+                    style={{backgroundColor:'#db3928'}}
+                    onPress={() => {
+                      if(this.state.clicked > 0) {
+                        this.attendCheck()
+                      } else {
+                        Alert.alert('현장통','출근 여부를 반드시 선택해 주세요.');
+                      }
+                    }}
+                  >
+                    <Text>완료</Text>
+                  </Button>
+                </View>
+              </View>
+              <View style={{flex:1}} />
+            </View>
+          </Modal>
           <Content
             showsVerticalScrollIndicator={false}
             style={{ backgroundColor: "#f4f4f4" }}

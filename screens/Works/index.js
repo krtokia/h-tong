@@ -172,6 +172,13 @@ class Works extends Component{
     this.getWorkList()
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.refresh !== this.props.navigation.getParam('refresh')) {
+     //this.setState({refresh:this.props.navigation.getParam('refresh')})
+     console.log("refresh works")
+    }
+  }
+
   render(){
     if (this.state.isLoading) {
       return <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>

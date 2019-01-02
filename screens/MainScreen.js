@@ -334,7 +334,7 @@ const AppStackNavigator = createStackNavigator({
               '',
               '쇼핑몰로 이동하시겠습니까?',
               [
-                {text:"예",onPress:() => Linking.openURL('http://www.naver.com')},
+                {text:"예",onPress:() => Linking.openURL('https://smartstore.naver.com/f-tong')},
                 {text:"아니오"}
               ],
               { cancelable: false }

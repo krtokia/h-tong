@@ -52,6 +52,7 @@ class TongNotice extends Component{
       modifyVal: null,
       title: "",
       readGrade: 10,
+      isAdmin: StoreGlobal({type:'get',key:'userGrade'})%2 == 1 ? true : StoreGlobal({type:'get',key:'userGrade'}) == 0 ? true : false
     }
   }
 
@@ -320,7 +321,7 @@ class TongNotice extends Component{
               <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>공지사항</Text>
             </Body>
             <Right  style={{flex:1}}>
-              { true &&
+              { this.state.isAdmin &&
                 <TouchableOpacity style={{marginRight:10,marginTop:10}}
                   onPress={() => {this.setState({modal:!this.state.modal,isModify:false})}}
                 >
@@ -391,7 +392,7 @@ class NoticeList extends Component{
               <Text style={{fontSize:10,color:'#aaa'}}>{this.props.division}</Text>
             </View>
           </View>
-          { "isAdmin" === "isAdmin" &&
+          { StoreGlobal({type:'get',key:'loginId'}) === this.props.name &&
           <View>
             <TouchableOpacity style={{paddingRight:20}}
               onPress={() => {this.setShow()}}

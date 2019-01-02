@@ -156,15 +156,17 @@ class TongPeople extends Component{
                 chatHref={() => {this.props.navigation.navigate('ChatRoom',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
                 attend = {key.attend}
                 parentMethod = {(data) => {
-                  Alert.alert(
-                    '출근 체크',
-                    data.tongMemNm+' 출근 체크 하시겠습니까?',
-                    [
-                      {text: '확인', onPress: () => this.attendCheck(data)},
-                      {text: '취소' },
-                    ],
-                    { cancelable: false }
-                  )
+                  if(key.attend === "2") {
+                    Alert.alert(
+                      '출근 체크',
+                      data.tongMemNm+' 출근 체크 하시겠습니까?',
+                      [
+                        {text: '확인', onPress: () => {this.attendCheck(data)}},
+                        {text: '취소' },
+                      ],
+                      { cancelable: false }
+                    )
+                  }
                 }}
               />
             )

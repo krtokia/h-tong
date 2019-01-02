@@ -124,8 +124,8 @@ class Home extends Component{
                             this.navigateTong("T", val.tongnum)
                             )
                             :
-                            //Alert.alert('현장통','승인 대기중인 현장입니다.');
-                            ToastAndroid.show("승인 대기중인 현장입니다.", ToastAndroid.BOTTOM);
+                            Alert.alert('현장통','승인 대기중인 현장입니다.');
+                            //ToastAndroid.show("승인 대기중인 현장입니다.", ToastAndroid.BOTTOM);
                             }
                           }
                   >

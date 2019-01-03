@@ -67,6 +67,8 @@ class ChatRoom extends Component{
   }
 
   fetchMessage() {
+    console.log("id: " + this.state.memId);
+    console.log("to id: " + this.state.toId);
     axios.get('http://h-tong.kr/api/fetchChat.php?user=' + this.state.memId + '&toId=' + this.state.toId)
     .then(res => {
       data_messages = res.data;
@@ -99,6 +101,9 @@ class ChatRoom extends Component{
           messages={this.state.messages}
           onSend={messages => this.onSend(messages)}
           loadEarlier={this.state.refreshing}
+          user={{
+            _id: this.state.memId,
+          }}
         />
       </Container>
     );

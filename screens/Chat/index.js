@@ -40,6 +40,7 @@ class Chat extends Component{
   componentDidMount() {
     this.getMyChat();
   }
+
   componentDidUpdate(prevProps) {
     if(this.props.navigation.getParam('refresh') !== prevProps.navigation.getParam('refresh')) {
       this.getMyChat()
@@ -93,12 +94,14 @@ class Chat extends Component{
     if (this.state.dataSource) {
       fvalue = this.state.dataSource.map((data, key) => {
         return <View key={key}>
-            <ChatList
-              name={data.toId}
-              recent={data.message}
-              time={data.date}
-              chatHref={() => {this.props.navigation.navigate('ChatRoom', {friendId:data.toId,refresh:Date(Date.now()).toString()})}}
-            />
+            { data.toId !== this.state.memId &&
+              <ChatList
+                name={data.toId}
+                recent={data.message}
+                time={data.date}
+                chatHref={() => {this.props.navigation.navigate('ChatRoom', {friendId:data.toId,refresh:Date(Date.now()).toString()})}}
+              />
+            }
           </View>
       });
     } else {

@@ -390,13 +390,13 @@ class TongMain extends pickableImage{
                     <Text style={{fontSize:15,color:this.state.clicked === 2 ? '#db3928' : '#aaa'}}>출근 완료</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.center,styles.row2,{flex:1,borderBottomWidth:1,borderBottomColor:'#999'}]}
-                    onPress={() => {this.setState({clicked:1})}}
+                    onPress={() => {this.setState({clicked:0})}}
                   >
                     <Icon type="MaterialCommunityIcons" name="check-circle-outline" style={{fontSize:20,marginRight:10,color:this.state.clicked === 0 ? '#db3928' : '#aaa'}} />
                     <Text style={{fontSize:15,color:this.state.clicked === 0 ? '#db3928' : '#aaa'}}>아직 안함</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.center,styles.row2,{flex:1}]}
-                    onPress={() => {this.setState({clicked:3})}}
+                    onPress={() => {this.setState({clicked:1})}}
                   >
                     <Icon type="MaterialCommunityIcons" name="check-circle-outline" style={{fontSize:20,marginRight:10,color:this.state.clicked === 1 ? '#db3928' : '#aaa'}} />
                     <Text style={{fontSize:15,color:this.state.clicked === 1 ? '#db3928' : '#aaa'}}>오늘 안함</Text>

@@ -109,12 +109,14 @@ class Chat extends Component{
     }
     let fvalue2 = this.state.dataSource2.map((data, key) => {
       return <View key={key}>
-        <ChatList
-          name={data.toId}
-          recent={data.message}
-          time={data.date}
-          chatHref={() => {this.props.navigation.navigate('ChatRoom', {friendId:data.toId,refresh:Date(Date.now()).toString()})}}
+        { data.toId !== this.state.memId &&
+          <ChatList
+            name={data.toId}
+            recent={data.message}
+            time={data.date}
+            chatHref={() => {this.props.navigation.navigate('ChatRoom', {friendId:data.toId,refresh:Date(Date.now()).toString()})}}
           />
+        }
         </View>
     });
     return (

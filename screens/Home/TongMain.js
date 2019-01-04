@@ -56,6 +56,13 @@ class TongMain extends pickableImage{
         notiCount: 0,
         attendModal: true,
         clicked: 0,
+        lat: null,
+        lon: null,
+        weather: null,
+        w1: null,
+        w2: null,
+        w3: null,
+        city: null,
 		}
   }
   getTong = async() => {
@@ -67,11 +74,62 @@ class TongMain extends pickableImage{
           isLoading: false,
           dataSource: responseJson[0],
         });
+        this.getWeather();
+        this.getCity();
       })
       .catch((error) => {
         console.error(error);
       });
   }
+
+  getCity() {
+    var lat = this.state.dataSource.latitude;
+    var lon = this.state.dataSource.longitude;
+    var url = "https://dapi.kakao.com/v2/local/geo/coord2address.json?x=" + lon + "&y=" + lat + "&input_coord=WGS84";
+    var obj = {
+      method: 'GET',
+      headers: {
+        'Authorization': 'KakaoAK 01dbf66f990d42bb4e8b96acb7c94b8c'
+      }
+    }
+
+    return fetch(url, obj)
+          .then((response) => response.json())
+          .then((responseJson) => {
+            //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+            this.setState({
+              city : responseJson.documents[0].address.region_2depth_name,
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+
+  }
+
+  getWeather() {
+
+    var lat = Math.floor(this.state.dataSource.latitude);
+    var lon = Math.floor(this.state.dataSource.longitude);
+    var url = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&APPID=";
+    var key = "44a2b8c6cc2d00bfb91bdb246d4ee842";
+
+    return fetch(url + key)
+          .then((response) => response.json())
+          .then((responseJson) => {
+            //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+            this.setState({
+              w1: Math.floor(responseJson.main.temp - 273.15),
+              w2: responseJson.weather[0].main,
+              w3: "http://openweathermap.org/img/w/" + responseJson.weather[0].icon + ".png",
+              w4: Number(responseJson.weather[0].icon.replace(/[^0-9]/g,"")),
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+  }
+
   getNoti = async() => {
     var d = new Date(Date.now());
     var y = d.getFullYear();
@@ -263,41 +321,6 @@ class TongMain extends pickableImage{
     return notiDOM;
   }
 
-  createWeather() {
-    const area = "서울";
-    const temperature = 28;
-    const areaStatus = "rainy";
-    const microDust = "좋음";
-    let status;
-    if (areaStatus === "sunny") {
-      status = "weather-sunny";
-    } else if (areaStatus === "cloudy") {
-      status = "weather-cloudy";
-    } else if (areaStatus === "rainy") {
-      status = "weather-rainy";
-    } else if (areaStatus === "snowy") {
-      status = "weather-snowy";
-    } else {
-      status = "image-filter-center-focus";
-    }
-    return (
-    <View style={[styles.Box,{marginTop:10,height:80,marginVertical:10}]}>
-      <View style={[styles.Row,{flex:1,justifyContent:'space-between',padding:10}]}>
-        <View style={{flex:1}}>
-        <Icon name={status} type="MaterialCommunityIcons" style={{color:'#666',fontSize:40}}/>
-        </View>
-        <View style={{flex:1}}>
-        <Text style={{fontWeight:'bold',fontSize:25,color:'#666'}}>{area}</Text>
-        </View>
-        <View style={{flex:1}}>
-          <Text style={{fontSize:14}}>기온 : {temperature}<Icon name="temperature-celsius" type="MaterialCommunityIcons" style={{fontSize:14,color:'#666'}}/></Text>
-          <Text style={{fontSize:14}}>미세먼지 : {microDust}</Text>
-        </View>
-      </View>
-    </View>
-    )
-  }
-
   _goBack = () => {
     const { navigation } = this.props;
 //    navigation.navigate('TongInvite',{refresh: new Date(Date.now()).toString()});
@@ -338,7 +361,7 @@ class TongMain extends pickableImage{
   }
 
   render(){
-    let weatherBox = this.createWeather();
+
     if (this.state.isLoading) {
       return (
         <View Style={[styles.center,{flex:1}]}>
@@ -364,6 +387,19 @@ class TongMain extends pickableImage{
         </View>
       )
     } else {
+      console.log('TEMP',this.state.w3)
+      const areaStatus = this.state.w4;
+      if (areaStatus == 1) {
+        cityStatus = "맑음";
+      } else if (areaStatus <= 4) {
+        cityStatus = "흐림";
+      } else if (areaStatus <= 11) {
+        cityStatus = "비";
+      } else if (areaStatus == 13) {
+        cityStatus = "눈";
+      } else {
+        cityStatus = "기타";
+      }
       let notiList = this.createNotiList();
       let workList = this.createWorkList();
       let d = new Date(Date.now());
@@ -408,7 +444,7 @@ class TongMain extends pickableImage{
                     block
                     style={{backgroundColor:'#db3928'}}
                     onPress={() => {
-                      if(this.state.clicked > 0) {
+                      if(this.state.clicked >= 0) {
                         this.attendCheck()
                       } else {
                         Alert.alert('현장통','출근 여부를 반드시 선택해 주세요.');
@@ -522,19 +558,17 @@ class TongMain extends pickableImage{
               <View style={[styles.tongInnerBox,{flex:1,flexDirection:'row'}]}>
                 <View style={[styles.center,{flex:1}]}>
                   <Image
-                    source={require('../../assets/images/weather/sunny.png')}
-                    resizeMode="center"
-                    style={{width:30,height:30}} />
+                    source={{uri: this.state.w3}}
+                    style={{width:40,height:40}} />
                 </View>
                 <View style={[styles.center,{flex:2}]}>
-                  <Text style={{fontSize:30}}>23℃</Text>
+                  <Text style={{fontSize:30}}>{this.state.w1}℃</Text>
                 </View>
                 <View style={[styles.center,{flex:3}]}>
-                  <Text style={{fontSize:18}}>부천시 중1동</Text>
+                  <Text style={{fontSize:18}}>{this.state.city}</Text>
                 </View>
                 <View style={[{flex:3,justifyContent:'space-around',paddingLeft:10}]}>
-                  <Text style={{fontSize:11,color:'#999'}}>맑음</Text>
-                  <Text style={{fontSize:11,color:'#999'}}>초미세먼지 나쁨</Text>
+                  <Text style={{fontSize:11,color:'#999'}}>{cityStatus}</Text>
                 </View>
               </View>
             </View>

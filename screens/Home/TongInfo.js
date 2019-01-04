@@ -296,11 +296,11 @@ class TongInfo extends Component{
                             {this.state.dataSource[0].scale}
                           </TextInput>
                           <TextInput placeholder="현장주소를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput}
-                            onChangeText={(addr) => this.setState({ addr })}
+                            //onChangeText={(addr) => this.setState({ addr })}
+                            onFocus={() => {this.setState({modalMap:true})}}
                           >
                             {this.state.dataSource[0].addr}
                           </TextInput>
-                          <Text onPress={() => {this.setState({modalMap:true})}}>지도</Text>
                         </View>
                       </View>
                     </ImageBackground>

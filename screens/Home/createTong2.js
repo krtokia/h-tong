@@ -27,7 +27,11 @@ import styles from "./styles";
 import pickableImage from "../common.js"
 import { StoreGlobal } from "../../App"
 
+import MapView, { Marker } from 'react-native-maps';
+
 const _this = null;
+
+let id = 0;
 
 class createTong2 extends pickableImage{
   constructor(props) {
@@ -35,6 +39,7 @@ class createTong2 extends pickableImage{
     this.state = {
 		tongName: '',
 		modal: false,
+    modalMap: false,
 		tongnum: '',
 		tongtitle: '',
 		tongtype: '',
@@ -48,6 +53,16 @@ class createTong2 extends pickableImage{
 		scale: '',
 		addr: '',
 		creator: StoreGlobal({type:'get',key:'loginId'}),
+    fLatitude: '',
+    fLongitude: '',
+    markerPosition: {
+        latitude: 37.715133,
+        longitude: 126.734086,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+    },
+    markers: [],
+
     }
     //uploadImage.state = uploadImage.state.bind(this);
     this.uploadImage = this.uploadImage.bind(this);
@@ -59,6 +74,22 @@ class createTong2 extends pickableImage{
     }
     _useCon() {
     console.log(this.state.imageSource);
+    }
+
+    onRegionChange = (data) => {
+      this.markerPosition = data;
+    }
+    onMapPress(e) {
+      this.setState({
+        fLatitude: e.nativeEvent.coordinate.latitude,
+        fLongitude: e.nativeEvent.coordinate.longitude,
+        markers:[
+          {
+            coordinate: e.nativeEvent.coordinate,
+            key: id++,
+          }
+        ],
+      });
     }
 
   static navigationOptions = ({
@@ -175,6 +206,8 @@ class createTong2 extends pickableImage{
     formData.append('term', term);
     formData.append('scale', scale);
     formData.append('creator', creator);
+    formData.append('latitude',this.state.fLatitude ? this.state.fLatitude : this.state.fLatitude);
+    formData.append('longitude', this.state.fLongitude ? this.state.fLongitude : this.state.fLongitude);
 
     if (imageSource) {
       uri = imageSource;
@@ -239,9 +272,38 @@ class createTong2 extends pickableImage{
     let { imageSource } = this.state;
     const tongType = this.props.navigation.getParam('tongType');
     const tongDiv = tongType === 'T' ? "현장" : "커뮤니티";
-
+    let isMarked = this.state.markers[0] ? this.state.markers[0]['key'] >= 0 ? true : false : false;
+    console.log(this.state.fLatitude)
     return (
       <Container>
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={this.state.modalMap}
+        onRequestClose={() => {
+          this.setState({modalMap: false});
+        }}>
+        <View style={{flex:1}}>
+          <View style={{flex:7}}>
+            <MapView
+              initialRegion={this.state.markerPosition}
+              onPress={(e) => this.onMapPress(e)}
+              style={{flex:1}}
+              onRegionChange={this.onRegionChange}
+            >
+            {this.state.markers.map(marker => (
+              <Marker
+              key={marker.key}
+              coordinate={marker.coordinate}
+              />
+            ))}
+            </MapView>
+          </View>
+          <View style={[{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:isMarked ? '#db3928' : '#fff'}]}>
+            <Text style={{color:isMarked ? '#fff' : '#666'}} onPress={() => {this.setState({modalMap:false})}}>{isMarked ? '저장' : '닫기'}</Text>
+          </View>
+        </View>
+        </Modal>
         <Modal
           animationType="slide"
           transparent={false}
@@ -289,7 +351,7 @@ class createTong2 extends pickableImage{
                       <TextInput placeholder="현장 연락처를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(contact) => this.setState({ contact })}/>
                       <TextInput placeholder="공사기간을 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(term) => this.setState({ term })}/>
                       <TextInput placeholder="공사규모를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(scale) => this.setState({ scale })}/>
-                      <TextInput placeholder="현장주소를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(addr) => this.setState({ addr })}/>
+                      <TextInput placeholder="현장주소를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onFocus={() => {this.setState({modalMap:true})}} value='' />
                     </View>
                   </View>
                 </ImageBackground>

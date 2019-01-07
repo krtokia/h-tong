@@ -90,6 +90,28 @@ class createTong2 extends pickableImage{
           }
         ],
       });
+
+      var url = "https://dapi.kakao.com/v2/local/geo/coord2address.json?x=" + e.nativeEvent.coordinate.longitude + "&y=" + e.nativeEvent.coordinate.latitude + "&input_coord=WGS84";
+      var obj = {
+        method: 'GET',
+        headers: {
+          'Authorization': 'KakaoAK 01dbf66f990d42bb4e8b96acb7c94b8c'
+        }
+      }
+
+      return fetch(url, obj)
+            .then((response) => response.json())
+            .then((responseJson) => {
+              //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+              console.log(responseJson.documents[0].address.region_2depth_name,)
+              this.setState({
+                addr : responseJson.documents[0].address.region_2depth_name,
+              });
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+
     }
 
   static navigationOptions = ({
@@ -123,6 +145,32 @@ class createTong2 extends pickableImage{
     modalComplate() {
       Alert.alert('현장통 생성 기능')
       this.setState({modal: false});
+    }
+
+    getCity() {
+      var lat = this.state.markerPosition.latitude;
+      var lon = this.state.markerPosition.longitude;
+      var url = "https://dapi.kakao.com/v2/local/geo/coord2address.json?x=" + lon + "&y=" + lat + "&input_coord=WGS84";
+      var obj = {
+        method: 'GET',
+        headers: {
+          'Authorization': 'KakaoAK 01dbf66f990d42bb4e8b96acb7c94b8c'
+        }
+      }
+
+      return fetch(url, obj)
+            .then((response) => response.json())
+            .then((responseJson) => {
+              //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+              console.log(responseJson.documents[0].address.region_2depth_name,)
+              this.setState({
+                addr : responseJson.documents[0].address.region_2depth_name,
+              });
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+
     }
 
 
@@ -188,7 +236,12 @@ class createTong2 extends pickableImage{
     }
 
 	createTong(tongType) {
-    const { imageSource, tongName, projectnm, authnum, constructor, supervisor, owner, contact, term, scale, addr, creator} = this.state;
+    const { imageSource, tongName, projectnm, authnum, constructor, supervisor, owner, contact, term, scale, addr, creator, fLatitude, fLongitude} = this.state;
+    if(!projectnm || !authnum || !constructor || !supervisor || !owner || !contact || !term || !scale || !addr || !fLatitude || !fLongitude ) {
+      Alert.alert('현장통','현장 정보를 빠짐없이 입력 해 주세요.');
+      return false
+    }
+
     let apiUrl = 'http://13.124.127.253/api/createTong.php';
     let options = null;
 
@@ -206,8 +259,9 @@ class createTong2 extends pickableImage{
     formData.append('term', term);
     formData.append('scale', scale);
     formData.append('creator', creator);
-    formData.append('latitude',this.state.fLatitude ? this.state.fLatitude : this.state.fLatitude);
-    formData.append('longitude', this.state.fLongitude ? this.state.fLongitude : this.state.fLongitude);
+    formData.append('addr', addr);
+    formData.append('latitude',fLatitude);
+    formData.append('longitude', fLongitude);
 
     if (imageSource) {
       uri = imageSource;
@@ -273,7 +327,7 @@ class createTong2 extends pickableImage{
     const tongType = this.props.navigation.getParam('tongType');
     const tongDiv = tongType === 'T' ? "현장" : "커뮤니티";
     let isMarked = this.state.markers[0] ? this.state.markers[0]['key'] >= 0 ? true : false : false;
-    console.log(this.state.fLatitude)
+
     return (
       <Container>
       <Modal
@@ -300,7 +354,7 @@ class createTong2 extends pickableImage{
             </MapView>
           </View>
           <View style={[{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:isMarked ? '#db3928' : '#fff'}]}>
-            <Text style={{color:isMarked ? '#fff' : '#666'}} onPress={() => {this.setState({modalMap:false})}}>{isMarked ? '저장' : '닫기'}</Text>
+            <Text style={{color:isMarked ? '#fff' : '#666'}} onPress={() => {isMarked ? this.setState({modalMap:false}) : Alert.alert('현장통','현장을 지도에서 선택 해 주세요.')}}>저장</Text>
           </View>
         </View>
         </Modal>
@@ -351,7 +405,7 @@ class createTong2 extends pickableImage{
                       <TextInput placeholder="현장 연락처를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(contact) => this.setState({ contact })}/>
                       <TextInput placeholder="공사기간을 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(term) => this.setState({ term })}/>
                       <TextInput placeholder="공사규모를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(scale) => this.setState({ scale })}/>
-                      <TextInput placeholder="현장주소를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onFocus={() => {this.setState({modalMap:true})}} value='' />
+                      <TextInput placeholder="현장주소를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onFocus={() => {this.setState({modalMap:true})}} value={this.state.addr} />
                     </View>
                   </View>
                 </ImageBackground>

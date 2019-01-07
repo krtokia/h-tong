@@ -49,6 +49,16 @@ class TongWork extends Component{
     }
   }
 
+  numFormat(variable) {
+    variable = Number(variable).toString();
+    if(Number(variable) < 10 && variable.length == 1) {
+      variable = "0" + variable;
+    }
+    return variable;
+  }
+
+
+
   getWorklist = async() => {
       return fetch("http://13.124.127.253/api/results.php?page=getWorkList&tongnum=" + this.state.tongnum)
             .then((response) => response.json())
@@ -58,7 +68,7 @@ class TongWork extends Component{
               }
               //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
               nowDate = new Date(Date.now());
-              dateKor = nowDate.getFullYear()+"년 "+(nowDate.getMonth()+1)+"월 "+nowDate.getDate()+"일";
+              dateKor = nowDate.getFullYear()+"년 "+this.numFormat(nowDate.getMonth()+1)+"월 "+this.numFormat(nowDate.getDate())+"일";
               dateOrigin = nowDate.getFullYear()+"-"+(nowDate.getMonth()+1)+"-"+nowDate.getDate();
 //              responseJson.unshift({workdate:'9999년 99월 99일'})
               this.setState({

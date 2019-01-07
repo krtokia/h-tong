@@ -388,5 +388,10 @@ export default {
     shadowOffset: { width:3, height:3 },
     shadowRadius: 3,
     elevation: 3,
+  },
+  tongImage2 : {
+    height: 130,
+    width: 130,
+    borderRadius: 100,
   }
 };

@@ -44,6 +44,7 @@ import TongPaper2 from "./Home/TongPaper2.js";
 import TongETC2 from "./Home/TongETC2.js";
 import TongPeople from "./Home/TongPeople.js";
 import TongSetting from "./Home/TongSetting.js";
+import TongAdmin from "./Home/TongAdmin.js";
 import TongPaperAgree from "./Home/TongPaperAgree.js";
 import TongPaperSafe from "./Home/TongPaperSafe.js";
 import TongPaperHealth from "./Home/TongPaperHealth.js";
@@ -283,6 +284,7 @@ const AppStackNavigator = createStackNavigator({
   TongPaper2: { screen: TongPaper2 },
   TongSearch: { screen: TongSearch },
   TongMap: { screen: TongMap },
+  TongAdmin: { screen: TongAdmin },
   Test: { screen: Test },
   SearchInvite: { screen: SearchInvite },
   HomeTab: {

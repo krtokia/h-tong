@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Alert, Image, TextInput, ImageBackground, TouchableOpacity, Text as RNText, Modal, TouchableHighlight } from 'react-native';
+import {Alert, Image, TextInput, ImageBackground, TouchableOpacity, Text as RNText, Modal, TouchableHighlight, DatePickerAndroid } from 'react-native';
 import {
   Container,
   Content,
@@ -52,6 +52,8 @@ class createTong2 extends pickableImage{
 		term: '',
 		scale: '',
 		addr: '',
+    tempContact:'',
+    contactEnd: true,
 		creator: StoreGlobal({type:'get',key:'loginId'}),
     fLatitude: '',
     fLongitude: '',
@@ -112,6 +114,23 @@ class createTong2 extends pickableImage{
               console.error(error);
             });
 
+    }
+
+    showPicker = async (stateKey, options) => {
+      try {
+        const {action, year, month, day} = await DatePickerAndroid.open({
+          // Use `new Date()` for current date.
+          // May 25 2020. Month 0 is January.
+          date: new Date(Date.now())
+        });
+        if (action !== DatePickerAndroid.dismissedAction) {
+          this.setState({
+            term: year+"."+(month+1)+"."+day,
+          })
+        }
+      } catch ({code, message}) {
+        console.warn('Cannot open date picker', message);
+      }
     }
 
   static navigationOptions = ({
@@ -397,15 +416,114 @@ class createTong2 extends pickableImage{
                       <Text style={{fontSize:modalFontSize}}>현장주소</Text>
                     </View>
                     <View style={[styles.createModalStyleRight]}>
-                      <TextInput placeholder="공사명을 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(projectnm) => this.setState({ projectnm })}/>
-                      <TextInput placeholder="건축허가번호를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(authnum) => this.setState({ authnum })}/>
-                      <TextInput placeholder="공사 시공자를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(constructor) => this.setState({ constructor })}/>
-                      <TextInput placeholder="공사 감리자를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(supervisor) => this.setState({ supervisor })}/>
-                      <TextInput placeholder="발주자를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(owner) => this.setState({ owner })}/>
-                      <TextInput placeholder="현장 연락처를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(contact) => this.setState({ contact })}/>
-                      <TextInput placeholder="공사기간을 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(term) => this.setState({ term })}/>
-                      <TextInput placeholder="공사규모를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onChangeText={(scale) => this.setState({ scale })}/>
-                      <TextInput placeholder="현장주소를 입력하세요" underlineColorAndroid='#0000' style={styles.modalInput} onFocus={() => {this.setState({modalMap:true})}} value={this.state.addr} />
+                      <TextInput
+                        placeholder="공사명을 입력하세요"
+                        underlineColorAndroid='#0000'
+                        style={styles.modalInput}
+                        onChangeText={(projectnm) => {
+                          if(content.length > 15) {
+                            Alert.alert('현장통','길이가 너무 깁니다.')
+                            projectnm = projectnm.substr( 0, projectnm.length-1 )
+                          }
+                          this.setState({ projectnm })
+                        }}
+                      />
+                      <TextInput
+                        placeholder="건축허가번호를 입력하세요"
+                        underlineColorAndroid='#0000'
+                        style={styles.modalInput}
+                        onChangeText={(authnum) => {
+                          if(content.length > 30) {
+                            Alert.alert('현장통','길이가 너무 깁니다.')
+                            authnum = authnum.substr( 0, authnum.length-1 )
+                          }
+                          this.setState({ authnum })
+                        }}
+                      />
+                      <TextInput
+                        placeholder="공사 시공자를 입력하세요"
+                        underlineColorAndroid='#0000'
+                        style={styles.modalInput}
+                        onChangeText={(constructor) => {
+                          if(content.length > 10) {
+                            Alert.alert('현장통','길이가 너무 깁니다.')
+                            constructor = constructor.substr( 0, constructor.length-1 )
+                          }
+                          this.setState({ constructor })
+                        }}
+                      />
+                      <TextInput
+                        placeholder="공사 감리자를 입력하세요"
+                        underlineColorAndroid='#0000'
+                        style={styles.modalInput}
+                        onChangeText={(supervisor) => {
+                          if(content.length > 10) {
+                            Alert.alert('현장통','길이가 너무 깁니다.')
+                            supervisor = supervisor.substr( 0, supervisor.length-1 )
+                          }
+                          this.setState({ supervisor })
+                        }}
+                      />
+                      <TextInput
+                        placeholder="발주자를 입력하세요"
+                        underlineColorAndroid='#0000'
+                        style={styles.modalInput}
+                        onChangeText={(owner) => {
+                          if(content.length > 10) {
+                            Alert.alert('현장통','길이가 너무 깁니다.')
+                            owner = owner.substr( 0, owner.length-1 )
+                          }
+                          this.setState({ owner })
+                        }}
+                      />
+                      <TextInput
+                        ref="contactInput"
+                        placeholder="현장 연락처를 입력하세요"
+                        underlineColorAndroid='#0000'
+                        style={styles.modalInput}
+                        onChangeText={(contact) => {
+                          this.setState({ tempContact:contact.replace(/[^0-9]/g,'') })
+                        }}
+                        onFocus={() => {this.setState({tempContact:"",contactEnd:false})}}
+                        onBlur={() => {
+                          if(this.state.tempContact.length > 11 || this.state.tempContact.length < 9) {
+                            Alert.alert('현장통','연락처를 알맞게 기입하세요.')
+                            this.refs['contactInput'].focus();
+                          } else {
+                          this.setState({
+                              contact:this.state.tempContact.replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{3,4})([0-9]{4})/,"$1-$2-$3"),
+                              contactEnd:true
+                            })
+                          }
+                        }}
+                        value={this.state.contactEnd ? this.state.contact : this.state.tempContact}
+                      />
+                      <TextInput
+                        placeholder="공사기간을 입력하세요"
+                        underlineColorAndroid='#0000'
+                        style={styles.modalInput}
+                        onFocus={this.showPicker.bind(this)}
+                        value={this.state.term ? this.state.term+" 까지" : ''}
+                      />
+                      <TextInput
+                        placeholder="공사규모를 입력하세요"
+                        underlineColorAndroid='#0000'
+                        style={styles.modalInput}
+                        onChangeText={(scale) => {
+                          if(content.length > 10) {
+                            Alert.alert('현장통','길이가 너무 깁니다.')
+                            scale = scale.substr( 0, scale.length-1 )
+                          }
+                          this.setState({ scale })
+                        }}
+                      />
+                      <TextInput
+                        placeholder="현장주소를 입력하세요"
+                        underlineColorAndroid='#0000'
+                        style={styles.modalInput}
+                        onFocus={() => {this.setState({modalMap:true})}}
+                        value={this.state.addr}
+                      />
                     </View>
                   </View>
                 </ImageBackground>
@@ -443,7 +561,13 @@ class createTong2 extends pickableImage{
                 style={{fontSize:20,width:250,textAlign:'center'}}
                 placeholder= '이름 입력'
                 underlineColorAndroid='rgba(0,0,0,0)'
-                onChangeText = {TextInputValue=>this.setState({tongName:TextInputValue}) }
+                onChangeText = {(content)=>{
+                  if(content.length > 10) {
+                    Alert.alert('현장통','길이가 너무 깁니다.')
+                    content = content.substr( 0, content.length-1 )
+                  }
+                  this.setState({tongName:content})
+                }}
                  />
             </View>
                  <Image style={styles.tongImage}

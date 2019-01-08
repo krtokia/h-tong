@@ -252,7 +252,13 @@ class Works extends Component{
                       style={{width:'80%',fontSize:13}}
                       underlineColorAndroid="#0000"
                       value={this.state.modalName}
-                      onChangeText={(content) => {this.setState({modalName:content})}}
+                      onChangeText={(content) => {
+                        if(content.length > 15) {
+                          Alert.alert('현장통','길이가 너무 깁니다.')
+                          content = content.substr( 0, content.length-1 )
+                        }
+                        this.setState({modalName:content})
+                      }}
                     />
                   </View>
                   <View style={[styles.grayUnderline,{width:'100%'}]}>
@@ -261,9 +267,9 @@ class Works extends Component{
                       placeholder="금액 입력"
                       style={{width:'80%',fontSize:13}}
                       underlineColorAndroid="#0000"
-                      onChangeText={(content) => {this.setState({modalMoney:content})}}
+                      onChangeText={(content) => {this.setState({modalMoney:content.replace(/[^0-9]/g,'')})}}
+                      value={this.state.modalMoney}
                     >
-                      {this.state.modalMoney}
                     </TextInput>
                   </View>
                   <View style={[styles.grayUnderline,{width:'100%'}]}>
@@ -306,13 +312,13 @@ class Works extends Component{
                 <Text style={{fontSize:9}}>작업일 {[...new Set(markCalendar)].length}일</Text>
               </View>
               <View style={{flex:1}}>
-                <Text style={{fontSize:9}}>총금액 {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
+                <Text style={{fontSize:8}}>총금액 {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
               </View>
               <View style={{flex:1}}>
-                <Text style={{fontSize:9}}>수금 {depositY.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
+                <Text style={{fontSize:8}}>수금 {depositY.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
               </View>
               <View style={{flex:1}}>
-                <Text style={{fontSize:9}}>미수금 {depositN.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
+                <Text style={{fontSize:8}}>미수금 {depositN.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
               </View>
             </View>
             <View style={[styles.Box,{marginTop:0,paddingHorizontal:10}]}>

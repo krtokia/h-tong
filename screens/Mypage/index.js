@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert,StyleSheet,Image,TouchableOpacity,ActivityIndicator } from 'react-native';
+import { Alert,StyleSheet,Image,TouchableOpacity,ActivityIndicator,TextInput } from 'react-native';
 import {
   View,
   Button,
@@ -37,6 +37,8 @@ class Mypage extends pickableImage{
       id: StoreGlobal({type:'get',key:'loginId'}),
       dataSource: null,
       isLoading: true,
+      phoneEnd: true,
+      tempPhone: '',
     };
   }
 
@@ -197,49 +199,64 @@ class Mypage extends pickableImage{
             </View>
             <View style={[styles.itemBox,{paddingVertical:3,paddingRight:3}]}>
               <Text style={[styles.itemTitle,{textAlignVertical:'center'}]}>이름</Text>
-              <Form style={{width:'70%',alignItems:'flex-end'}}>
-                <Item style={{borderColor:'transparent'}}>
-                <Input
-                  textAlign={'right'}
+              <View style={{width:'70%',alignItems:'flex-end'}}>
+                <TextInput
+                  ref="nameInput"
                   style={[styles.itemInput]}
                   placeholder="이름을 입력해주세요"
-                  underline="false"
+                  underlineColorAndroid="transparent"
                   onChangeText={(content) => {
+                    if(content.length > 10) {
+                      Alert.alert('현장통','이름의 길이가 너무 깁니다.')
+                      content = content.substr( 0, content.length-1 )
+                    }
                     this.setState(prevState => ({
                       dataSource: {
                         ...prevState.dataSource,
                         userNm: content
                       }
                     }))}}
+                  onBlur={() => {
+                    if(this.state.dataSource.userNm.length < 2) {
+                      Alert.alert('현장통','이름을 정확히 입력하세요.')
+                      this.refs['nameInput'].focus();
+                    }
+                  }}
+                  value={this.state.dataSource.userNm}
                 >
-                  {this.state.dataSource.userNm}
-                </Input>
-                </Item>
-              </Form>
+                </TextInput>
+              </View>
             </View>
             <View style={[styles.itemBox,{paddingVertical:3,paddingRight:3}]}>
               <Text style={[styles.itemTitle,{textAlignVertical:'center'}]}>연락처</Text>
-              <Form style={{width:'70%',alignItems:'flex-end'}}>
-                <Item style={{borderColor:'transparent'}}>
-                <Input
-                  textAlign={'right'}
+              <View style={{width:'70%',alignItems:'flex-end'}}>
+                <TextInput
+                  ref='phoneInput'
                   style={[styles.itemInput]}
                   placeholder="연락처를 입력해주세요"
-                  underline="false"
+                  underlineColorAndroid="transparent"
                   onChangeText={(content) => {
-                    var content2 = content.replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{4})([0-9]{4})/,"$1-$2-$3");
+                    this.setState({tempPhone:content.replace(/[^0-9]/g,'')})
+                  }}
+                  onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,cellPhone:""},tempPhone:"",phoneEnd:false}))}}
+                  onBlur={() => {
+                    if(this.state.tempPhone.length != 11) {
+                      Alert.alert('현장통','연락처를 알맞게 기입하세요.')
+                      this.refs['phoneInput'].focus();
+                    } else {
                     this.setState(prevState => ({
                       dataSource: {
                         ...prevState.dataSource,
-                        cellPhone: content2
-                      }
-                    }));}}
-                  onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,cellPhone:""}}))}}
+                        cellPhone:this.state.tempPhone.replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{4})([0-9]{4})/,"$1-$2-$3")
+                      },
+                      phoneEnd:true})
+                      )
+                    }
+                  }}
+                  value={this.state.phoneEnd ? this.state.dataSource.cellPhone : this.state.tempPhone}
                 >
-                  {this.state.dataSource.cellPhone}
-                </Input>
-                </Item>
-              </Form>
+                </TextInput>
+              </View>
             </View>
             <View style={styles.itemBox}>
               <Text style={styles.itemTitle}>국적</Text>
@@ -266,13 +283,12 @@ class Mypage extends pickableImage{
             </View>
             <View style={[styles.itemBox,{paddingVertical:3,paddingRight:3}]}>
               <Text style={[styles.itemTitle,{textAlignVertical:'center'}]}>이메일</Text>
-              <Form style={{width:'70%',alignItems:'flex-end'}}>
-                <Item style={{borderColor:'transparent'}}>
-                <Input
-                  textAlign={'right'}
+              <View style={{width:'70%',alignItems:'flex-end'}}>
+                <TextInput
+                  ref="emailInput"
                   style={[styles.itemInput]}
                   placeholder="이메일를 입력해주세요"
-                  underline="false"
+                  underlineColorAndroid="transparent"
                   onChangeText={(content) => {
                     this.setState(prevState => ({
                       dataSource: {
@@ -280,11 +296,17 @@ class Mypage extends pickableImage{
                         email: content
                       }
                     }));}}
+                  onBlur={() => {
+                    var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+                    if(!this.state.dataSource.email.match(regExp)) {
+                      Alert.alert('현장통','이메일 알맞게 기입하세요.')
+                      this.refs['emailInput'].focus();
+                    }
+                  }}
+                  value={this.state.dataSource.email}
                 >
-                  {this.state.dataSource.email}
-                </Input>
-                </Item>
-              </Form>
+                </TextInput>
+              </View>
             </View>
             <View style={[styles.itemBox,{paddingVertical:3,paddingRight:3}]}>
               <Text style={[styles.itemTitle,{textAlignVertical:'center'}]}>회사</Text>
@@ -296,6 +318,10 @@ class Mypage extends pickableImage{
                   placeholder="회사를 입력해주세요"
                   underline="false"
                   onChangeText={(content) => {
+                    if(content.length > 15) {
+                      Alert.alert('현장통','길이가 너무 깁니다.')
+                      content = content.substr( 0, content.length-1 )
+                    }
                     this.setState(prevState => ({
                       dataSource: {
                         ...prevState.dataSource,
@@ -318,6 +344,10 @@ class Mypage extends pickableImage{
                   placeholder="직종을 입력해주세요"
                   underline="false"
                   onChangeText={(content) => {
+                    if(content.length > 10) {
+                      Alert.alert('현장통','길이가 너무 깁니다.')
+                      content = content.substr( 0, content.length-1 )
+                    }
                     this.setState(prevState => ({
                       dataSource: {
                         ...prevState.dataSource,

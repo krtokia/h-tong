@@ -55,7 +55,10 @@ export default {
     color: '#777',
   },
   itemInput: {
+    textAlign:'right',
+    width:'100%',
     height:'auto',
     fontSize:12,
+    paddingRight:5
   },
 }

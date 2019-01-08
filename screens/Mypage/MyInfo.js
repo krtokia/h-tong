@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet,Image,TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Alert, StyleSheet,Image,TouchableOpacity, ActivityIndicator,TextInput } from 'react-native';
 import {
   View,
   Button,
@@ -41,6 +41,12 @@ class MyInfo extends Component{
       isLoading: true,
       memId: StoreGlobal({type:'get',key:'loginId'}),
       dataSource: null,
+      phoneEnd: true,
+      phoneEnd2: true,
+      birthEnd: true,
+      tempBirth: '',
+      tempPhone: '',
+      tempPhone2: '',
     };
   }
 
@@ -140,6 +146,10 @@ class MyInfo extends Component{
                     placeholder="주소를 입력해주세요."
                     underline="false"
                     onChangeText={(content) => {
+                      if(content.length > 20) {
+                        Alert.alert('현장통','길이가 너무 깁니다.')
+                        content = content.substr( 0, content.length-1 )
+                      }
                       this.setState(prevState => ({
                         dataSource: {
                           ...prevState.dataSource,
@@ -154,51 +164,65 @@ class MyInfo extends Component{
               </View>
               <View style={[styles.itemBox,{paddingVertical:3,paddingRight:3}]}>
                 <Text style={[styles.itemTitle,{textAlignVertical:'center'}]}>집전화</Text>
-                <Form style={{width:'70%',alignItems:'flex-end'}}>
-                  <Item style={{borderColor:'transparent'}}>
-                  <Input
-                    textAlign={'right'}
+                <View style={{width:'70%',alignItems:'flex-end'}}>
+                  <TextInput
+                    ref="phoneInput2"
                     style={[styles.itemInput]}
                     placeholder="-없이 입력해주세요."
-                    underline="false"
+                    underlineColorAndroid="transparent"
                     onChangeText={(content) => {
-                      var content2 = content.replace(/(^02.{0})([0-9]{3})([0-9]{4})/,"$1-$2-$3");
-                      this.setState(prevState => ({
+                      this.setState({tempPhone:content.replace(/[^0-9]/g,'')})
+                      }}
+                    onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,phone:""},phoneEnd:false}))}}
+                    onBlur={() => {
+                      if(this.state.tempPhone.length > 11 || this.state.tempPhone.length < 9) {
+                        Alert.alert('현장통','연락처를 알맞게 기입하세요.')
+                        this.refs['phoneInput2'].focus();
+                      } else {
+                        this.setState(prevState => ({
                         dataSource: {
                           ...prevState.dataSource,
-                          phone: content2
-                        }
-                      }))}}
-                    onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,phone:""}}))}}
+                          phone:this.state.tempPhone.replace(/(^02.{0}|^01.{1}|^[0-9]{3})([0-9]{3,4})([0-9]{4})/,"$1-$2-$3")
+                        },
+                        phoneEnd:true})
+                        )
+                      }
+                    }}
+                    value={this.state.phoneEnd ? this.state.dataSource.phone : this.state.tempPhone}
                   >
-                  {this.state.dataSource.phone}
-                  </Input>
-                  </Item>
-                </Form>
+                  </TextInput>
+                </View>
               </View>
               <View style={[styles.itemBox,{paddingVertical:3,paddingRight:3}]}>
                 <Text style={[styles.itemTitle,{textAlignVertical:'center'}]}>생년월일</Text>
-                <Form style={{width:'70%',alignItems:'flex-end'}}>
-                  <Item style={{borderColor:'transparent'}}>
-                  <Input
-                    textAlign={'right'}
+                <View style={{width:'70%',alignItems:'flex-end'}}>
+                  <TextInput
+                    ref="birthInput"
                     style={[styles.itemInput]}
                     placeholder="-없이 생년월일을 8자리를 입력해주세요"
-                    underline="false"
+                    underlineColorAndroid="transparent"
                     onChangeText={(content) => {
-                      var content2 = content.replace(/([0-9]{4})([0-9]{2})([0-9]{2})/,"$1-$2-$3");
-                      this.setState(prevState => ({
-                        dataSource: {
-                          ...prevState.dataSource,
-                          birthDay: content2
-                        }
-                      }))}}
-                    onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,birthDay:""}}))}}
+                      this.setState({tempBirth:content.replace(/[^0-9]/g,'')})
+                      }}
+                    onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,birthDay:""},birthEnd:false}))}}
+                    onBlur={() => {
+                      if(this.state.tempBirth.length != 8) {
+                        Alert.alert('현장통','생년월일을 알맞게 기입하세요.')
+                        this.refs['birthInput'].focus();
+                      } else {
+                        this.setState(prevState => ({
+                          dataSource: {
+                            ...prevState.dataSource,
+                            birthDay:this.state.tempBirth.replace(/(^[0-9]{4})([0-9]{2})([0-9]{2})/,"$1-$2-$3")
+                          },
+                          birthEnd:true})
+                        )
+                      }
+                    }}
+                    value={this.state.birthEnd ? this.state.dataSource.birthDay : this.state.tempBirth}
                   >
-                  {this.state.dataSource.birthDay}
-                  </Input>
-                  </Item>
-                </Form>
+                  </TextInput>
+                </View>
               </View>
               <View style={styles.itemBox}>
                 <Text style={styles.itemTitle}>성별</Text>
@@ -232,6 +256,10 @@ class MyInfo extends Component{
                     placeholder="주업종을 입력해주세요"
                     underline="false"
                     onChangeText={(content) => {
+                      if(content.length > 10) {
+                        Alert.alert('현장통','길이가 너무 깁니다.')
+                        content = content.substr( 0, content.length-1 )
+                      }
                       this.setState(prevState => ({
                         dataSource: {
                           ...prevState.dataSource,
@@ -258,11 +286,11 @@ class MyInfo extends Component{
                         this.setState(prevState => ({
                           dataSource: {
                             ...prevState.dataSource,
-                            career: content
+                            career: content.replace(/[^0-9]/g,'')
                           }
                         }))}}
+                      value={this.state.dataSource.career}
                     >
-                    {this.state.dataSource.career}
                     </Input>
                     </Item>
                   </Form>
@@ -379,6 +407,10 @@ class MyInfo extends Component{
                     placeholder="이름을 입력해주세요."
                     underline="false"
                     onChangeText={(content) => {
+                      if(content.length > 7) {
+                      Alert.alert('현장통','길이가 너무 깁니다.')
+                      content = content.substr( 0, content.length-1 )
+                      }
                       this.setState(prevState => ({
                         dataSource: {
                           ...prevState.dataSource,
@@ -401,6 +433,10 @@ class MyInfo extends Component{
                     placeholder="관계를 입력해주세요."
                     underline="false"
                     onChangeText={(content) => {
+                      if(content.length > 5) {
+                        Alert.alert('현장통','길이가 너무 깁니다.')
+                        content = content.substr( 0, content.length-1 )
+                      }
                       this.setState(prevState => ({
                         dataSource: {
                           ...prevState.dataSource,
@@ -415,27 +451,34 @@ class MyInfo extends Component{
               </View>
               <View style={[styles.itemBox,{paddingVertical:3,paddingRight:3}]}>
                 <Text style={[styles.itemTitle,{textAlignVertical:'center'}]}>연락처</Text>
-                <Form style={{width:'70%',alignItems:'flex-end'}}>
-                  <Item style={{borderColor:'transparent'}}>
-                  <Input
-                    textAlign={'right'}
+                <View style={{width:'70%',alignItems:'flex-end'}}>
+                  <TextInput
+                    ref="phoneInput3"
                     style={[styles.itemInput]}
                     placeholder="-없이 입력해주세요."
-                    underline="false"
+                    underlineColorAndroid="transparent"
                     onChangeText={(content) => {
-                      var content2 = content.replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{4})([0-9]{4})/,"$1-$2-$3");
-                      this.setState(prevState => ({
+                      this.setState({tempPhone2:content.replace(/[^0-9]/g,'')})
+                      }}
+                    onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,oPhone:""},tempPhone2:'',phoneEnd2:false}))}}
+                    onBlur={() => {
+                      if(this.state.tempPhone2.length > 11 || this.state.tempPhone2.length < 9) {
+                        Alert.alert('현장통','연락처를 알맞게 기입하세요.')
+                        this.refs['phoneInput3'].focus();
+                      } else {
+                        this.setState(prevState => ({
                         dataSource: {
                           ...prevState.dataSource,
-                          oPhone: content2
-                        }
-                      }))}}
-                    onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,oPhone:""}}))}}
+                          oPhone:this.state.tempPhone2.replace(/(^02.{0}|^01.{1}|^[0-9]{3})([0-9]{3,4})([0-9]{4})/,"$1-$2-$3")
+                        },
+                        phoneEnd2:true})
+                        )
+                      }
+                    }}
+                    value={this.state.phoneEnd2 ? this.state.dataSource.oPhone : this.state.tempPhone2}
                   >
-                  {this.state.dataSource.oPhone}
-                  </Input>
-                  </Item>
-                </Form>
+                  </TextInput>
+                </View>
               </View>
             </View>
             <View style={{justifyContent:'center',alignItems:'center',marginTop:10}}>

@@ -25,10 +25,10 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "kr.h-tong.htong"
+      "bundleIdentifier": "kr.htong.htong"
     },
     "android": {
-      "package": "kr.h-tong.htong"
+      "package": "kr.htong.htong"
     }
   }
 }

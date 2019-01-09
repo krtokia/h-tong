@@ -32,7 +32,8 @@ class Signature extends Component{
       super(props);
       this.state = {
         memId: StoreGlobal({type:'get',key:'loginId'}),
-        imageSource:null
+        imageSource:null,
+        padKey: 1,
       }
       this.uploadSignature = this.uploadSignature.bind(this);
   //.    this.uploadImage = this.uploadImage.bind(this);
@@ -57,7 +58,11 @@ class Signature extends Component{
 
    };
 
-
+   onClear = () => {
+     this.setState({
+       padKey : Math.floor(Math.random(100) * 100),
+     });
+   }
 
   uploadSignature() {
 
@@ -96,6 +101,7 @@ class Signature extends Component{
           onError={this._signaturePadError}
           onChange={this._signaturePadChange}
           style={{flex: 1, backgroundColor: 'white'}}
+          key={this.state.padKey}
         />
 
         </View>

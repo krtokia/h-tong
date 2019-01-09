@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "tong",
-    "description": "A very interesting project.",
-    "slug": "tong",
+    "name": "현장통",
+    "description": "건설인이 인정받는 사회",
+    "slug": "htong",
     "privacy": "public",
     "sdkVersion": "29.0.0",
     "platforms": [
@@ -25,10 +25,10 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.yourappname"
+      "bundleIdentifier": "kr.h-tong.htong"
     },
     "android": {
-      "package": "com.yourcompany.yourappname"
+      "package": "kr.h-tong.htong"
     }
   }
 }

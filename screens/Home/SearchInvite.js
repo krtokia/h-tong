@@ -86,9 +86,15 @@ class SearchInvite extends Component{
     }
   }
 
-  acceptInvite = () => {
+  acceptInvite = (invData2) => {
     const { invData } = this.state;
-    console.log(invData)
+
+    if(invData2) {
+      inviteData = invData2;
+    } else {
+      inviteData = invData;
+    }
+
     let apiUrl = 'http://13.124.127.253/api/inviteTong.php?action=accept';
     options = {
       method: 'POST',
@@ -97,12 +103,12 @@ class SearchInvite extends Component{
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        inviteSeq: invData.inviteseq,
-        tongnum: invData.tongnum,
-        tongOwnId: invData.creator,
-        tongMemId: invData.userId,
-        userGrade: invData.userGrade,
-        jobGrade: invData.jobGrade,
+        inviteSeq: inviteData.inviteseq,
+        tongnum: inviteData.tongnum,
+        tongOwnId: inviteData.creator,
+        tongMemId: inviteData.userId,
+        userGrade: inviteData.userGrade,
+        jobGrade: inviteData.jobGrade,
       })
     }
     return fetch(apiUrl, options).then((response) => response.json())
@@ -110,7 +116,7 @@ class SearchInvite extends Component{
         if(responseJson === 'succed') {
           Alert.alert(
             "현장통",
-            invData.tongtitle+" 현장에 가입되었습니다.");
+            inviteData.tongtitle+" 현장에 가입되었습니다.");
           this.setState({modal:false})
           this.getInvite()
         } else {
@@ -161,6 +167,11 @@ class SearchInvite extends Component{
     this.setState({modal, invData})
   }
 
+  acceptFunc = (invData) => {
+    this.setState({invData:invData})
+    this.acceptInvite(invData);
+  }
+
   render(){
     if(this.state.isLoading) {
       return (
@@ -185,6 +196,7 @@ class SearchInvite extends Component{
         return <InviteList key={key}
           invSource={val}
           modal={this.modalOpen}
+          acceptFunc={(invData) => this.acceptFunc(invData)}
           />
       })
       const { invData } = this.state;
@@ -351,7 +363,7 @@ class InviteList extends Component {
             <Text style={{fontSize:11,color:'#999'}}>{data.addr}</Text>
           </View>
           <TouchableOpacity style={[styles.inviteContent,styles.center,{flex:1}]}
-            onPress={() => console.log("front")}
+            onPress={() => this.props.acceptFunc(data)}
           >
             <Icon name="check" type="FontAwesome" style={{color:'#0c88c2'}} />
             <Text style={{color:'#0c88c2',fontSize:13}}>수락하기</Text>

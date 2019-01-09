@@ -73,5 +73,17 @@ export default {
     fontSize: 20,
     color: '#db3928',
     marginBottom: 5
-  }
+  },
+  paperItems: {
+    flexBasis:'50%',
+    height: deviceHeight / 5 + 20,
+    padding:5,
+  },
+  grayBottom: {
+    borderBottomWidth:1,
+    borderBottomColor: '#e9e9e9'
+  },
+  row: {
+    flexDirection:'row'
+  },
 }

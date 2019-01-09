@@ -58,7 +58,7 @@ class TongSetting extends Component{
       .then((responseJson)=> {
         if(responseJson === 'succed') {
           Alert.alert("현장통","탈퇴 되었습니다.")
-          this.props.navigation.navigate("Home")
+          this.props.navigation.navigate("Home",{refresh: Date(Date.now()).toString()})
         } else {
           //alert(responseJson);
           console.log(responseJson)

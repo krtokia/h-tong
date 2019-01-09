@@ -53,6 +53,10 @@ class FriendDetail extends Component{
     }
   }
 
+  refresh = refresh => {
+    this.setState({refresh})
+  }
+
   getIsFriend = async() => {
     return fetch("http://13.124.127.253/api/results.php?page=isFriend&friendId="+this.state.friendId+"&userId="+StoreGlobal({type:'get',key:'loginId'}))
       .then((response) => response.json())
@@ -240,7 +244,7 @@ class FriendDetail extends Component{
                   <Text style={{fontSize:13,color:"#555"}}>1:1 대화</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems:'center'}}
-                  onPress={() => console.log("서류보기")}
+                  onPress={() => this.props.navigation.navigate("FriendPapers",{friendId:this.state.friendId,refresh:this.refresh})}
                 >
                   <Icon name="folder-open" type="FontAwesome" style={styles.friendIcon} />
                   <Text style={{fontSize:13,color:"#555"}}>서류보기</Text>

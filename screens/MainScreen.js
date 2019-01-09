@@ -17,6 +17,7 @@ import ChatRoom from './Chat/ChatRoom.js';
 
 import Friends from './Friends';
 import FriendDetail from './Friends/FriendDetail.js';
+import FriendPapers from './Friends/FriendPapers.js';
 
 import Home from "./Home/Home.js";
 import TongSearch from "./Home/TongSearch.js";
@@ -268,6 +269,7 @@ const AppStackNavigator = createStackNavigator({
   createTong: { screen: createTong},
   createTong2: { screen: createTong2},
   FriendDetail: { screen: FriendDetail },
+  FriendPapers: { screen: FriendPapers },
   Papers: { screen: Papers },
   Signature: { screen: Signature },
   ChatRoom: { screen: ChatRoom },

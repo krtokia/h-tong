@@ -1,5 +1,18 @@
 import React, { Component } from 'react';
-import { ToastAndroid, TouchableWithoutFeedback,Animated, ImageBackground, TouchableOpacity, Image, Modal,ScrollView, TouchableHighlight, Alert, ActivityIndicator } from 'react-native';
+import {
+  ToastAndroid,
+  TouchableWithoutFeedback,
+  Animated,
+  ImageBackground,
+  TouchableOpacity,
+  Image,
+  Modal,
+  ScrollView,
+  TouchableHighlight,
+  Alert,
+  ActivityIndicator,
+  Linking
+} from 'react-native';
 import {
   Container,
   Content,
@@ -594,7 +607,7 @@ class TongMain extends pickableImage{
                   block
                   iconLeft
                   style={{backgroundColor:'#db3928'}}
-                  onPress={() => console.log("긴급전화")}
+                  onPress={() => Linking.openURL(`tel:`+this.state.dataSource.contact.replace(/-/g,''))}
                 >
                   <Icon name="phone" type="FontAwesome" />
                   <Text>긴급전화</Text>

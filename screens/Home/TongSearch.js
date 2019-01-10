@@ -36,7 +36,7 @@ class TongSearch extends Component{
     }
   }
 
-  searchTong = () => {
+  searchTong = async() => {
       this.setState({isLoading: true})
       return fetch("http://13.124.127.253/api/results.php?page=searchTong&searchText="+this.state.searchTxt)
         .then((response) => response.json())
@@ -99,7 +99,7 @@ class TongSearch extends Component{
             <Item rounded style={{alignSelf:'center',width:'90%',height:40,backgroundColor:'rgba(0,0,0,0.1)'}}>
               <Input placeholder='커뮤니티 검색' style={{paddingLeft:30}}  onChangeText={(searchTxt) => this.setState({ searchTxt })}/>
               <Button style={{width:'25%',height:'100%',borderTopRightRadius:50,borderBottomRightRadius:50,justifyContent:'center',backgroundColor:'#db3928'}}
-                onPress={() => this.state.searchTxt ? this.state.searchTxt.length > 1 ? this.searchTong : Alert.alert('검색어를 입력해주세요.') : Alert.alert('검색어를 입력해주세요.')}>
+                onPress={() => this.state.searchTxt.length > 1 ? this.searchTong() : Alert.alert('검색어를 입력해주세요.')}
               >
                 <Icon name="search" />
               </Button>

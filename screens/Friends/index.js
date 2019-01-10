@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, AppRegistry, ListView, ImageBackground, TouchableOpacity, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { Alert,StyleSheet, Image, AppRegistry, ListView, ImageBackground, TouchableOpacity, TouchableHighlight, ActivityIndicator } from 'react-native';
 import {
   View,
   Button,
@@ -66,8 +66,6 @@ class Friends extends Component{
   }
 
   searchFriend = async() => {
-    console.log("getFiendTest: " + this.state.searchTxt );
-
     return fetch("http://13.124.127.253/api/results.php?page=searchFriend&name="+this.state.searchTxt)
       .then((response) => response.json())
       .then((responseJson) => {
@@ -123,7 +121,8 @@ class Friends extends Component{
           <View style={{width:'100%',padding:10,}}>
             <Item rounded style={{alignSelf:'center',width:'90%',height:40,backgroundColor:'#aaa1'}}>
               <Input placeholder='동료 검색' style={{paddingLeft:30}}  onChangeText={(searchTxt) => this.setState({ searchTxt })}/>
-              <Button style={{width:'25%',height:'100%',borderTopRightRadius:50,borderBottomRightRadius:50,justifyContent:'center',backgroundColor:'#db3928'}} onPress={this.searchFriend}>
+              <Button style={{width:'25%',height:'100%',borderTopRightRadius:50,borderBottomRightRadius:50,justifyContent:'center',backgroundColor:'#db3928'}}
+              onPress={() => this.state.searchTxt ? this.state.searchTxt.length > 1 ? this.searchFriend : Alert.alert('검색어를 입력해주세요.') : Alert.alert('검색어를 입력해주세요.')}>
                 <Icon name="search"/>
               </Button>
             </Item>

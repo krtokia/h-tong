@@ -131,19 +131,19 @@ const CommunityTabNavi = createBottomTabNavigator({
     },
    },
    CommunityNotice: {
-     screen: TongNotice,
+     screen: CommunityNotice,
      navigationOptions: {
        tabBarIcon: ({tintColor}) => <Icon name="bullhorn" size={20} color={tintColor} />,
      },
     },
   CommunityPeople: {
-    screen: TongPeople,
+    screen: CommunityPeople,
     navigationOptions: {
       tabBarIcon: ({tintColor}) => <Icon name="address-book-o" size={20} color={tintColor} />,
     },
    },
    CommunitySetting: {
-    screen: TongSetting,
+    screen: CommunitySetting,
     navigationOptions: {
        tabBarIcon: ({tintColor}) => <Icon name="cog" size={30} color={tintColor} />,
     },

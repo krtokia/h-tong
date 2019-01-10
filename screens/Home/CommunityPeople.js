@@ -22,7 +22,7 @@ import styles from "./styles";
 
 import { StoreGlobal } from '../../App';
 
-export class CommunityPeople extends Component{
+export default class CommunityPeople extends Component{
   constructor(props) {
     super(props);
 
@@ -67,13 +67,13 @@ export class CommunityPeople extends Component{
     return fetch("http://13.124.127.253/api/results.php?page=selectMembers&tongnum=" + tongnum)
       .then((response) => response.json())
       .then((responseJson) => {
+        console.log('getFriend',responseJson)
         if(responseJson) {
           this.setState({
             isLoading: false,
             dataSource: responseJson,
             count: Object.keys(responseJson).length,
           });
-          console.log(responseJson)
         } else {
           this.setState({
             isLoading: false,
@@ -120,7 +120,7 @@ export class CommunityPeople extends Component{
               key={val}
               name={key.tongMemNm}
               type={key.jobgroup}
-              detailHref={() => {this.props.navigation.navigate('FriendDetail',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
+              detailHref={() => {this.props.navigation.navigate('FriendDetail',{friendId:key.tongMemId,prevPage:'comm',refresh:Date(Date.now()).toString()})}}
               chatHref={() => {this.props.navigation.navigate('ChatRoom',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
               attend = {checky}
               parentMethod = {this.attendCheck}
@@ -148,7 +148,7 @@ export class CommunityPeople extends Component{
                 key={val}
                 name={key.tongMemNm}
                 type={key.jobgroup}
-                detailHref={() => {this.props.navigation.navigate('FriendDetail',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
+                detailHref={() => {this.props.navigation.navigate('FriendDetail',{friendId:key.tongMemId,prevPage:'comm',refresh:Date(Date.now()).toString()})}}
                 chatHref={() => {this.props.navigation.navigate('ChatRoom',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
                 attend = {checky}
                 parentMethod = {this.attendCheck}
@@ -237,7 +237,7 @@ class TongFriendList2 extends Component{
     const attendIcon = this.createIcon();
     return(
       <TouchableOpacity onPress={this.props.detailHref}>
-        <View style={styles.friendList}>
+        <View style={[styles.friendList,{justifyContent:'space-between'}]}>
           <View style={{flexDirection:'row',alignItems:'center'}}>
             <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
             <Text style={styles.friendName}>{this.props.name}</Text>
@@ -246,9 +246,6 @@ class TongFriendList2 extends Component{
           <View style={{flexDirection:'row',justifyContent:'flex-end',paddingRight:10}}>
             <Button transparent style={styles.friendChatBtn} onPress={this.props.chatHref}>
               <Icon name="commenting-o" type="FontAwesome" style={styles.friendChat} />
-            </Button>
-            <Button transparent style={[styles.friendChatBtn]} onPress={this.attendCheckParent}>
-              {attendIcon}
             </Button>
           </View>
         </View>

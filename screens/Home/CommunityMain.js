@@ -91,6 +91,7 @@ class CommunityMain extends pickableImage{
       .then((responseJson) => {
         if(responseJson) {
           this.setState({
+            isloading3: false,
             count: Object.keys(responseJson).length,
           });
         }
@@ -141,6 +142,7 @@ class CommunityMain extends pickableImage{
 
   componentDidMount() {
     //console.log("START componentDidMount");
+    console.log(this.state.tongnum)
     this.getTong();
     this.getBbs();
     this.getFriend();
@@ -389,6 +391,39 @@ class CommunityMain extends pickableImage{
         });
   }
 
+  addMember = () => {
+    const {tongnum, memId} = this.state;
+
+    let apiUrl = 'http://13.124.127.253/api/tongMembers.php?action=insertCommunity';
+
+    options = {
+      method: 'POST',
+      headers: {
+        'Accept' : 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        tongnum : tongnum,
+        tongMemId: memId,
+        tongOwnId: this.state.dataSource.creator,
+    })
+    }
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        console.log(responseJson)
+        if(responseJson === 'succed') {
+          this.setState({refresh:Date(Date.now()).toString()})
+          this.getTong();
+          this.getBbs();
+          this.getFriend();
+        } else {
+          console.log(responseJson);
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
+  }
+
   write() {
     this.setState({writeModal:false,isModify:false,content:""})
     const {tongnum, memId, content, imageSource} = this.state;
@@ -488,6 +523,27 @@ class CommunityMain extends pickableImage{
     )
   }
   render(){
+    if (this.state.isLoading) {
+      return (
+        <View Style={[styles.center,{flex:1}]}>
+          <ActivityIndicator />
+        </View>
+      )
+    } else if (this.state.isLoading2) {
+      return (
+        <View Style={[styles.center,{flex:1}]}>
+          <ActivityIndicator />
+        </View>
+      )
+    } else if (this.state.isLoading4) {
+      return (
+        <View Style={[styles.center,{flex:1}]}>
+          <ActivityIndicator />
+        </View>
+      )
+    } else {
+
+
     const TongType = this.props.navigation.getParam('tongType');
     let weatherBox;
     if(TongType === "T") {
@@ -722,7 +778,7 @@ class CommunityMain extends pickableImage{
                         <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="plus-circle" /> 동료초대</Text>
                       </TouchableOpacity>
                     ) : (
-                      <TouchableOpacity onPress={() => {ToastAndroid.show("커뮤니티 가입 기능", ToastAndroid.SHORT)}}>
+                      <TouchableOpacity onPress={this.addMember}>
                         <Text style={[styles.TongInvite,{fontSize:13}]}><Icon name="plus-circle" /> 커뮤니티 가입</Text>
                       </TouchableOpacity>
                     )}
@@ -777,7 +833,7 @@ class CommunityMain extends pickableImage{
         </Content>
       </Container>
     );
-  }
+  }}
   }
 }
 
@@ -815,6 +871,7 @@ class ReplyView extends Component {
      return fetch("http://13.124.127.253/api/results.php?page=reply&seq=" + this.props.tongnum + "&board=" + this.props.boardnum)
              .then((response) => response.json())
              .then((responseJson) => {
+               console.log("rep",responseJson)
                 this.setState({
                   isLoading: false,
                   repData: responseJson,
@@ -840,7 +897,7 @@ class ReplyView extends Component {
           <ActivityIndicator />
         </View>
       )
-    } else if (this.state.repData == null) {
+    } else if (!this.state.repData) {
       return (
         <View style={[styles.TongContentReply,styles.center,{padding:10}]}>
           <Text style={styles.ContentReplyT}>댓글이 없습니다.</Text>

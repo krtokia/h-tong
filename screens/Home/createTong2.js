@@ -256,9 +256,11 @@ class createTong2 extends pickableImage{
 
 	createTong(tongType) {
     const { imageSource, tongName, projectnm, authnum, constructor, supervisor, owner, contact, term, scale, addr, creator, fLatitude, fLongitude} = this.state;
-    if(!projectnm || !authnum || !constructor || !supervisor || !owner || !contact || !term || !scale || !addr || !fLatitude || !fLongitude ) {
-      Alert.alert('현장통','현장 정보를 빠짐없이 입력 해 주세요.');
-      return false
+    if(tongType == 'T') {
+      if(!projectnm || !authnum || !constructor || !supervisor || !owner || !contact || !term || !scale || !addr || !fLatitude || !fLongitude ) {
+        Alert.alert('현장통','현장 정보를 빠짐없이 입력 해 주세요.');
+        return false
+      }
     }
 
     let apiUrl = 'http://13.124.127.253/api/createTong.php';
@@ -421,7 +423,7 @@ class createTong2 extends pickableImage{
                         underlineColorAndroid='#0000'
                         style={styles.modalInput}
                         onChangeText={(projectnm) => {
-                          if(content.length > 15) {
+                          if(projectnm.length > 15) {
                             Alert.alert('현장통','길이가 너무 깁니다.')
                             projectnm = projectnm.substr( 0, projectnm.length-1 )
                           }
@@ -433,7 +435,7 @@ class createTong2 extends pickableImage{
                         underlineColorAndroid='#0000'
                         style={styles.modalInput}
                         onChangeText={(authnum) => {
-                          if(content.length > 30) {
+                          if(authnum.length > 30) {
                             Alert.alert('현장통','길이가 너무 깁니다.')
                             authnum = authnum.substr( 0, authnum.length-1 )
                           }
@@ -445,7 +447,7 @@ class createTong2 extends pickableImage{
                         underlineColorAndroid='#0000'
                         style={styles.modalInput}
                         onChangeText={(constructor) => {
-                          if(content.length > 10) {
+                          if(constructor.length > 10) {
                             Alert.alert('현장통','길이가 너무 깁니다.')
                             constructor = constructor.substr( 0, constructor.length-1 )
                           }
@@ -457,7 +459,7 @@ class createTong2 extends pickableImage{
                         underlineColorAndroid='#0000'
                         style={styles.modalInput}
                         onChangeText={(supervisor) => {
-                          if(content.length > 10) {
+                          if(supervisor.length > 10) {
                             Alert.alert('현장통','길이가 너무 깁니다.')
                             supervisor = supervisor.substr( 0, supervisor.length-1 )
                           }
@@ -469,7 +471,7 @@ class createTong2 extends pickableImage{
                         underlineColorAndroid='#0000'
                         style={styles.modalInput}
                         onChangeText={(owner) => {
-                          if(content.length > 10) {
+                          if(owner.length > 10) {
                             Alert.alert('현장통','길이가 너무 깁니다.')
                             owner = owner.substr( 0, owner.length-1 )
                           }
@@ -510,7 +512,7 @@ class createTong2 extends pickableImage{
                         underlineColorAndroid='#0000'
                         style={styles.modalInput}
                         onChangeText={(scale) => {
-                          if(content.length > 10) {
+                          if(scale.length > 10) {
                             Alert.alert('현장통','길이가 너무 깁니다.')
                             scale = scale.substr( 0, scale.length-1 )
                           }

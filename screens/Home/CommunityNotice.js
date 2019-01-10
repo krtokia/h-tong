@@ -32,7 +32,7 @@ import { StoreGlobal } from '../../App';
 
 import styles from './styles.js';
 
-class CommunityNotice extends Component{
+export default class CommunityNotice extends Component{
   constructor(props) {
     super(props);
     this.setModify = this.setModify.bind(this);

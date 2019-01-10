@@ -153,6 +153,8 @@ class FriendDetail extends Component{
   _goBack = () => {
     if(this.props.navigation.getParam('prevPage') === 'index') {
       this.props.navigation.navigate('Friends',{refresh:Date(Date.now()).toString()})
+    } else if(this.props.navigation.getParam('prevPage') === 'comm') {
+      this.props.navigation.navigate('CommunityPeople',{refresh:Date(Date.now()).toString()});
     } else {
       this.props.navigation.navigate('TongPeople',{refresh:Date(Date.now()).toString()});
     }

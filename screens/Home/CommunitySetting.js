@@ -26,7 +26,7 @@ import { StoreGlobal } from '../../App';
 
 import styles from './styles.js';
 
-export class CommunitySetting extends Component{
+export default class CommunitySetting extends Component{
 
   constructor(props) {
     super(props);

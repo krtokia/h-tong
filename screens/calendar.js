@@ -110,7 +110,7 @@ export default class Calendar extends Component {
       selected = false;
       dayCount = 0;
       if(data.day) {
-        fullDateStr = year+"-"+(month+1)+"-"+(data.day < 10 ? "0"+data.day : data.day);
+        fullDateStr = year+"-"+(month+1 < 10 ? "0"+(month+1) : month+1)+"-"+(data.day < 10 ? "0"+data.day : data.day);
         if(Object.keys(getSelecteDates).indexOf(fullDateStr) > -1) {
           selected = true;
           dayCount = getSelecteDates[fullDateStr];

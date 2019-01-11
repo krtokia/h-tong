@@ -36,41 +36,41 @@ class TongAdmin extends Component{
       memId: StoreGlobal({type:'get',key:'loginId'}),
       tongnum: StoreGlobal({type:'get',key:'tongnum'}),
       isLoading: true,
-      isLoading2: true,
+      dataSource:null,
       modalData: null,
+      admin1: null,
+      admin2: null,
+      admin3: null,
     }
-  }
-
-  getFriend = async() => {
-    const { tongnum } = this.state;
-    return fetch("http://13.124.127.253/api/results.php?page=selectMembers&tongnum=" + tongnum)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        if(responseJson) {
-          this.setState({
-            isLoading: false,
-            dataSource: responseJson,
-            count: Object.keys(responseJson).length,
-          });
-        } else {
-          this.setState({
-            isLoading: false,
-          })
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
   }
 
   getAdmin = async() => {
     const { tongnum } = this.state;
-    return fetch("http://13.124.127.253/api/results.php?page=selectAdmin&tongnum=" + tongnum)
+    return fetch("http://13.124.127.253/api/results.php?page=selectAdminList&tongnum=" + tongnum)
       .then((response) => response.json())
       .then((responseJson) => {
+        responseJson = responseJson ? responseJson : [];
+        for(i=3;i>responseJson.length;i=i-1) {
+          responseJson.push({isAdmin:0})
+        }
+        var admin1 = 0;
+        var admin2 = 0;
+        var admin3 = 0;
+        for(i=0;i<responseJson.length;i++) {
+          if(responseJson[i]['isAdmin'] == 1) {
+            admin1 = i+1;
+          } else if (responseJson[i]['isAdmin'] == 2) {
+            admin2 = i+1;
+          } else if (responseJson[i]['isAdmin'] == 3) {
+            admin3 = i+1;
+          }
+        }
         this.setState({
-          isLoading2: false,
-          dataSource2: responseJson,
+          isLoading: false,
+          dataSource: responseJson,
+          admin1: admin1 > 0 ? responseJson[admin1-1] : null,
+          admin2: admin2 > 0 ? responseJson[admin2-1] : null,
+          admin3: admin3 > 0 ? responseJson[admin3-1] : null,
         });
       })
       .catch((error) => {
@@ -79,26 +79,65 @@ class TongAdmin extends Component{
   }
 
   componentDidMount() {
-    this.getFriend()
     this.getAdmin()
-  }
-
-  tongExit(tType) {
-    const TongType = tType === 'T' ? "현장" : "커뮤니티";
-    Alert.alert(
-      TongType+"통 탈퇴",
-      "이 "+TongType+"통을 탈퇴하시겠습니까?",
-      [
-        {text: "예", onPress: this.deleteMember},
-        {text: "아니오", style: 'cancel'}
-      ],
-      { cancelable: false }
-    )
   }
 
   static navigationOptions = ({
       header: null,
     });
+
+  refresh = refresh => {
+    this.getAdmin()
+    this.setState({refresh})
+  }
+
+  createBox(div,val) {
+    let adminName;
+    switch(div) {
+      case 1 : adminName = "안전관리자"; break;
+      case 2 : adminName = "현장의료팀"; break;
+      case 3 : adminName = "현장소장"; break;
+    }
+    let uri = val ? val.photo ? val.photo : 'profile_no.png' : 'profile_no.png'
+    if(val) { return <View style={[styles.Box,{flex:1}]}>
+                      <View style={[styles.grayBottom,styles.row2,{padding:3}]}>
+                        <Text>{adminName}</Text>
+                      </View>
+                      <TouchableOpacity style={{flex:1}}
+                        onPress={() => this.props.navigation.navigate('TongAdmin2',{param:div,dataSource2:val,refresh:this.refresh})}
+                      >
+                      <View style={[styles.row2,{flex:1,padding:10}]}>
+                        <View style={{flex:2}}>
+                          <Image source={{uri: 'http://13.124.127.253/images/userProfile/'+uri}} style={{width:'100%',height:'100%',resizeMode:'contain',borderRadius:500}} />
+                        </View>
+                        <View style={{flex:3,justifyContent:'space-around',paddingLeft:10}}>
+                          <Text>이름 : <Text>{val.tongMemNm}</Text></Text>
+                          <Text>아이디 : <Text>{val.tongMemId}</Text></Text>
+                          <Text>전화번호 : <Text>{val.cellPhone}</Text></Text>
+                        </View>
+                      </View>
+                      </TouchableOpacity>
+                    </View>
+    } else {
+      return <View style={[styles.Box,{flex:1}]}>
+              <View style={[styles.grayBottom,styles.row2,{padding:3}]}>
+                <Text>관리자1</Text>
+              </View>
+              <TouchableOpacity style={{flex:1}}
+                onPress={() => this.props.navigation.navigate('TongAdmin2',{param:div,refresh:this.refresh})}
+              >
+              <View style={[styles.row2,{flex:1,padding:10}]}>
+                <View style={[styles.center,{flex:1}]}>
+                  <Text style={{fontSize:17,color:'#db3928'}}>등록되지 않았습니다.</Text>
+                  <Text> </Text>
+                  <Text style={{fontSize:15,color:'#db3928'}}>터치하여 등록</Text>
+                </View>
+              </View>
+              </TouchableOpacity>
+            </View>
+
+    }
+  }
 
   render(){
     if(this.state.isLoading) {
@@ -110,79 +149,8 @@ class TongAdmin extends Component{
               <ActivityIndicator />
              </View>
     } else {
-      const TongType = StoreGlobal({type:'get',key:'tType'});
-      let fvalue = this.state.dataSource.map((data, key) => {
-        return (
-          <View key={key}>
-            <TongFriendList
-              name={data.tongMemNm}
-              type={data.jobgroup}
-              data={data}
-              detailHref={(modalData) => {console.log(modalData);this.setState({modalData:modalData,modal:true})}}
-            />
-          </View>
-        )
-      })
-      let imageUri = 'profile_no.png';
-      if(this.state.modalData) {
-        if(this.state.modalData.photo) {
-          imageUri = this.state.modalData.photo
-        }
-      }
       return (
         <Container>
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={this.state.modal}
-            onRequestClose={() => {
-              this.setState({modal:!this.state.modal,modalData:null});
-            }}>
-            <View style={[styles.center,{flex:1,backgroundColor:'#0006'}]}>
-              <View style={{width:'60%',height:'60%',backgroundColor:'#fff'}}>
-                <View style={[styles.center,{backgroundColor:'#db3928',flex:1}]}>
-                  <Text style={{color:'#fff',fontWeight:'bold'}}>동료 정보</Text>
-                </View>
-                <View style={{flex:5}}>
-                  <View style={[styles.center,{width:'100%',height:'50%'}]}>
-                    <Image
-                      style={[styles.tongImage2]}
-                      source={{uri: 'http://13.124.127.253/images/userProfile/'+imageUri}}
-                    />
-                  </View>
-                  <View style={[styles.row2,{padding:10}]}>
-                    <View style={{flex:1,borderColor:'#aaa',borderRightWidth:1,alignItems:'center'}}>
-                      <Text>아이디</Text>
-                    </View>
-                    <View style={{flex:1.5,paddingLeft:10,alignItems:'center'}}>
-                      <Text>{this.state.modalData && this.state.modalData.tongMemId}</Text>
-                    </View>
-                  </View>
-                  <View style={[styles.row2,{padding:10}]}>
-                    <View style={{flex:1,borderColor:'#aaa',borderRightWidth:1,alignItems:'center'}}>
-                      <Text>이름</Text>
-                    </View>
-                    <View style={{flex:1.5,paddingLeft:10,alignItems:'center'}}>
-                      <Text>{this.state.modalData && this.state.modalData.tongMemNm}</Text>
-                    </View>
-                  </View>
-                  <View style={[styles.row2,{padding:10}]}>
-                    <View style={{flex:1,borderColor:'#aaa',borderRightWidth:1,alignItems:'center'}}>
-                      <Text>직급</Text>
-                    </View>
-                    <View style={{flex:1.5,paddingLeft:10,alignItems:'center'}}>
-                      <Text>{this.state.modalData && this.state.modalData.jobGrade}</Text>
-                    </View>
-                  </View>
-                  <View style={[styles.center]}>
-                    <TouchableOpacity onPress={() => this.setState({modal:!this.state.modal,modalData:null})}>
-                      <Text>close</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </Modal>
           <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
             <Left style={{flex:1}}>
               <Button rounded transparent onPress={() => {this.props.navigation.goBack()}}>
@@ -198,22 +166,11 @@ class TongAdmin extends Component{
           <Content
             showsVerticalScrollIndicator={false}
             style={{ backgroundColor: "#f9f9f9" }}
+            contentContainerStyle={{flex:1}}
           >
-            <View style={{paddingBottom:10}}>
-              <View style={styles.Box}>
-                {this.state.dataSource2 ? (
-                  <Text>현재 관리자 : {this.state.dataSource2[0]['tongMemNm']}</Text>
-                ) : (
-                  <Text style={{color:'#db3928'}}>관리자를 등록하세요.</Text>
-                )}
-              </View>
-              <View style={{padding:10}}>
-                <Text style={{fontSize:11}}>관리자 변경</Text>
-              </View>
-              <View style={styles.Box}>
-                {fvalue}
-              </View>
-            </View>
+            {this.createBox(1,this.state.admin1)}
+            {this.createBox(2,this.state.admin2)}
+            {this.createBox(3,this.state.admin3)}
           </Content>
         </Container>
       );
@@ -221,19 +178,3 @@ class TongAdmin extends Component{
   }
 }
 export default TongAdmin;
-
-class TongFriendList extends Component{
-  render() {
-    return(
-      <TouchableOpacity onPress={() => this.props.detailHref(this.props.data)}>
-        <View style={styles.friendList}>
-          <View style={{flexDirection:'row',alignItems:'center'}}>
-            <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
-            <Text style={styles.friendName}>{this.props.name}</Text>
-            <Text style={styles.friendInfo}>{this.props.type}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    )
-  }
-}

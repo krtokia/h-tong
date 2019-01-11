@@ -45,7 +45,9 @@ class SearchInvite extends Component{
         inviteDt: "",
         message: "",
         inviteSeq: "",
-      }
+      },
+      count: 0,
+      action: true,
     }
   }
 
@@ -65,6 +67,7 @@ class SearchInvite extends Component{
         this.setState({
           isLoading: false,
           inviteSource: responseJson ? responseJson : [],
+          count: responseJson ? responseJson.length : 0
         });
       })
 
@@ -114,10 +117,11 @@ class SearchInvite extends Component{
     return fetch(apiUrl, options).then((response) => response.json())
       .then((responseJson)=> {
         if(responseJson === 'succed') {
+          console.log(responseJson)
           Alert.alert(
             "현장통",
             inviteData.tongtitle+" 현장에 가입되었습니다.");
-          this.setState({modal:false})
+          this.setState({modal:false,action:true})
           this.getInvite()
         } else {
           console.log(responseJson);
@@ -168,8 +172,10 @@ class SearchInvite extends Component{
   }
 
   acceptFunc = (invData) => {
-    this.setState({invData:invData})
-    this.acceptInvite(invData);
+    if(this.state.action) {
+      this.setState({invData:invData,action:false})
+      this.acceptInvite(invData);
+    }
   }
 
   render(){
@@ -314,6 +320,9 @@ class SearchInvite extends Component{
             showsVerticalScrollIndicator={false}
             style={{ backgroundColor: "#f4f4f4" }}
           >
+            <View style={{padding:10}}>
+              <Text style={{fontSize:11}}>받은 초대장({this.state.count})</Text>
+            </View>
             {invites}
           </Content>
         </Container>

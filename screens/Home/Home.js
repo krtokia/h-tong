@@ -61,6 +61,7 @@ class Home extends Component{
   }
 
   componentDidMount() {
+    StoreGlobal({type:'set',key:'userGrade',value:0})
     this.tongList()
     this.commList()
   }
@@ -70,6 +71,7 @@ class Home extends Component{
      this.setState({refresh:this.props.navigation.getParam('refresh')})
      this.tongList()
      this.commList()
+     StoreGlobal({type:'set',key:'userGrade',value:0})
     }
   }
 

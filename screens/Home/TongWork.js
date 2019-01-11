@@ -46,6 +46,8 @@ class TongWork extends Component{
       workData: null,
       dateKor: "",
       dateOrigin: "",
+      modal:false,
+      modalImg:null
     }
   }
 
@@ -144,6 +146,10 @@ class TongWork extends Component{
     return dateObj;
   }
 
+  imgShow = (imgData) => {
+    this.setState({modal:!this.state.modal,modalImg:imgData})
+  }
+
   render(){
     if (this.state.isLoading) {
       return (
@@ -174,6 +180,7 @@ class TongWork extends Component{
               workdate={val}
               photolist={convertData[val]}
               method={this.imgupload}
+              imgMethod={(data) => this.imgShow(data)}
               isToday={isToday}
             />
           </View>
@@ -215,6 +222,23 @@ class TongWork extends Component{
       }
       return (
         <Container>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.modal}
+            onRequestClose={() => {
+              this.setState({modal: false, modalImg:null});
+            }}>
+            <View style={[styles.center,{flex:1,backgroundColor:'#0008'}]}>
+              { this.state.modalImg && (
+                <TouchableWithoutFeedback onPress={() => this.setState({modal:false,modalImg:null})}>
+                <Image source={{uri: `http://13.124.127.253/images/workList/`+this.state.modalImg}}
+                  style={styles.imageScale}
+                />
+                </TouchableWithoutFeedback>
+              )}
+            </View>
+          </Modal>
           <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
             <Left style={{flex:1}}>
             </Left>
@@ -275,9 +299,11 @@ class WorkList extends pickableImage {
     let photolist = this.state.photolist.map((data, key) => {
       if(data) {
       return <View style={styles.workListBox} key={key}>
+          <TouchableWithoutFeedback onPress={() => this.props.imgMethod(data)}>
           <Image source={{uri: `http://13.124.127.253/images/workList/`+data}}
             style={{width:"100%", height:"100%", resizeMode:'contain'}}
           />
+          </TouchableWithoutFeedback>
         </View>
       } else {
         return <View key={key}/>

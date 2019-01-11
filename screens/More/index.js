@@ -7,7 +7,9 @@ import {
   ScrollView,
   DatePickerAndroid,
   TextInput,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Modal
  } from 'react-native';
  import {
    View,
@@ -48,6 +50,8 @@ class More extends pickableImage{
       openInput: false,
       career: "",
       careerSource: null,
+      modal: false,
+      modalImg: null
     }
   }
 
@@ -177,8 +181,6 @@ class More extends pickableImage{
     let apiUrl = 'http://13.124.127.253/api/userUpdate.php?action=career';
     const formData = new FormData();
 
-    console.log("selectedDate",selectedDate)
-
     formData.append('userId', id);
     formData.append('careerDate', selectedDate);
     formData.append('career', career);
@@ -196,6 +198,10 @@ class More extends pickableImage{
       }).catch((error) => {
         console.log("error::",error)
       });
+  }
+
+  imageView = (data) => {
+    this.setState({modal:!this.state.modal,modalImg:data})
   }
 
   render(){
@@ -239,6 +245,8 @@ class More extends pickableImage{
                   key={key}
                   dateVal={val.careerDate}
                   infoVal={val.career}
+                  photoVal={val.photo}
+                  imgMethod={(data) => this.imageView(data)}
                 />
         })
       } else {
@@ -249,6 +257,23 @@ class More extends pickableImage{
       }
     return (
       <Container>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modal}
+          onRequestClose={() => {
+            this.setState({modal: false, modalImg:null});
+          }}>
+          <View style={[styles.center,{flex:1,backgroundColor:'#0008'}]}>
+            { this.state.modalImg && (
+              <TouchableWithoutFeedback onPress={() => this.setState({modal:false,modalImg:null})}>
+              <Image source={{uri: `http://13.124.127.253/images/workList/`+this.state.modalImg}}
+                style={styles.imageScale}
+              />
+              </TouchableWithoutFeedback>
+            )}
+          </View>
+        </Modal>
         <Content
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#f4f4f4" }}
@@ -313,7 +338,7 @@ class More extends pickableImage{
               <Text style={{color:'#aaa',fontSize:13}}>경력</Text>
               <View style={{marginLeft:10}}>
                 {getCareer}
-                { this.state.openInput &&
+{/*                { this.state.openInput &&
                   <View>
                     <View style={{flexDirection:'row',alignItems:'center'}}>
                       <View style={{width:'30%'}}>
@@ -344,6 +369,7 @@ class More extends pickableImage{
                     </TouchableOpacity>
                   )
                 }
+*/}
               </View>
             </View>
           </View>
@@ -359,12 +385,21 @@ export default More;
 class CareerList extends Component{
   render() {
     return(
-      <View style={{flexDirection:'row',marginBottom:12,}}>
-        <View style={{width:"30%"}}>
-          <Text style={{fontSize:13}}>{this.props.dateVal}</Text>
+      <View style={{flexDirection:'row',marginBottom:12}}>
+        <View style={{width:"20%",alignSelf:'center'}}>
+          <Text style={{fontSize:11}}>{this.props.dateVal}</Text>
         </View>
-        <View style={{width:"70%"}}>
-          <Text style={{fontSize:13}}>{this.props.infoVal}</Text>
+        <View style={{width:"50%",alignSelf:'center'}}>
+          <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:13}}>{this.props.infoVal}</Text>
+        </View>
+        <View style={{width:"30%",height:50,paddingRight:10}}>
+        { this.props.photoVal && (
+          <TouchableWithoutFeedback onPress={() => this.props.imgMethod(this.props.photoVal)}>
+            <Image source={{uri: `http://13.124.127.253/images/workList/`+this.props.photoVal}}
+              style={{width:"100%", height:"100%", resizeMode:'contain'}}
+            />
+          </TouchableWithoutFeedback>
+        )}
         </View>
       </View>
     )

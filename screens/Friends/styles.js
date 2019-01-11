@@ -86,4 +86,10 @@ export default {
   row: {
     flexDirection:'row'
   },
+  imageScale: {
+    alignSelf: 'stretch',
+    width: deviceWidth,
+    height: deviceHeight,
+    resizeMode: 'contain'
+  }
 }

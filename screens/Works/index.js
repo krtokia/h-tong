@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert,ActivityIndicator,StyleSheet,Image,TouchableOpacity,TouchableHighlight,Modal,TextInput, Picker } from 'react-native';
+import { Alert,ActivityIndicator,StyleSheet,Image,TouchableOpacity,TouchableHighlight,Modal,TextInput, Picker,KeyboardAvoidingView } from 'react-native';
 import {
   View,
   Button,
@@ -118,7 +118,6 @@ class Works extends Component{
     const formData = new FormData();
     formData.append('action', "delete")
     formData.append('seq', seq)
-
     options = {
       method: 'POST',
       body: formData,
@@ -206,7 +205,7 @@ class Works extends Component{
           return <WorkList
             key={key}
             date={dateFor}
-            seq={key}
+            seq={val.seq}
             name={val.worktitle}
             status={val.deposit === "Y" ? "지급완료" : "미수금"}
             money={val.money.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -225,7 +224,8 @@ class Works extends Component{
               this.modalExit();
             }}>
             <View style={{flex:1,alignItems:'center',backgroundColor:'#0009'}}>
-              <TouchableOpacity style={{flex:2,width:'100%'}}
+            <KeyboardAvoidingView enabled={false} behavior="height">
+              <TouchableOpacity style={{flex:0.5,width:'100%'}}
               onPress={() => {this.modalExit();}} />
               <View style={styles.modalContent}>
                 <View style={styles.modalHeader}>
@@ -292,8 +292,9 @@ class Works extends Component{
                   </View>
                 </View>
               </View>
-              <TouchableOpacity style={{flex:2,width:'100%'}}
+              <TouchableOpacity style={{flex:3,width:'100%'}}
               onPress={() => {this.modalExit();}} />
+              </KeyboardAvoidingView>
             </View>
           </Modal>
           <Content

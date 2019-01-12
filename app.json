@@ -29,7 +29,8 @@
     },
     "android": {
       "package": "kr.htong.htong",
-      "versionCode": 2
+      "versionCode": 2,
+      "permissions": ["READ_EXTERNAL_STORAGE"]
     }
   }
 }

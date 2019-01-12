@@ -104,7 +104,12 @@ class TongInfo extends Component{
     return fetch("http://13.124.127.253/api/results.php?page=tong&seq=" + this.state.tongnum)
       .then((response) => response.json())
       .then((responseJson) => {
-
+        if(!responseJson[0].latitude) {
+          responseJson[0].latitude = '37.31547924195309';
+        }
+        if (!responseJson[0].longitude) {
+          responseJson[0].longitude = '126.82885777205229';
+        }
         //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.setState({
           isLoading: false,

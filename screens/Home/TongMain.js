@@ -102,6 +102,13 @@ class TongMain extends pickableImage{
   getCity() {
     var lat = this.state.dataSource.latitude;
     var lon = this.state.dataSource.longitude;
+    if(!lat) {
+      lat = '37.31547924195309';
+    }
+    if(!lon) {
+      lon = '126.82885777205229';
+    }
+
     var url = "https://dapi.kakao.com/v2/local/geo/coord2address.json?x=" + lon + "&y=" + lat + "&input_coord=WGS84";
     var obj = {
       method: 'GET',

@@ -30,6 +30,7 @@ class ChatRoom extends Component{
   constructor(props) {
     super(props);
     this.state = {
+      fName: null,
       messages: [],
       toId: this.props.navigation.getParam('friendId'),
       memId: StoreGlobal({type:'get',key:'loginId'}),
@@ -54,6 +55,7 @@ class ChatRoom extends Component{
     this.setState({
       messages: [],
     });
+    this.getName()
     this.fetchMessage();
     this.socket.emit('join', this.state.info);
   }
@@ -89,8 +91,6 @@ class ChatRoom extends Component{
   }
 
   fetchMessage() {
-    console.log("id: " + this.state.memId);
-    console.log("to id: " + this.state.toId);
     axios.get('http://h-tong.kr/api/fetchChat.php?user=' + this.state.memId + '&toId=' + this.state.toId)
     .then(res => {
       data_messages = res.data;
@@ -104,13 +104,26 @@ class ChatRoom extends Component{
     });
   }
 
+  getName() {
+    axios.get('http://h-tong.kr/api/getName.php?user=' + this.state.toId)
+    .then(res => {
+    this.setState({
+      fName:res.data,
+    });
+    })
+    .catch(err => {
+      alert(err);
+    });
+    console.log(this.state.fName);
+  }
+
   render(){
     return (
       <Container>
         <Header style={{backgroundColor:'#db3928',justifyContent:'space-between'}}>
           <Left style={{flex:1}} />
           <Body style={{justifyContent:'center',alignItems:'center',alignSelf:'flex-end',paddingBottom:10}}>
-            <Text style={{fontSize:20,color:'#fff'}}>{this.state.toId}</Text>
+            <Text style={{fontSize:20,color:'#fff'}}>{this.state.fName}</Text>
           </Body>
           <Right style={{alignSelf:'flex-end',flex:1}}>
             <Button transparent rounded onPress={() => {this.props.navigation.goBack()}}>

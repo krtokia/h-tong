@@ -87,7 +87,8 @@ class TongMain extends pickableImage{
           isLoading: false,
           dataSource: responseJson[0],
         });
-        this.getWeather();
+        
+        //this.getWeather();
         this.getCity();
       })
       .catch((error) => {
@@ -110,6 +111,7 @@ class TongMain extends pickableImage{
           .then((response) => response.json())
           .then((responseJson) => {
             //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
             this.setState({
               city : responseJson.documents[0].address.region_2depth_name,
             });

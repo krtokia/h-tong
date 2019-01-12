@@ -9,7 +9,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.0",
+    "version": "2.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -28,7 +28,8 @@
       "bundleIdentifier": "kr.htong.htong"
     },
     "android": {
-      "package": "kr.htong.htong"
+      "package": "kr.htong.htong",
+      "versionCode": 2
     }
   }
 }

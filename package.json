@@ -36,6 +36,8 @@
     "react-native-ui-kitten": "^3.0.1",
     "react-navigation": "^2.14.2",
     "rn-draw": "0.0.6",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0",
     "yarn": "^1.9.4"
   },
   "devDependencies": {

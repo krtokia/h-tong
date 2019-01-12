@@ -24,6 +24,7 @@ import { GiftedChat } from 'react-native-gifted-chat';
 import ActionCable from 'react-native-actioncable';
 import axios from 'axios';
 import { StoreGlobal } from '../../App';
+import SocketIOClient from 'socket.io-client';
 
 class ChatRoom extends Component{
   constructor(props) {
@@ -33,15 +34,28 @@ class ChatRoom extends Component{
       toId: this.props.navigation.getParam('friendId'),
       memId: StoreGlobal({type:'get',key:'loginId'}),
       refreshing: true,
+      info:[{
+        memId: StoreGlobal({type:'get',key:'loginId'}),
+        toId: this.props.navigation.getParam('friendId'),
+      }],
     }
+
+    this.onReceivedMessage = this.onReceivedMessage.bind(this);
+
+    this.socket = SocketIOClient('http://h-tong.kr:3000');
+    this.socket.on('chat', this.onReceivedMessage);
   }
 
+  componentDidMount() {
+
+  }
   componentWillMount() {
     //this.createSocket();
     this.setState({
       messages: [],
     });
     this.fetchMessage();
+    this.socket.emit('join', this.state.info);
   }
 
   static navigationOptions = ({
@@ -52,7 +66,14 @@ class ChatRoom extends Component{
     this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }))
+    this.socket.emit('message', messages);
     this.saveChat(messages);
+  }
+
+  onReceivedMessage(messages=[]) {
+    this.setState(previousState => ({
+      messages: GiftedChat.append(previousState.messages, messages),
+    }))
   }
 
   saveChat(messages) {
@@ -108,29 +129,5 @@ class ChatRoom extends Component{
       </Container>
     );
   }
-
-  createSocket() {
-  let cable = ActionCable.createConsumer('ws://10.0.2.2:3001/cable');
-
-  this.chats = cable.subscriptions.create(
-    {
-      channel: 'ChatChannel'
-    },
-    {
-      connected: () => {
-        console.log('Connected!');
-      },
-      received: (messages) => {
-        this.setState(prevState => ({
-          messages: GiftedChat.append(prevState.messages, messages)
-        }));
-      },
-      create: function(messages){
-        this.perform('create', {content: messages});
-      }
-    }
-  )
-  }
-
 }
 export default ChatRoom;

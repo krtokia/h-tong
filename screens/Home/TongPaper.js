@@ -44,7 +44,6 @@ class TongPaper extends Component{
       .then((response) => response.json())
       .then((responseJson) => {
         //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        console.log("http://13.124.127.253/api/results.php?page=paperCount&id=" + this.state.memId + "&tongnum=" + this.state.tongnum)
         this.setState({
           isLoading: false,
           safe: responseJson ? (responseJson[0].tongSafe > 0 ? true : false) : false,

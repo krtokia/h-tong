@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet,Image,TouchableOpacity,ActivityIndicator } from 'react-native';
+import { Alert,StyleSheet,Image,TouchableOpacity,ActivityIndicator,TouchableWithoutFeedback,Modal } from 'react-native';
 import {
   View,
   Button,
@@ -36,6 +36,9 @@ class FriendDetail extends Component{
       isFriend: false,
       userImgs: null,
       careerSource: null,
+      userGrade:StoreGlobal({type:'get',key:'userGrade'}),
+      modal:false,
+      modalImg:null
     }
   }
 
@@ -160,6 +163,10 @@ class FriendDetail extends Component{
     }
   }
 
+  imageView = (data) => {
+    this.setState({modal:!this.state.modal,modalImg:data})
+  }
+
   render(){
     if(this.state.isLoading) {
       return (
@@ -201,6 +208,8 @@ class FriendDetail extends Component{
                   key={key}
                   dateVal={val.careerDate}
                   infoVal={val.career}
+                  photoVal={val.photo}
+                  imgMethod={(data) => this.imageView(data)}
                 />
         })
       } else {
@@ -211,6 +220,23 @@ class FriendDetail extends Component{
       }
       return (
         <Container>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.modal}
+            onRequestClose={() => {
+              this.setState({modal: false, modalImg:null});
+            }}>
+            <View style={[styles.center,{flex:1,backgroundColor:'#0008'}]}>
+              { this.state.modalImg && (
+                <TouchableWithoutFeedback onPress={() => this.setState({modal:false,modalImg:null})}>
+                <Image source={{uri: `http://13.124.127.253/images/workList/`+this.state.modalImg}}
+                  style={styles.imageScale}
+                />
+                </TouchableWithoutFeedback>
+              )}
+            </View>
+          </Modal>
           <Content
             showsVerticalScrollIndicator={false}
             style={{ backgroundColor: "#f4f4f4" }}
@@ -245,12 +271,24 @@ class FriendDetail extends Component{
                   <Icon name="comments-o" type="FontAwesome" style={styles.friendIcon} />
                   <Text style={{fontSize:13,color:"#555"}}>1:1 대화</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems:'center'}}
-                  onPress={() => this.props.navigation.navigate("FriendPapers",{friendId:this.state.friendId,refresh:this.refresh})}
-                >
-                  <Icon name="folder-open" type="FontAwesome" style={styles.friendIcon} />
-                  <Text style={{fontSize:13,color:"#555"}}>서류보기</Text>
-                </TouchableOpacity>
+                {this.props.navigation.getParam('prevPage') === 'index' ? (
+                  <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+
+                  </View>
+                  ):(
+                  <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems:'center'}}
+                    onPress={() => {
+                      if(this.state.userGrade === 0 || this.state.userGrade%2 !== 0) {
+                        this.props.navigation.navigate("FriendPapers",{friendId:this.state.friendId,refresh:this.refresh})
+                      } else {
+                        Alert.alert("서류보기 권한이 없습니다")
+                      }
+                    }}
+                  >
+                    <Icon name="folder-open" type="FontAwesome" style={styles.friendIcon} />
+                    <Text style={{fontSize:13,color:"#555"}}>서류보기</Text>
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
 
@@ -279,12 +317,21 @@ export default FriendDetail;
 class CareerList extends Component{
   render() {
     return(
-      <View style={{flexDirection:'row',marginBottom:12,}}>
-        <View style={{width:"30%"}}>
-          <Text style={{fontSize:13}}>{this.props.dateVal}</Text>
+      <View style={{flexDirection:'row',marginBottom:12}}>
+        <View style={{width:"20%",alignSelf:'center'}}>
+          <Text style={{fontSize:11}}>{this.props.dateVal}</Text>
         </View>
-        <View style={{width:"70%"}}>
-          <Text style={{fontSize:13}}>{this.props.infoVal}</Text>
+        <View style={{width:"50%",alignSelf:'center'}}>
+          <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:13}}>{this.props.infoVal}</Text>
+        </View>
+        <View style={{width:"30%",height:50,paddingRight:10}}>
+        { this.props.photoVal && (
+          <TouchableWithoutFeedback onPress={() => this.props.imgMethod(this.props.photoVal)}>
+            <Image source={{uri: `http://13.124.127.253/images/workList/`+this.props.photoVal}}
+              style={{width:"100%", height:"100%", resizeMode:'contain'}}
+            />
+          </TouchableWithoutFeedback>
+        )}
         </View>
       </View>
     )

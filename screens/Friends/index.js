@@ -38,7 +38,7 @@ class Friends extends Component{
     this.getFriend();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if(this.props.navigation.getParam('refresh') !== prevProps.navigation.getParam('refresh')) {
       this.getFriend()
     }
@@ -53,10 +53,12 @@ class Friends extends Component{
             isLoading: false,
     		    dataSource: responseJson,
     		    count: Object.keys(responseJson).length,
+            searchTxt: '',
           });
         } else {
           this.setState({
             isLoading: false,
+            searchTxt: '',
           })
         }
       })
@@ -74,10 +76,12 @@ class Friends extends Component{
             isLoading2: false,
   		      dataSource2: responseJson,
   		      count2: Object.keys(responseJson).length,
+            searchTxt: '',
           });
         } else {
           this.setState({
             isLoading2: false,
+            searchTxt: '',
           })
         }
       })
@@ -120,9 +124,9 @@ class Friends extends Component{
         >
           <View style={{width:'100%',padding:10,}}>
             <Item rounded style={{alignSelf:'center',width:'90%',height:40,backgroundColor:'#aaa1'}}>
-              <Input placeholder='동료 검색' style={{paddingLeft:30}}  onChangeText={(searchTxt) => this.setState({ searchTxt })}/>
+              <Input placeholder='동료 검색' style={{paddingLeft:30}}  onChangeText={(searchTxt) => this.setState({ searchTxt })} value={this.state.searchTxt}/>
               <Button style={{width:'25%',height:'100%',borderTopRightRadius:50,borderBottomRightRadius:50,justifyContent:'center',backgroundColor:'#db3928'}}
-              onPress={() => this.state.searchTxt ? this.state.searchTxt.length > 1 ? this.searchFriend : Alert.alert('검색어를 입력해주세요.') : Alert.alert('검색어를 입력해주세요.')}>
+              onPress={this.state.searchTxt ? this.state.searchTxt.length > 1 ? this.searchFriend : () => Alert.alert('검색어를 입력해주세요.') : () => Alert.alert('검색어를 입력해주세요.')}>
                 <Icon name="search"/>
               </Button>
             </Item>
@@ -131,7 +135,7 @@ class Friends extends Component{
           <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
             {fvalue2}
           </View>
-          <Text style={{marginTop:10,marginLeft:10,fontSize:13}}>내 동료 ({this.state.count})</Text>
+          <Text style={{marginTop:10,marginLeft:10,fontSize:13}}>관심 동료 ({this.state.count})</Text>
           <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
             {fvalue}
           </View>

@@ -393,5 +393,11 @@ export default {
     height: 130,
     width: 130,
     borderRadius: 100,
+  },
+  imageScale: {
+    alignSelf: 'stretch',
+    width: deviceWidth,
+    height: deviceHeight,
+    resizeMode: 'contain'
   }
 };

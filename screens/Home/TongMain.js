@@ -76,6 +76,8 @@ class TongMain extends pickableImage{
         w2: null,
         w3: null,
         city: null,
+        imgModal: false,
+        imgData: null
 		}
   }
   getTong = async() => {
@@ -296,15 +298,24 @@ class TongMain extends pickableImage{
     this.getAttend()
   }
 
+  imageView = (data) => {
+    this.setState({imgModal:!this.state.imgModal,imgData:data})
+  }
+
   createWorkList() {
     const { workSource } = this.state;
     var workDOM;
     if(workSource) {
       workDOM = workSource.map((val,key) => {
-        return <Image
-          source={{uri: 'http://13.124.127.253/images/workList/' + val.photolist}}
-          style={styles.mainWorkImg}
-          key={key} />
+        return <View key={key}>
+          <TouchableWithoutFeedback onPress={() => this.imageView(val.photolist)}>
+            <Image
+              source={{uri: 'http://13.124.127.253/images/workList/' + val.photolist}}
+              style={styles.mainWorkImg}
+              key={key}
+            />
+          </TouchableWithoutFeedback>
+        </View>
       })
     } else {
       workDOM = <Text style={{fontSize:12,color:'#db3928'}}>오늘 작업 내역이 없습니다.</Text>
@@ -421,6 +432,23 @@ class TongMain extends pickableImage{
       let today = d.getFullYear()+"년 "+(d.getMonth()+1)+"월 "+d.getDate()
       return (
         <Container>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.imgModal}
+            onRequestClose={() => {
+              this.setState({imgModal:false,imgData:null})
+            }}>
+            <View style={[styles.center,{flex:1,backgroundColor:'#0008'}]}>
+              { this.state.imgData && (
+                <TouchableWithoutFeedback onPress={() => this.setState({imgModal:false,imgData:null})}>
+                <Image source={{uri: `http://13.124.127.253/images/workList/`+this.state.imgData}}
+                  style={styles.imageScale}
+                />
+                </TouchableWithoutFeedback>
+              )}
+            </View>
+          </Modal>
           <Modal
             animationType="slide"
             transparent={true}
@@ -609,7 +637,7 @@ class TongMain extends pickableImage{
                   block
                   iconLeft
                   style={{backgroundColor:'#db3928'}}
-                  onPress={() => Linking.openURL(`tel:`+this.state.dataSource.contact.replace(/-/g,''))}
+                  onPress={() => this.props.navigation.navigate("TongEmergency")}
                 >
                   <Icon name="phone" type="FontAwesome" />
                   <Text>긴급전화</Text>

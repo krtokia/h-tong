@@ -75,7 +75,7 @@ class TongDanger extends pickableImage{
               //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
               this.setState({
                 isLoading2: false,
-                admSource: responseJson,
+                admSource: responseJson[0],
               });
             })
             .catch((error) => {
@@ -84,9 +84,11 @@ class TongDanger extends pickableImage{
   }
   componentDidMount() {
     this.getDanger()
+    this.getAdmin()
   }
 
   dangerReg = () => {
+    this.setState({modal:false})
     const { tongnum, memId, imageSource, content } = this.state;
     let apiUrl = 'http://13.124.127.253/api/tongDanger.php?';
 
@@ -129,7 +131,6 @@ class TongDanger extends pickableImage{
       .then((responseJson)=> {
         if(responseJson === 'succed') {
           ToastAndroid.show("저장 되었습니다.", ToastAndroid.BOTTOM)
-          this.setState({modal:false})
           this.getDanger()
         } else {
           //alert(responseJson);
@@ -160,6 +161,12 @@ class TongDanger extends pickableImage{
           <ActivityIndicator />
         </View>
       )
+    } else if (this.state.isLoading2) {
+      return (
+        <View Style={{flex:1, paddingTop:20}}>
+          <ActivityIndicator />
+        </View>
+      )
     } else {
       let datas;
       if (this.state.dataSource) {
@@ -174,6 +181,7 @@ class TongDanger extends pickableImage{
       } else {
         datas = <View style={{padding:20}}><Text>등록된 위험이 없습니다.</Text></View>
       }
+
       return (
         <Container>
           <Modal
@@ -260,16 +268,22 @@ class TongDanger extends pickableImage{
               <Text style={{fontSize:12}}>담당자 정보</Text>
             </View>
             <View style={[styles.Box,styles.row2,{height:70,marginBottom:10}]}>
-              <View style={{width:50,height:50,borderWidth:1,borderRadius:40,borderColor:'#999',padding:2}}>
-                <Image source={{uri: 'http://13.124.127.253/images/tongHead/photo_3.jpg'}}
-                  style={{flex:1,borderRadius:40}}
-                />
-              </View>
-              <View style={{flex:3,justifyContent:'space-between',paddingLeft:30}}>
-                <Text style={{fontWeight:'bold',fontSize:12}}>담당자</Text>
-                <Text style={{fontSize:11,color:'#999'}}>어디회사 / 직급</Text>
-                <Text style={{fontSize:11,color:'#999'}}>010-1111-1111</Text>
-              </View>
+                <View style={{width:50,height:50,borderWidth:1,borderRadius:40,borderColor:'#999',padding:2}}>
+                  <Image source={{uri: 'http://13.124.127.253/images/userProfile/'+(this.state.admSource ? this.state.admSource.photo ? this.state.admSource.photo : 'profile_no.png' : 'profile_no.png')}}
+                    style={{flex:1,borderRadius:40}}
+                  />
+                </View>
+                { this.state.admSource ? (
+                  <View style={{flex:3,justifyContent:'space-between',paddingLeft:30}}>
+                    <Text style={{fontWeight:'bold',fontSize:12}}>{this.state.admSource.tongMemNm}</Text>
+                    <Text style={{fontSize:11,color:'#999'}}>{this.state.admSource.company} / {this.state.admSource.jobGrade}</Text>
+                    <Text style={{fontSize:11,color:'#999'}}>{this.state.admSource.cellPhone}</Text>
+                  </View>
+                ) : (
+                  <View style={{flex:3,justifyContent:'center',paddingLeft:30}}>
+                    <Text style={{fontWeight:'bold',fontSize:11,color:'#db3928'}}>담당자가 지정되어있지 않습니다.</Text>
+                  </View>
+                )}
               <View style={{flex:1.5,justifyContent:'center'}}>
                 <Button
                   rounded

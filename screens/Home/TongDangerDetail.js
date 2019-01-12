@@ -49,6 +49,7 @@ class TongDangerDetail extends pickableImage{
       tongnum: StoreGlobal({type:'get',key:'tongnum'}),
       dataSource: null,
       imageSource: null,
+      buttonAction: true,
     }
   }
 
@@ -71,6 +72,7 @@ class TongDangerDetail extends pickableImage{
   }
 
   dangerSolve = () => {
+    this.setState({buttonAction:false})
     const { dataSource, afterContent, imageSource, memId } = this.state;
     let apiUrl = 'http://13.124.127.253/api/tongDanger.php?';
 
@@ -113,6 +115,7 @@ class TongDangerDetail extends pickableImage{
       .then((responseJson)=> {
         if(responseJson === 'succed') {
           ToastAndroid.show("저장 되었습니다.", ToastAndroid.BOTTOM)
+          this.setState({buttonAction:true})
           this._goBack();
         } else {
           //alert(responseJson);
@@ -124,6 +127,7 @@ class TongDangerDetail extends pickableImage{
   }
 
   dangerDel = () => {
+    this.setState({modal:false})
     const { content, memId } = this.state;
     let apiUrl = 'http://13.124.127.253/api/tongDanger.php?';
 
@@ -143,7 +147,6 @@ class TongDangerDetail extends pickableImage{
       .then((responseJson)=> {
         if(responseJson === 'succed') {
           ToastAndroid.show("저장 되었습니다.", ToastAndroid.BOTTOM)
-          this.setState({modal:false})
           this._goBack();
         } else {
           //alert(responseJson);
@@ -244,7 +247,9 @@ class TongDangerDetail extends pickableImage{
             </View>
             {/* 처리 전 */}
             <View style={[styles.Box,{flex:1}]}>
+              <View style={{height:30}}>
               <Text style={{fontSize:15,color:'#db3928',position:'absolute',top:5,left:5}}>처리 전</Text>
+              </View>
               <View style={{flex:1}}>
                 <View style={{flex:1}}>
                   <Image source={{uri: 'http://13.124.127.253/images/danger/'+dataSource.beforeImg}}
@@ -274,7 +279,7 @@ class TongDangerDetail extends pickableImage{
               <View style={{flex:1}}>
                 <View style={{flex:1}}>
                   <TouchableOpacity style={{width:'100%',height:'100%'}}
-                    onPress={this._pickImage2}
+                    onPress={StoreGlobal({type:'get',key:'isAdmin'}) == 1 ? this._pickImage2 : () => ToastAndroid.show("안전 관리자만 등록 가능합니다.", ToastAndroid.BOTTOM)}
                   >
                     { this.state.imageSource ? (
                       <Image source={{uri: this.state.imageSource}}
@@ -298,7 +303,7 @@ class TongDangerDetail extends pickableImage{
                   <View style={[styles.grayBottom,{flex:1}]}>
                     <TextInput style={{fontSize:13}}
                       underlineColorAndroid="transparent"
-                      editable={"id" === "id" ? true : false }
+                      editable={StoreGlobal({type:'get',key:'isAdmin'}) == 1 ? true : false }
                       value={this.state.afterContent}
                       onChangeText={(content) => {
                         this.setState({afterContent: content})
@@ -309,6 +314,7 @@ class TongDangerDetail extends pickableImage{
               </View>
             </View>
             {/* 버튼 */}
+            {StoreGlobal({type:'get',key:'isAdmin'}) == 1 &&
             <View style={[styles.row2,{height:40,padding:5}]}>
               <View style={{flex:1,paddingHorizontal:30}}>
               <Button
@@ -317,7 +323,7 @@ class TongDangerDetail extends pickableImage{
                 iconLeft
                 success
                 small
-                onPress={this.dangerSolve}
+                onPress={this.state.buttonAction && this.dangerSolve}
               >
                 <Icon name="check" type="FontAwesome" />
                 <Text>완료</Text>
@@ -337,6 +343,7 @@ class TongDangerDetail extends pickableImage{
               </Button>
               </View>
             </View>
+            }
           </Content>
         </Container>
       );

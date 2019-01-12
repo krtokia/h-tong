@@ -116,8 +116,6 @@ class TongInfo extends Component{
             longitudeDelta: 0.0421,
           },
         })
-        console.log("updateGetTong");
-        console.log(typeof(this.state.markerPosition.latitude))
       })
       .catch((error) => {
         console.error(error);
@@ -343,6 +341,7 @@ class TongInfo extends Component{
                       <View style={{paddingLeft:10}}>
                         <Text style={{fontSize:13}}>{this.state.dataSource[0].addr}</Text>
                       </View>
+                      {StoreGlobal({type:'get',key:'userGrade'}) == 0 &&
                       <View>
                         <Button
                           rounded
@@ -357,6 +356,7 @@ class TongInfo extends Component{
                           </Text>
                         </Button>
                       </View>
+                      }
                     </View>
                   </View>
                 </View>

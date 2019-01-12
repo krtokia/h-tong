@@ -220,10 +220,12 @@ class Home extends Component{
               <Icon name="ios-paper-plane" />
               <Text>받은 초대장</Text>
             </CardItem>
+            {/*
             <CardItem button onPress={() => alert("현장통 가이드")}>
               <Icon name="help" />
               <Text>현장통 가이드</Text>
             </CardItem>
+            */}
           </Card>
         </Content>
       </Container>

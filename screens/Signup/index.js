@@ -141,23 +141,61 @@ export default class Signup extends Component {
         <Image source={logo} style={styles.logo} />
         <View style={styles.inputBoxes}>
           <TextInput
+            ref="userName"
             value={this.state.userName}
             onChangeText={(userName) => this.setState({ userName })}
             placeholder={'이름'}
             style={styles.input}
             underlineColorAndroid='rgba(0,0,0,0)'
+            onBlur={() => {
+              if(this.state.userName && this.state.userName.length < 2) {
+                Alert.alert('현장통','이름을 2자 이상 입력해주세요.')
+                this.refs['userName'].focus();
+              }
+            }}
           />
           <TextInput
+            ref="userId"
             value={this.state.userId}
             onChangeText={(userId) => this.setState({ userId })}
             placeholder={'아이디'}
             style={styles.input}
             underlineColorAndroid='rgba(0,0,0,0)'
+            onBlur={() => {
+              if(this.state.userId && this.state.userId.length < 4) {
+                Alert.alert('현장통','아이디를 4자 이상 입력해주세요.')
+                this.refs['userId'].focus();
+              }
+            }}
           />
           <TextInput
+            ref="userPass"
             value={this.state.userPass}
+            onBlur={() => {
+                if(this.state.userPass.length && this.state.userPass.length < 4) {
+                  Alert.alert('현장통','패스워드길이가 너무 짧습니다.')
+                  this.refs['userPass'].focus();
+                }
+              }
+            }
             onChangeText={(userPass) => this.setState({ userPass })}
             placeholder={'패스워드'}
+            secureTextEntry={true}
+            style={styles.input}
+            underlineColorAndroid='rgba(0,0,0,0)'
+          />
+          <TextInput
+            ref="userPass2"
+            value={this.state.userPass2}
+            onChangeText={(userPass2) => this.setState({ userPass2 })}
+            onBlur={() => {
+                if(this.state.userPass2 && this.state.userPass !== this.state.userPass2) {
+                  Alert.alert('현장통','패스워드가 맞지 않습니다.')
+                  this.refs['userPass'].focus();
+                }
+              }
+            }
+            placeholder={'패스워드확인'}
             secureTextEntry={true}
             style={styles.input}
             underlineColorAndroid='rgba(0,0,0,0)'

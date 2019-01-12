@@ -136,6 +136,7 @@ class TongInviteDetail extends Component{
   }
 
   inviteFriend() {
+    this.setState({modal:!this.state.modal})
     const { friendId, userId, tongnum, userGrade, jobGrade, message } = this.state;
     let apiUrl = 'http://13.124.127.253/api/inviteTong.php?action=invite';
     options = {
@@ -160,7 +161,6 @@ class TongInviteDetail extends Component{
             "현장통",
             "초대장을 발송했습니다."
           );
-          this.setState({modal:!this.state.modal})
         } else {
           console.log(responseJson);
         }

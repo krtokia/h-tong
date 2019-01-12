@@ -77,7 +77,8 @@ class TongMain extends pickableImage{
         w3: null,
         city: null,
         imgModal: false,
-        imgData: null
+        imgData: null,
+        isAdmin: StoreGlobal({type:'get',key:'userGrade'})%2 == 1 ? true : StoreGlobal({type:'get',key:'userGrade'}) == 0 ? true : false
 		}
   }
   getTong = async() => {
@@ -89,8 +90,8 @@ class TongMain extends pickableImage{
           isLoading: false,
           dataSource: responseJson[0],
         });
-        
-        //this.getWeather();
+
+        this.getWeather();
         this.getCity();
       })
       .catch((error) => {
@@ -153,7 +154,7 @@ class TongMain extends pickableImage{
     var m = d.getMonth()+1;
     var dd = d.getDate()-7;
     var recent = y+"-"+m+"-"+dd
-    return fetch("http://13.124.127.253/api/results.php?page=mainNoti&tongnum=" + this.state.tongnum+"&recent="+recent)
+    return fetch("http://13.124.127.253/api/results.php?page=mainNoti&tongnum=" + this.state.tongnum+"&recent="+recent+"&grade="+StoreGlobal({type:'get',key:'userGrade'}))
           .then((response) => response.json())
           .then((responseJson) => {
             //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -201,6 +202,7 @@ class TongMain extends pickableImage{
         for(i=0;i<Object.keys(responseJson).length;i++) {
           if(responseJson[i]['tongMemId'] === this.state.memId) {
             StoreGlobal({type:'set',key:'userGrade',value:responseJson[i]['userGrade']})
+            StoreGlobal({type:'set',key:'isAdmin',value:responseJson[i]['isAdmin']})
           }
         }
         if(responseJson) {
@@ -208,6 +210,7 @@ class TongMain extends pickableImage{
             isLoading4: false,
             memCount: Object.keys(responseJson).length,
             friendSource: responseJson,
+            isAdmin:StoreGlobal({type:'get',key:'userGrade'})%2 == 1 ? true : StoreGlobal({type:'get',key:'userGrade'}) == 0 ? true : false
           });
         } else {
           this.setState({
@@ -216,6 +219,7 @@ class TongMain extends pickableImage{
             friendSource: responseJson,
           })
         }
+        this.getNoti()
       })
       .catch((error) => {
         console.error(error);
@@ -291,10 +295,9 @@ class TongMain extends pickableImage{
   }
 
   componentDidMount() {
-    this.getTong()
-    this.getNoti()
-    this.getWork()
     this.getFriend()
+    this.getTong()
+    this.getWork()
     this.getAttend()
   }
 
@@ -413,7 +416,6 @@ class TongMain extends pickableImage{
         </View>
       )
     } else {
-      console.log('TEMP',this.state.w3)
       const areaStatus = this.state.w4;
       if (areaStatus == 1) {
         cityStatus = "맑음";
@@ -430,6 +432,7 @@ class TongMain extends pickableImage{
       let workList = this.createWorkList();
       let d = new Date(Date.now());
       let today = d.getFullYear()+"년 "+(d.getMonth()+1)+"월 "+d.getDate()
+
       return (
         <Container>
           <Modal
@@ -525,7 +528,13 @@ class TongMain extends pickableImage{
                 </View>
                 <View style={{flex:1,justifyContent:'flex-end',alignItems:'center',flexDirection:'row'}}>
                   <TouchableOpacity style={[styles.Row,styles.center,{marginRight:10}]}
-                    onPress={() => this.props.navigation.navigate("TongInvite")}
+                    onPress={() => {
+                      if(this.state.isAdmin) {
+                        this.props.navigation.navigate("TongInvite")
+                      } else {
+                        Alert.alert('현장통','동료초대 권한이 없습니다.')
+                      }
+                    }}
                   >
                     <Icon name="ios-add-circle-outline" type="Ionicons" style={{color: '#db3928',fontSize:18}} />
                     <Text style={[{color:'#db3928',fontSize:13}]}>동료초대</Text>

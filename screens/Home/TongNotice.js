@@ -57,7 +57,7 @@ class TongNotice extends Component{
   }
 
   getNoti = async() => {
-      return fetch("http://13.124.127.253/api/results.php?page=selectNotice&tongnum=" + this.state.tongnum)
+      return fetch("http://13.124.127.253/api/results.php?page=selectNotice&tongnum=" + this.state.tongnum + "&grade=" + StoreGlobal({type:'get',key:'userGrade'}))
             .then((response) => response.json())
             .then((responseJson) => {
               //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});

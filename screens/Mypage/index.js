@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert,StyleSheet,Image,TouchableOpacity,ActivityIndicator,TextInput } from 'react-native';
+import { Alert,StyleSheet,Image,TouchableOpacity,ActivityIndicator,TextInput,Modal } from 'react-native';
 import {
   View,
   Button,
@@ -39,6 +39,9 @@ class Mypage extends pickableImage{
       isLoading: true,
       phoneEnd: true,
       tempPhone: '',
+      passUpdate: false,
+      passWd: '',
+      isMatch: false,
     };
   }
 
@@ -139,7 +142,42 @@ class Mypage extends pickableImage{
     this.props.navigation.navigate('HomeMore', {refresh:Date(Date.now()).toString()})
   }
 
+  updatePw() {
+    this.setState({passUpdate:false,passWdValid:'',newpassWd:''})
+    const { id, dataSource, imageSource, imgresult } = this.state;
+
+    let apiUrl = 'http://13.124.127.253/api/userUpdate.php?action=updatePw';
+    const formData = new FormData();
+
+    formData.append('userId', id);
+    formData.append('passWd', this.state.newpassWd);
+
+    options = {
+      method: 'POST',
+      body: formData,
+    }
+
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          Alert.alert("현장통","패스워드가 변경 되었습니다.")
+          this.getUser()
+        } else {
+          //alert(responseJson);
+          console.log(responseJson);
+        }
+      }).catch((error) => {
+        console.log("error::",error)
+      });
+  }
+
   render(){
+    var isMatch = false;
+    if(this.state.newpassWd && this.state.passWdValid && this.state.newpassWd === this.state.passWdValid) {
+      isMatch = true;
+    } else {
+      isMatch = false
+    }
     if(this.state.isLoading) {
     return (
       <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
@@ -155,6 +193,78 @@ class Mypage extends pickableImage{
       }
     return (
       <Container>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.passUpdate}
+          onRequestClose={() => {
+            this.setState({passUpdate: false});
+          }}>
+          <View style={[{flex:1,backgroundColor:'#0008',justifyContent:'center',alignItems:'center'}]}>
+            <View style={[{width:'70%',paddingHorizontal:10,backgroundColor:'#fff'}]}>
+              <View style={[styles.itemBox,{paddingVertical:3,paddingRight:3,flexDirection:'column'}]}>
+                <Text style={[styles.itemTitle,{fontSize:10,textAlignVertical:'center'}]}>새로운 패스워드</Text>
+                <View style={{width:'100%',alignItems:'flex-end'}}>
+                  <TextInput
+                    ref="nPass"
+                    style={[styles.itemInput,{borderColor:'#eee',borderWidth:1}]}
+                    placeholder="새로운 패스워드를 입력해주세요"
+                    underlineColorAndroid="transparent"
+                    secureTextEntry={true}
+                    onChangeText={(content) => {
+                      if(content.length > 20) {
+                        Alert.alert('현장통','패스워드 길이가 너무 깁니다.')
+                        content = content.substr( 0, content.length-1 )
+                      }
+                      this.setState({
+                        newpassWd: content
+                      })}}
+                    onBlur={() => {
+                      if(this.state.newpassWd.length < 4) {
+                        Alert.alert('현장통','패스워드 길이가 너무 짧습니다.')
+                        this.refs['nPass'].focus();
+                      }
+                    }}
+                    value={this.state.newpassWd}
+                  >
+                  </TextInput>
+                </View>
+              </View>
+              <View style={[styles.itemBox,{paddingVertical:3,paddingRight:3,flexDirection:'column'}]}>
+                <Text style={[styles.itemTitle,{fontSize:10,textAlignVertical:'center'}]}>패스워드 확인</Text>
+                <View style={{width:'100%',alignItems:'flex-end'}}>
+                  <TextInput
+                    ref="nPassValid"
+                    style={[styles.itemInput,{borderColor:'#eee',borderWidth:1}]}
+                    placeholder="새로운 패스워드를 한번 더 입력해주세요"
+                    underlineColorAndroid="transparent"
+                    secureTextEntry={true}
+                    onChangeText={(content) => {
+                      this.setState({
+                        passWdValid: content,
+                      })}}
+                    onBlur={() => {
+                      if(!this.state.passWdValid && this.state.newpassWd !== this.state.passWdValid) {
+                        Alert.alert('현장통','패스워드가 맞지 않습니다.')
+                        this.refs['nPassValid'].focus();
+                      } else {
+                        this.setState({isMatch:true})
+                      }
+                    }}
+                    value={this.state.passWdValid}
+                  >
+                  </TextInput>
+                </View>
+              </View>
+              <View style={{height:30,width:'100%',marginBottom:10}}>
+                <TouchableOpacity style={{justifyContent:'center',alignItems:'center',flex:1,backgroundColor:isMatch ? '#db3029' : '#ccc'}}
+                  onPress={() => {isMatch ? this.updatePw() : this.setState({passUpdate:false,passWdValid:'',newpassWd:''})}}>
+                  <Text style={{color:isMatch ? "#fff" : "#666"}}>{isMatch ? "저장" : "취소"}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
         <Header style={{backgroundColor:'#db3928',justifyContent:'space-between'}}>
           <Left style={{flex:1}} />
           <Body style={{justifyContent:'center',alignItems:'center',alignSelf:'flex-end',paddingBottom:10}}>
@@ -193,7 +303,7 @@ class Mypage extends pickableImage{
             </View>
             <View style={styles.itemBox}>
               <Text style={styles.itemTitle}>패스워드</Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => this.setState({passUpdate:!this.state.passUpdate})}>
                 <Text style={[styles.itemContent,{color:'#db3928'}]}>수정</Text>
               </TouchableOpacity>
             </View>
@@ -217,8 +327,8 @@ class Mypage extends pickableImage{
                       }
                     }))}}
                   onBlur={() => {
-                    if(this.state.dataSource.userNm.length < 2) {
-                      Alert.alert('현장통','이름을 정확히 입력하세요.')
+                    if(this.state.dataSource.userNm && this.state.dataSource.userNm.length < 2) {
+                      Alert.alert('현장통','이름의 길이가 너무 짧습니다.')
                       this.refs['nameInput'].focus();
                     }
                   }}
@@ -240,7 +350,7 @@ class Mypage extends pickableImage{
                   }}
                   onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,cellPhone:""},tempPhone:"",phoneEnd:false}))}}
                   onBlur={() => {
-                    if(this.state.tempPhone.length != 11) {
+                    if(this.state.tempPhone && this.state.tempPhone.length != 11) {
                       Alert.alert('현장통','연락처를 알맞게 기입하세요.')
                       this.refs['phoneInput'].focus();
                     } else {
@@ -297,8 +407,9 @@ class Mypage extends pickableImage{
                       }
                     }));}}
                   onBlur={() => {
-                    var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-                    if(!this.state.dataSource.email.match(regExp)) {
+                    var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+                    console.log('reg',this.state.dataSource.email.match(regExp))
+                    if(this.state.dataSource.email && !this.state.dataSource.email.match(regExp)) {
                       Alert.alert('현장통','이메일 알맞게 기입하세요.')
                       this.refs['emailInput'].focus();
                     }

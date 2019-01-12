@@ -66,6 +66,7 @@ class ChatRoom extends Component{
     this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }))
+    this.socket.emit('join', this.state.info);
     this.socket.emit('message', messages);
     this.saveChat(messages);
   }

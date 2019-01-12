@@ -635,7 +635,7 @@ class TongMain extends pickableImage{
                   block
                   iconLeft
                   style={{backgroundColor:'#db3928'}}
-                  onPress={() => Linking.openURL(`tel:`+this.state.dataSource.contact.replace(/-/g,''))}
+                  onPress={() => this.props.navigation.navigate("TongEmergency")}
                 >
                   <Icon name="phone" type="FontAwesome" />
                   <Text>긴급전화</Text>

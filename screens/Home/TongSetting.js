@@ -143,10 +143,12 @@ class TongSetting extends Component{
             <Text>일반</Text>
           </View>
           <View style={[styles.Box2,{paddingVertical:0}]}>
-            <ListItem
-              name="관리자 설정"
-              href={() => {this.props.navigation.navigate('TongAdmin')}}
-            />
+            { StoreGlobal({type:'get',key:'userGrade'}) == 0 &&
+              <ListItem
+                name="관리자 설정"
+                href={() => {this.props.navigation.navigate('TongAdmin')}}
+              />
+            }
             <ListItem
               name={TongType === "T" ? "현장통 탈퇴" : "커뮤니티통 탈퇴"}
               href={() => {this.tongExit(TongType)}}

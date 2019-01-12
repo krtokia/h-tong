@@ -6,7 +6,8 @@ import {
   Alert,
   Switch,
   Modal,
-  ActivityIndicator
+  ActivityIndicator,
+  Linking
  } from 'react-native';
  import {
    Container,
@@ -27,7 +28,7 @@ import { StoreGlobal } from '../../App';
 
 import styles from './styles.js';
 
-class TongAdmin extends Component{
+class TongEmergency extends Component{
   constructor(props) {
     super(props);
     this.setState = this.setState.bind(this);
@@ -104,7 +105,7 @@ class TongAdmin extends Component{
                         <Text>{adminName}</Text>
                       </View>
                       <TouchableOpacity style={{flex:1}}
-                        onPress={() => this.props.navigation.navigate('TongAdmin2',{param:div,dataSource2:val,refresh:this.refresh})}
+                        onPress={() => Linking.openURL(`tel:`+val.cellPhone.replace(/-/g,''))}
                       >
                       <View style={[styles.row2,{flex:1,padding:10}]}>
                         <View style={{flex:2}}>
@@ -121,10 +122,16 @@ class TongAdmin extends Component{
     } else {
       return <View style={[styles.Box,{flex:1}]}>
               <View style={[styles.grayBottom,styles.row2,{padding:3}]}>
-                <Text>adminName</Text>
+                <Text>{adminName}</Text>
               </View>
               <TouchableOpacity style={{flex:1}}
-                onPress={() => this.props.navigation.navigate('TongAdmin2',{param:div,refresh:this.refresh})}
+                onPress={() => {
+                  if(StoreGlobal({type:'get',key:'userGrade'} == 0)) {
+                    this.props.navigation.navigate('TongAdmin2',{param:div,refresh:this.refresh})
+                  } else {
+                    Alert.alert('현장통','담당자가 지정되지 않았습니다. 운영자에게 문의하세요.')
+                  }
+                }}
               >
               <View style={[styles.row2,{flex:1,padding:10}]}>
                 <View style={[styles.center,{flex:1}]}>
@@ -158,7 +165,7 @@ class TongAdmin extends Component{
               </Button>
             </Left>
             <Body style={{flex:5,alignItems:'center'}}>
-              <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>관리자 설정</Text>
+              <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>긴급전화</Text>
             </Body>
             <Right  style={{flex:1}}>
             </Right>
@@ -177,4 +184,4 @@ class TongAdmin extends Component{
     }
   }
 }
-export default TongAdmin;
+export default TongEmergency;

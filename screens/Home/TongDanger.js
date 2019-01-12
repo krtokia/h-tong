@@ -45,9 +45,11 @@ class TongDanger extends pickableImage{
       modal: false,
       modalData: null,
       isLoading: true,
+      isLoading2: true,
       memId: StoreGlobal({type:'get',key:'loginId'}),
       tongnum: StoreGlobal({type:'get',key:'tongnum'}),
       dataSource: null,
+      admSource: null,
       content: "",
     }
   }
@@ -60,6 +62,20 @@ class TongDanger extends pickableImage{
               this.setState({
                 isLoading: false,
                 dataSource: responseJson,
+              });
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+  }
+  getAdmin = async() => {
+      return fetch("http://13.124.127.253/api/results.php?page=selectAdmin&tongnum=" + this.state.tongnum)
+            .then((response) => response.json())
+            .then((responseJson) => {
+              //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+              this.setState({
+                isLoading2: false,
+                admSource: responseJson,
               });
             })
             .catch((error) => {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert,StyleSheet, Image, AppRegistry, ListView, ImageBackground, TouchableOpacity, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { Alert,StyleSheet, Image, AppRegistry, ListView, ImageBackground, TouchableOpacity, TouchableHighlight, ActivityIndicator, ScrollView, RefreshControl } from 'react-native';
 import {
   View,
   Button,
@@ -32,6 +32,7 @@ class Friends extends Component{
       count: 0,
       count2: 0,
       memId: StoreGlobal({type:'get',key:'loginId'}),
+      refreshing: false,
     }
   }
   componentDidMount() {
@@ -59,6 +60,8 @@ class Friends extends Component{
           this.setState({
             isLoading: false,
             searchTxt: '',
+            dataSource: null,
+            count:0
           })
         }
       })
@@ -91,7 +94,7 @@ class Friends extends Component{
   }
 
   render(){
-    let fvalue
+    let fvalue;
     if (this.state.dataSource) {
   	  fvalue = this.state.dataSource.map((data, key) => {
   		  return <View key={key}>
@@ -121,7 +124,16 @@ class Friends extends Component{
         <Content
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#f9f9f9",}}
+          contentContainerStyle={{flex:1}}
         >
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this._onRefresh}
+              />
+            }
+          >
           <View style={{width:'100%',padding:10,}}>
             <Item rounded style={{alignSelf:'center',width:'90%',height:40,backgroundColor:'#aaa1'}}>
               <Input placeholder='동료 검색' style={{paddingLeft:30}}  onChangeText={(searchTxt) => this.setState({ searchTxt })} value={this.state.searchTxt}/>
@@ -139,6 +151,7 @@ class Friends extends Component{
           <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
             {fvalue}
           </View>
+          </ScrollView>
         </Content>
       </Container>
     );

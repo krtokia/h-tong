@@ -10,7 +10,7 @@ import {
   StatusBar,
   KeyboardAvoidingView
 } from 'react-native';
-import { Header } from 'react-navigation';
+import { Header, StackActions, NavigationActions } from 'react-navigation';
 
 const bg = require("../../assets/images/bg.png");
 const logo = require("../../assets/images/loginLogo.png");
@@ -48,7 +48,10 @@ export default class Signup extends Component {
 
   onLogin() {
     const { userId, userPass, userName } = this.state;
-
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'HomeMore' })],
+    });
         fetch('http://13.124.127.253/api/signup.php', {
             method: 'POST',
             headers: {
@@ -68,7 +71,7 @@ export default class Signup extends Component {
                 "가입이 완료 되었습니다"
               )
               StoreGlobal({type:'set',key:'loginId',value:userId})
-              this.props.navigation.navigate("HomeMore");
+              this.props.navigation.dispatch(resetAction);
             } else {
               //alert(responseJson);
               Alert.alert(

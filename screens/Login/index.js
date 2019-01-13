@@ -13,7 +13,7 @@ import {
   StatusBar,
   KeyboardAvoidingView
 } from 'react-native';
-import { Header } from 'react-navigation';
+import { Header, StackActions, NavigationActions } from 'react-navigation';
 
 const bg = require("../../assets/images/bg.png");
 const logo = require("../../assets/images/loginLogo.png");
@@ -90,6 +90,10 @@ export default class App extends Component {
 
   onLogin() {
     const { username, password } = this.state;
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Main' })],
+    });
         fetch('http://13.124.127.253/api/login.php', {
             method: 'POST',
             headers: {
@@ -105,7 +109,7 @@ export default class App extends Component {
             if(responseJson === 'data matched') {
               registerForPushNotificationsAsync(username);
               StoreGlobal({type:'set',key:'loginId',value:username})
-              this.props.navigation.navigate("Main");
+              this.props.navigation.dispatch(resetAction);
             } else {
               //alert(responseJson);
               Alert.alert(

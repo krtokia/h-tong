@@ -33,12 +33,14 @@ class TongSetting extends Component{
 
     this.setToggleSwitch = this.setToggleSwitch.bind(this);
     this.setState = this.setState.bind(this);
+    this.reportTong = this.reportTong.bind(this)
 
     this.state = {
       modal: false,
       toggleSwitch: false,
       memId: StoreGlobal({type:'get',key:'loginId'}),
-      tongnum: StoreGlobal({type:'get',key:'tongnum'})
+      tongnum: StoreGlobal({type:'get',key:'tongnum'}),
+      report: '',
     }
   }
 
@@ -81,6 +83,32 @@ class TongSetting extends Component{
     )
   }
 
+  reportTong(data) {
+    this.setState({modal:false})
+    const { memId, tongnum } = this.state;
+    let apiUrl = 'http://13.124.127.253/api/reportTong.php';
+
+    options = {
+      method: 'POST',
+      body: JSON.stringify({
+              id: memId,
+              tongnum: tongnum,
+              content: data
+            })
+    }
+
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          Alert.alert("현장통","신고 접수되었습니다.")
+        } else {
+          console.log(responseJson)
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
+  }
+
   setToggleSwitch(bool) {
     this.setState({toggleSwitch:bool})
     console.log("toggleSwitch: "+this.state.toggleSwitch)
@@ -101,11 +129,12 @@ class TongSetting extends Component{
           transparent={true}
           visible={this.state.modal}
           onRequestClose={() => {
-            this.setState(!this.state.modal);
+            this.setState({modal:!this.state.modal});
           }}>
           <TongReport
             setStateParent={this.setState}
             TongType={TongType}
+            reportFn={(data) => {this.reportTong(data)}}
           />
         </Modal>
         <Header style={{backgroundColor:'#db3928',justifyContent:'space-between'}}>
@@ -211,6 +240,12 @@ class ListItemToggle extends Component{
 }
 
 class TongReport extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      report: '',
+    }
+  }
   render(){
     const TongType = this.props.TongType === 'T' ? "현장" : "커뮤니티";
     return (
@@ -225,11 +260,19 @@ class TongReport extends Component {
             <Textarea
               style={{height:'60%',marginVertical:10,borderWidth:1,borderColor:'#e9e9e9',padding:5,fontSize:13}}
               placeholder="신고내용 입력"
+              onChangeText={(content) => {this.setState({report:content})}}
+              value={this.state.report}
             />
             <View style={{alignSelf:'center',width:100}}>
               <Button transparent block rounded
                 style={{backgroundColor:'#db3928'}}
-                onPress={() => {this.props.setStateParent({modal:false})}}
+                onPress={() => {
+                  if(this.state.report.length > 5) {
+                    this.props.setStateParent({modal:false}),this.props.reportFn(this.state.report)
+                  } else {
+                    Alert.alert('신고 내용을 5자 이상 입력해주세요.')
+                  }
+                }}
               >
                 <Text style={{color:'#fff',fontSize:15}}>신고하기</Text>
               </Button>

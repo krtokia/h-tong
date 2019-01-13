@@ -206,6 +206,7 @@ class Works extends Component{
             key={key}
             date={dateFor}
             seq={val.seq}
+            seq2={key}
             name={val.worktitle}
             status={val.deposit === "Y" ? "지급완료" : "미수금"}
             money={val.money.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -336,7 +337,7 @@ export default Works;
 class WorkList extends Component{
 
   updateModal = () => {
-    this.props.method(this.props.seq)
+    this.props.method(this.props.seq2)
   }
   deleteWork = () => {
     Alert.alert("현장통","삭제하시겠습니까?",[

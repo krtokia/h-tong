@@ -144,6 +144,7 @@ class SearchInvite extends Component{
         inviteSeq: invData.inviteseq,
       })
     }
+    console.log(options)
     return fetch(apiUrl, options).then((response) => response.json())
       .then((responseJson)=> {
         if(responseJson === 'succed') {

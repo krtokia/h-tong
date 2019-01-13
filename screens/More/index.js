@@ -312,10 +312,16 @@ class More extends pickableImage{
                   <Text style={{fontSize:13,color:"#555"}}>전자 서명</Text>
                 </TouchableOpacity>
               </View>
-              <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+              <View style={{flex:1,justifyContent:'center',alignItems:'center',borderRightWidth:1,borderLeftWidth:1,borderColor:'#e9e9e9'}}>
                 <TouchableOpacity style={{justifyContent:'center',alignItems:'center'}} onPress={() => {this.props.navigation.navigate('Settings')}}>
                   <Icon name="folder-open" type="FontAwesome" style={styles.myIcon} />
                   <Text style={{fontSize:13,color:"#555"}}>설정</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                <TouchableOpacity style={{justifyContent:'center',alignItems:'center'}} onPress={() => {this.props.navigation.navigate('Login')}}>
+                  <Icon name="power-off" type="FontAwesome" style={[styles.myIcon,{color:'#db3928'}]} />
+                  <Text style={{fontSize:13,color:"#db3928"}}>로그아웃</Text>
                 </TouchableOpacity>
               </View>
             </View>

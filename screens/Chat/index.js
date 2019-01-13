@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet,Image,TouchableOpacity } from 'react-native';
+import { StyleSheet,Image,TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
 import {
   View,
   Button,
@@ -34,6 +34,8 @@ class Chat extends Component{
       isLoading2: true,
       dataSource: null,
       dataSource2: [],
+      count2: 0,
+      refreshing: false,
     }
   }
 
@@ -56,6 +58,7 @@ class Chat extends Component{
             isLoading: false,
             dataSource: responseJson,
             count: Object.keys(responseJson).length,
+            refreshing: false
           });
         } else {
           this.setState({
@@ -89,6 +92,11 @@ class Chat extends Component{
       });
   }
 
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getMyChat()
+  }
+
   render(){
     let fvalue
     if (this.state.dataSource) {
@@ -120,11 +128,15 @@ class Chat extends Component{
         </View>
     });
     return (
-      <Container>
-        <Content
-          showsVerticalScrollIndicator={false}
-          style={{ backgroundColor: "#f9f9f9" }}
-        >
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+          />
+        }
+        style={{backgroundColor:'#f9f9f9'}}
+      >
           <View style={{width:'100%',padding:10,}}>
             <Item rounded style={{alignSelf:'center',width:'90%',height:40,backgroundColor:'#aaa1'}}>
               <Input placeholder='채팅 검색' style={{paddingLeft:30}}  onChangeText={(searchTxt) => this.setState({ searchTxt })}/>
@@ -141,8 +153,7 @@ class Chat extends Component{
           <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
             {fvalue}
           </View>
-        </Content>
-      </Container>
+      </ScrollView>
     );
   }
 }

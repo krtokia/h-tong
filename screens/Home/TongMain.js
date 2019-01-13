@@ -108,7 +108,6 @@ class TongMain extends pickableImage{
     if(!lon) {
       lon = '126.82885777205229';
     }
-
     var url = "https://dapi.kakao.com/v2/local/geo/coord2address.json?x=" + lon + "&y=" + lat + "&input_coord=WGS84";
     var obj = {
       method: 'GET',
@@ -121,9 +120,8 @@ class TongMain extends pickableImage{
           .then((response) => response.json())
           .then((responseJson) => {
             //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
             this.setState({
-              city : responseJson.documents[0].address.region_2depth_name,
+              city : responseJson.documents[0].address.region_2depth_name
             });
           })
           .catch((error) => {
@@ -240,7 +238,7 @@ class TongMain extends pickableImage{
       .then((responseJson) => {
         this.setState({
           isLoading5: false,
-          attendModal: responseJson ? (responseJson.attend < 2 ? true : false) : true
+          attendModal: responseJson ? (responseJson[0].attend == 0 ? true : false) : true
         });
       })
       .catch((error) => {

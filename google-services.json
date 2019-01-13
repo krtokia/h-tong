@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "683676236758",
+    "firebase_url": "https://htong-366fa.firebaseio.com",
+    "project_id": "htong-366fa",
+    "storage_bucket": "htong-366fa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:683676236758:android:f1b272a9b28829e6",
+        "android_client_info": {
+          "package_name": "kr.htong.htong"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "683676236758-ruiq53eb7l7r09j65df59fuobad2545k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA25jwv5HkCeUvY6Wf-bKv5Kn-uu4a5IJ0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

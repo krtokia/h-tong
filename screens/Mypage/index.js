@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert,StyleSheet,Image,TouchableOpacity,ActivityIndicator,TextInput,Modal } from 'react-native';
+import { Alert,StyleSheet,Image,TouchableOpacity,ActivityIndicator,TextInput,Modal,KeyboardAvoidingView } from 'react-native';
 import {
   View,
   Button,
@@ -42,6 +42,7 @@ class Mypage extends pickableImage{
       passUpdate: false,
       passWd: '',
       isMatch: false,
+      keyboardUp: false
     };
   }
 
@@ -279,8 +280,8 @@ class Mypage extends pickableImage{
         <Content
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#f4f4f4" }}
-          contentContainerStyle={{paddingBottom:30}}
-        >
+          contentContainerStyle={this.state.keyboardUp ? styles.keyboardUp : {paddingBottom:30}}
+        ><KeyboardAvoidingView behavior = 'position'  enabled keyboardVerticalOffset={5}>
           <View style={[styles.Box,{backgroundColor:'#f9f9f9',marginTop:0,borderColor:'#e9e9e9',borderBottomWidth:2}]}>
             <View style={{marginBottom:10,alignSelf:'center',alignItems:'center'}}>
               <Image source={{uri: photoName }} style={{width:150,height:150,resizeMode:'cover',borderRadius:500}} />
@@ -327,11 +328,13 @@ class Mypage extends pickableImage{
                       }
                     }))}}
                   onBlur={() => {
+                    this.setState({keyboardUp:false})
                     if(this.state.dataSource.userNm && this.state.dataSource.userNm.length < 2) {
                       Alert.alert('현장통','이름의 길이가 너무 짧습니다.')
                       this.refs['nameInput'].focus();
                     }
                   }}
+                  onFocus={() => this.setState({keyboardUp:true})}
                   value={this.state.dataSource.userNm}
                 >
                 </TextInput>
@@ -348,7 +351,7 @@ class Mypage extends pickableImage{
                   onChangeText={(content) => {
                     this.setState({tempPhone:content.replace(/[^0-9]/g,'')})
                   }}
-                  onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,cellPhone:""},tempPhone:"",phoneEnd:false}))}}
+                  onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,cellPhone:""},tempPhone:"",phoneEnd:false,keyboardUp:true}))}}
                   onBlur={() => {
                     if(this.state.tempPhone && this.state.tempPhone.length != 11) {
                       Alert.alert('현장통','연락처를 알맞게 기입하세요.')
@@ -359,7 +362,8 @@ class Mypage extends pickableImage{
                         ...prevState.dataSource,
                         cellPhone:this.state.tempPhone.replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{4})([0-9]{4})/,"$1-$2-$3")
                       },
-                      phoneEnd:true})
+                      phoneEnd:true,
+                      keyboardUp:false})
                       )
                     }
                   }}
@@ -407,6 +411,7 @@ class Mypage extends pickableImage{
                       }
                     }));}}
                   onBlur={() => {
+                    this.setState({keyboardUp:false})
                     var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
                     console.log('reg',this.state.dataSource.email.match(regExp))
                     if(this.state.dataSource.email && !this.state.dataSource.email.match(regExp)) {
@@ -415,6 +420,7 @@ class Mypage extends pickableImage{
                     }
                   }}
                   value={this.state.dataSource.email}
+                  onFocus={() => this.setState({keyboardUp:true})}
                 >
                 </TextInput>
               </View>
@@ -439,8 +445,11 @@ class Mypage extends pickableImage{
                         company: content
                       }
                     }));}}
+                  value={this.state.dataSource.company}
+                  onFocus={() => this.setState({keyboardUp:true})}
+                  onBlur={() => this.setState({keyboardUp:false})}
                 >
-                  {this.state.dataSource.company}
+
                 </Input>
                 </Item>
               </Form>
@@ -465,8 +474,11 @@ class Mypage extends pickableImage{
                         jobgroup: content
                       }
                     }));}}
+                  value={this.state.dataSource.jobgroup}
+                  onFocus={() => this.setState({keyboardUp:true})}
+                  onBlur={() => this.setState({keyboardUp:false})}
                 >
-                  {this.state.dataSource.jobgroup}
+
                 </Input>
                 </Item>
               </Form>
@@ -493,8 +505,10 @@ class Mypage extends pickableImage{
               <Text style={{fontSize:15}}>완료</Text>
             </Button>
           </View>
+          </KeyboardAvoidingView>
         </Content>
       </Container>
+
     );
   }
   }

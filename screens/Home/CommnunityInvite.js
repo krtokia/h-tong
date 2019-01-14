@@ -91,6 +91,10 @@ class CommnunityInvite extends Component{
   }
 
   searchFriend = async() => {
+    if(!this.state.searchTxt) {
+      Alert.alert('검색어를 입력해주세요.')
+      return false;
+    }
     this.setState({isLoading2:true})
     return fetch("http://13.124.127.253/api/results.php?page=inviteFriend&txt="+this.state.searchTxt+"&tongnum="+this.state.tongnum)
       .then((response) => response.json())

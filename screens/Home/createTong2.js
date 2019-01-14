@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Alert, Image, TextInput, ImageBackground, TouchableOpacity, Text as RNText, Modal, TouchableHighlight, DatePickerAndroid } from 'react-native';
+import {Alert, Image, TextInput, ImageBackground, TouchableOpacity, Text as RNText, Modal, TouchableHighlight, DatePickerAndroid, ActivityIndicator } from 'react-native';
 import {
   Container,
   Content,
@@ -64,7 +64,7 @@ class createTong2 extends pickableImage{
         longitudeDelta: 0.0421,
     },
     markers: [],
-
+    isLoading10: false
     }
     //uploadImage.state = uploadImage.state.bind(this);
     this.uploadImage = this.uploadImage.bind(this);
@@ -256,6 +256,7 @@ class createTong2 extends pickableImage{
     }
 
 	createTong(tongType) {
+    this.setState({isLoading10:true})
     const { imageSource, tongName, projectnm, authnum, constructor, supervisor, owner, contact, term, scale, addr, creator, fLatitude, fLongitude} = this.state;
     if(tongType == 'T') {
       if(!projectnm || !authnum || !constructor || !supervisor || !owner || !contact || !term || !scale || !addr || !fLatitude || !fLongitude ) {
@@ -530,11 +531,15 @@ class createTong2 extends pickableImage{
                 </ImageBackground>
               </Form>
               <View style={{width:150,alignSelf:'center',padding:10,marginTop:30}}>
-                <Button transparent rounded block style={{backgroundColor:'#db3928'}}
-                  onPress={() => {this.createTong(tongType)}}
-                >
-                  <Text style={{color:'#fff'}}>완료</Text>
-                </Button>
+                { !this.state.isLoading10 ? (
+                  <Button transparent rounded block style={{backgroundColor:'#db3928'}}
+                    onPress={() => {this.createTong(tongType)}}
+                  >
+                    <Text style={{color:'#fff'}}>완료</Text>
+                  </Button>
+                ) : (
+                  <ActivityIndicator />
+                )}
               </View>
             </Content>
         </Modal>
@@ -591,10 +596,14 @@ class createTong2 extends pickableImage{
             </View>
 */}
             <View style={{marginTop:50,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+            { !this.state.isLoading10 ? (
               <Button iconLeft rounded style={{backgroundColor:'#db3928',paddingHorizontal:50,paddingVertical:20}} onPress={() => _this.division(tongType)}>
                 <Image source={require('../../assets/images/addButton.png')} />
                 <RNText style={{color:'#fff',fontSize:20}}> 완료</RNText>
               </Button>
+            ) : (
+              <ActivityIndicator />
+            )}
             </View>
           </View>
         </Content>

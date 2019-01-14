@@ -61,4 +61,7 @@ export default {
     fontSize:12,
     paddingRight:5
   },
+  keyboardUp: {
+    paddingBottom:deviceHeight/2-20
+  }
 }

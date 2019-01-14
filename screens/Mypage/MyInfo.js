@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet,Image,TouchableOpacity, ActivityIndicator,TextInput } from 'react-native';
+import { Alert, StyleSheet,Image,TouchableOpacity, ActivityIndicator,TextInput,KeyboardAvoidingView } from 'react-native';
 import {
   View,
   Button,
@@ -47,6 +47,7 @@ class MyInfo extends Component{
       tempBirth: '',
       tempPhone: '',
       tempPhone2: '',
+      keyboardUp: false,
     };
   }
 
@@ -133,7 +134,7 @@ class MyInfo extends Component{
           <Content
             showsVerticalScrollIndicator={false}
             style={{ backgroundColor: "#f4f4f4" }}
-            contentContainerStyle={{ flex: 1 }}
+            contentContainerStyle={[this.state.keyboardUp ? styles.keyboardUp : {paddingBottom:30}]}
           >
             <View style={[styles.Box,{marginTop:0,paddingVertical:0}]}>
               <View style={[styles.itemBox,{paddingVertical:3,paddingRight:3}]}>
@@ -156,8 +157,10 @@ class MyInfo extends Component{
                           address: content
                         }
                       }))}}
+                    value={this.state.dataSource.address}
+                    onFocus={() => this.setState({keyboardUp:true})}
+                    onBlur={() => this.setState({keyboardUp:false})}
                   >
-                  {this.state.dataSource.address}
                   </Input>
                   </Item>
                 </Form>
@@ -173,7 +176,7 @@ class MyInfo extends Component{
                     onChangeText={(content) => {
                       this.setState({tempPhone:content.replace(/[^0-9]/g,'')})
                       }}
-                    onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,phone:""},phoneEnd:false}))}}
+                    onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,phone:""},phoneEnd:false,keyboardUp:true}))}}
                     onBlur={() => {
                       if(this.state.tempPhone.length > 11 || this.state.tempPhone.length < 9) {
                         Alert.alert('현장통','연락처를 알맞게 기입하세요.')
@@ -184,7 +187,8 @@ class MyInfo extends Component{
                           ...prevState.dataSource,
                           phone:this.state.tempPhone.replace(/(^02.{0}|^01.{1}|^[0-9]{3})([0-9]{3,4})([0-9]{4})/,"$1-$2-$3")
                         },
-                        phoneEnd:true})
+                        phoneEnd:true,
+                        keyboardUp:false})
                         )
                       }
                     }}
@@ -204,7 +208,7 @@ class MyInfo extends Component{
                     onChangeText={(content) => {
                       this.setState({tempBirth:content.replace(/[^0-9]/g,'')})
                       }}
-                    onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,birthDay:""},birthEnd:false}))}}
+                    onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,birthDay:""},birthEnd:false,keyboardUp:true}))}}
                     onBlur={() => {
                       if(this.state.tempBirth.length != 8) {
                         Alert.alert('현장통','생년월일을 알맞게 기입하세요.')
@@ -215,7 +219,8 @@ class MyInfo extends Component{
                             ...prevState.dataSource,
                             birthDay:this.state.tempBirth.replace(/(^[0-9]{4})([0-9]{2})([0-9]{2})/,"$1-$2-$3")
                           },
-                          birthEnd:true})
+                          birthEnd:true,
+                        keyboardUp:false})
                         )
                       }
                     }}
@@ -266,8 +271,10 @@ class MyInfo extends Component{
                           job: content
                         }
                       }))}}
+                    value={this.state.dataSource.job}
+                    onFocus={() => this.setState({keyboardUp:true})}
+                    onBlur={() => this.setState({keyboardUp:false})}
                   >
-                  {this.state.dataSource.job}
                   </Input>
                   </Item>
                 </Form>
@@ -290,6 +297,8 @@ class MyInfo extends Component{
                           }
                         }))}}
                       value={this.state.dataSource.career}
+                      onFocus={() => this.setState({keyboardUp:true})}
+                      onBlur={() => this.setState({keyboardUp:false})}
                     >
                     </Input>
                     </Item>
@@ -417,8 +426,10 @@ class MyInfo extends Component{
                           oName: content
                         }
                       }))}}
+                    value={this.state.dataSource.oName}
+                    onFocus={() => this.setState({keyboardUp:true})}
+                    onBlur={() => this.setState({keyboardUp:false})}
                   >
-                  {this.state.dataSource.oName}
                   </Input>
                   </Item>
                 </Form>
@@ -443,8 +454,10 @@ class MyInfo extends Component{
                           oRelation: content
                         }
                       }))}}
+                    value={this.state.dataSource.oRelation}
+                    onFocus={() => this.setState({keyboardUp:true})}
+                    onBlur={() => this.setState({keyboardUp:false})}
                   >
-                  {this.state.dataSource.oRelation}
                   </Input>
                   </Item>
                 </Form>
@@ -460,7 +473,7 @@ class MyInfo extends Component{
                     onChangeText={(content) => {
                       this.setState({tempPhone2:content.replace(/[^0-9]/g,'')})
                       }}
-                    onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,oPhone:""},tempPhone2:'',phoneEnd2:false}))}}
+                    onFocus={() => {this.setState(prevState => ({dataSource: {...prevState.dataSource,oPhone:""},tempPhone2:'',phoneEnd2:false,keyboardUp:true}))}}
                     onBlur={() => {
                       if(this.state.tempPhone2.length > 11 || this.state.tempPhone2.length < 9) {
                         Alert.alert('현장통','연락처를 알맞게 기입하세요.')
@@ -471,7 +484,8 @@ class MyInfo extends Component{
                           ...prevState.dataSource,
                           oPhone:this.state.tempPhone2.replace(/(^02.{0}|^01.{1}|^[0-9]{3})([0-9]{3,4})([0-9]{4})/,"$1-$2-$3")
                         },
-                        phoneEnd2:true})
+                        phoneEnd2:true,
+                        keyboardUp:false})
                         )
                       }
                     }}

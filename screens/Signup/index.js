@@ -95,7 +95,7 @@ export default class Signup extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView behavior = 'padding'  enabled>
+      <KeyboardAvoidingView behavior = 'position'  enabled keyboardVerticalOffset={5}>
       <ImageBackground source={bg} style={styles.background}>
       <View style={styles.container}>
         <Image source={logo} style={styles.logo} />

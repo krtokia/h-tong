@@ -39,6 +39,11 @@ class Friends extends Component{
     this.getFriend();
   }
 
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getFriend()
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if(this.props.navigation.getParam('refresh') !== prevProps.navigation.getParam('refresh')) {
       this.getFriend()

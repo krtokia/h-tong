@@ -777,9 +777,9 @@ class CommunityMain extends pickableImage{
                 <View style={{flex:3}}>
                   <Text style={{fontSize:20}}>{this.state.tongTitle}</Text>
                   <View style={{marginTop:10,flexDirection:'row',justifyContent:'space-between'}}>
-                    <View>
+                    <TouchableOpacity onPress={() => {this.props.navigation.navigate('CommunityPeople')}}>
                       <Text style={{fontSize:13}}>{TongType === 'T' ? '현장' : '커뮤니티'}동료({this.state.count})</Text>
-                    </View>
+                    </TouchableOpacity>
                     <View style={{flexDirection:'row',paddingRight:10}}>
                     { this.state.isMember > 0 ? (
                       <TouchableOpacity onPress={() => {this.props.navigation.navigate('CommunityInvite')}}>

@@ -150,7 +150,7 @@ class createTong2 extends pickableImage{
 
     division(tongType) {
   		if(this.state.tongName === ''){
-  			Alert.alert('현장동 이름을 입력하세요');
+  			Alert.alert('현장통 이름을 입력하세요');
   			return;
   		}
 

@@ -374,9 +374,9 @@ class createTong2 extends pickableImage{
             ))}
             </MapView>
           </View>
-          <View style={[{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:isMarked ? '#db3928' : '#fff'}]}>
-            <Text style={{color:isMarked ? '#fff' : '#666'}} onPress={() => {isMarked ? this.setState({modalMap:false}) : Alert.alert('현장통','현장을 지도에서 선택 해 주세요.')}}>저장</Text>
-          </View>
+          <TouchableOpacity style={[{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:isMarked ? '#db3928' : '#fff'}]}  onPress={() => {isMarked ? this.setState({modalMap:false}) : Alert.alert('현장통','현장을 지도에서 선택 해 주세요.')}}>
+            <Text style={{color:isMarked ? '#fff' : '#666'}}>저장</Text>
+          </TouchableOpacity>
         </View>
         </Modal>
         <Modal

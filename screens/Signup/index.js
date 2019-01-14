@@ -35,6 +35,7 @@ export default class Signup extends Component {
     this.state={
       userId: '',
       userPass: '',
+      userPass2: '',
       userName: ''
     };
   }
@@ -61,6 +62,7 @@ export default class Signup extends Component {
             body: JSON.stringify({
               id: userId,
               pw: userPass,
+              pw2: userPass2,
               name: userName
             })
         }).then((response) => response.json())
@@ -146,11 +148,11 @@ export default class Signup extends Component {
             value={this.state.userPass2}
             onChangeText={(userPass2) => this.setState({ userPass2 })}
             onBlur={() => {
-                if(this.state.userPass2 && this.state.userPass !== this.state.userPass2) {
-                  Alert.alert('현장통','패스워드가 맞지 않습니다.')
-                  this.refs['userPass'].focus();
+                if(this.state.userPass2.length && this.state.userPass2.length < 4) {
+                  Alert.alert('현장통','패스워드길이가 너무 짧습니다.')
+                  this.refs['userPass2'].focus();
                 }
-              }
+              }              
             }
             placeholder={'패스워드확인'}
             secureTextEntry={true}

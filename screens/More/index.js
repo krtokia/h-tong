@@ -226,6 +226,7 @@ class More extends pickableImage{
     } else {
       let userImg = this.state.dataSource.photo ? this.state.dataSource.photo : "profile_no.png"
       let getImages;
+
       if(this.state.userImgs) {
         getImages = this.state.userImgs.map((val,key) => {
           return <View key={key}>

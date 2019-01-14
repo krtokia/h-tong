@@ -23,6 +23,8 @@ import Home from "./Home/Home.js";
 import TongSearch from "./Home/TongSearch.js";
 import SearchInvite from "./Home/SearchInvite.js";
 
+import HomeMore from './More';
+
 import More from './More';
 import Notice from './More/Notice.js';
 import Mypage2 from './More/Mypage2.js';
@@ -273,6 +275,7 @@ const AppStackNavigator = createStackNavigator({
   FriendDetail: { screen: FriendDetail },
   FriendPapers: { screen: FriendPapers },
   Papers: { screen: Papers },
+  HomeMore: { screen: More },
   Signature: { screen: Signature },
   ChatRoom: { screen: ChatRoom },
   Settings: { screen: Settings },

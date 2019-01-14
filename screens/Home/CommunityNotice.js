@@ -40,13 +40,14 @@ export default class CommunityNotice extends Component{
     this.state = {
       isLoading: true,
       modal: false,
-      memId: 'SID',
+      memId: StoreGlobal({type:'get',key:'loginId'}),
       content: null,
       isModify: false,
       parentShow: false,
       bbsData: null,
       tongnum:StoreGlobal({type:'get',key:'tongnum'}),
       modifyVal: null,
+      isAdmin:StoreGlobal({type:'get',key:'isAdmin'})
     }
   }
 
@@ -195,7 +196,6 @@ export default class CommunityNotice extends Component{
         tongnum : tongnum,
         notiWriter: memId,
         notiContent: content,
-        notiTitle: "aa"
       })}
       return fetch(apiUrl, options).then((response) => response.json())
         .then((responseJson)=> {
@@ -293,7 +293,7 @@ export default class CommunityNotice extends Component{
               <Text style={{textAlign:'center',color:'#fff',fontSize:20}}>공지사항</Text>
             </Body>
             <Right  style={{flex:1}}>
-              { true &&
+              { this.state.isAdmin > 0 &&
                 <TouchableOpacity style={{marginRight:10,marginTop:10}}
                   onPress={() => {this.setState({modal:!this.state.modal,isModify:false})}}
                 >
@@ -324,6 +324,7 @@ class NoticeList extends Component{
     show: false,
     dimensions: undefined,
     boxHeight: 'auto',
+    isAdmin: StoreGlobal({type:'get',key:'isAdmin'})
   }
   componentDidUpdate(prevProps, prevState) {
     if(this.props.parentShow !== prevProps.parentShow) {
@@ -361,7 +362,7 @@ class NoticeList extends Component{
               <Text style={{fontSize:10,color:'#aaa'}}>{this.props.division}</Text>
             </View>
           </View>
-          { "isAdmin" === "isAdmin" &&
+          { this.state.isAdmin > 0 &&
           <View>
             <TouchableOpacity style={{paddingRight:20}}
               onPress={() => {this.setShow()}}

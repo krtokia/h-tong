@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ToastAndroid, StyleSheet, Image, AppRegistry, ListView, ImageBackground, TouchableOpacity, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { Alert, ToastAndroid, StyleSheet, Image, AppRegistry, ListView, ImageBackground, TouchableOpacity, TouchableHighlight, ActivityIndicator } from 'react-native';
 import {
   View,
   Button,
@@ -26,6 +26,7 @@ class CommnunityInvite extends Component{
       searchTxt: null,
       isLoading: true,
       isLoading2: false,
+      isLoading3: true,
       dataSource: null,
       dataSource2: [],
       count: 0,
@@ -38,12 +39,14 @@ class CommnunityInvite extends Component{
   }
   componentDidMount() {
     this.getFriend();
+    this.getIsInvited();
   }
 
   componentDidUpdate(prevProps, prevState) {
     if(this.state.refresh !== prevState.refresh) {
 //      this.state.refresh = prevState.refresh
       this.getFriend()
+      this.getIsInvited();
     }
   }
 
@@ -72,11 +75,28 @@ class CommnunityInvite extends Component{
       });
   }
 
+  getIsInvited = () => {
+    return fetch("http://13.124.127.253/api/results.php?page=isInvited&id="+this.state.friendId+"&tongnum="+this.state.tongnum)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson)
+        this.setState({
+          isLoading3: false,
+  		    isInvited: responseJson,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
   searchFriend = async() => {
+    this.setState({isLoading2:true})
     return fetch("http://13.124.127.253/api/results.php?page=inviteFriend&txt="+this.state.searchTxt+"&tongnum="+this.state.tongnum)
       .then((response) => response.json())
       .then((responseJson) => {
         if(responseJson) {
+          console.log(responseJson)
           this.setState({
             isLoading2: false,
   		      dataSource2: responseJson,
@@ -93,6 +113,47 @@ class CommnunityInvite extends Component{
       });
   }
 
+  inviteQuestion = (friendId,friendNm) => {
+    Alert.alert('','아이디: '+friendId+'\r\n이름: '+friendNm+'\r\n\r\n위 사람을 초대하시겠습니까?',
+      [
+        {text:'예',onPress: () => this.inviteFriend(friendId)},
+        {text:'아니오'}
+      ],
+      { cancelable:true }
+    )
+  }
+
+  inviteFriend(friendId) {
+    let apiUrl = 'http://13.124.127.253/api/inviteTong.php?action=inviteCommunity';
+    options = {
+      method: 'POST',
+      headers: {
+        'Accept' : 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: friendId,
+        inviteId: this.state.memId,
+        tongnum: this.state.tongnum,
+      })
+    }
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          Alert.alert(
+            "커뮤니티통",
+            "초대했습니다."
+          );
+          this.getFriend();
+        } else {
+          console.log(responseJson);
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
+  }
+
+
   render(){
     if(this.state.isLoading) {
       return <View Style={{flex:1, paddingTop:20}}>
@@ -106,25 +167,27 @@ class CommnunityInvite extends Component{
       let fvalue
       if (this.state.dataSource) {
     	  fvalue = this.state.dataSource.map((data, key) => {
-    		  return <View key={key}>
-              <FriendList
-                name={data.friendNm}
-                type={data.friendJob}
-                detailHref={() => {ToastAndroid.show("커뮤니티 초대 기능",ToastAndroid.SHORT)}}
-              />
-            </View>
+      		  return <View key={key}>
+                <FriendList
+                  data={data}
+                  name={data.friendNm}
+                  type={data.friendJob}
+                  detailHref={(friendId,friendNm) => {this.inviteQuestion(friendId,friendNm)}}
+                />
+              </View>
     	  });
       } else {
         fvalue = <View />
       }
       let fvalue2 = this.state.dataSource2.map((data, key) => {
-  		  return <View key={key}>
-            <FriendList
-              name={data.userNm}
-              type={data.jobgroup}
-              detailHref={() => {ToastAndroid.show("커뮤니티 초대 기능",ToastAndroid.SHORT)}}
-            />
-          </View>
+    		  return <View key={key}>
+              <FriendList
+                data={data}
+                name={data.userNm}
+                type={data.jobgroup}
+                detailHref={(friendId,friendNm) => {this.inviteQuestion(friendId,friendNm)}}
+              />
+            </View>
   	  });
       return (
         <Container>
@@ -169,10 +232,14 @@ class CommnunityInvite extends Component{
 
 class FriendList extends Component{
   render() {
+    var uri = 'profile_no.png';
+    if(this.props.data.photo) {
+      uri = this.props.data.photo;
+    }
     return(
-      <TouchableOpacity onPress={this.props.detailHref}>
+      <TouchableOpacity onPress={() => this.props.detailHref(this.props.data.friendId ? this.props.data.friendId : this.props.data.userId,this.props.name)}>
         <View style={styles.friendList}>
-          <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
+          <Image source={{uri: 'http://13.124.127.253/images/userProfile/'+uri}} style={styles.friendThumbnail} />
           <Text style={styles.friendName}>{this.props.name}</Text>
           <Text style={styles.friendInfo}>{this.props.type}</Text>
         </View>

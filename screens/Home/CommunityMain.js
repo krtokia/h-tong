@@ -89,6 +89,12 @@ class CommunityMain extends pickableImage{
     return fetch("http://13.124.127.253/api/results.php?page=selectMembers&tongnum=" + tongnum)
       .then((response) => response.json())
       .then((responseJson) => {
+        for(i=0;i<Object.keys(responseJson).length;i++) {
+          if(responseJson[i]['tongMemId'] === this.state.memId) {
+            StoreGlobal({type:'set',key:'userGrade',value:responseJson[i]['userGrade']})
+            StoreGlobal({type:'set',key:'isAdmin',value:responseJson[i]['isAdmin']})
+          }
+        }
         if(responseJson) {
           this.setState({
             isloading3: false,
@@ -405,13 +411,15 @@ class CommunityMain extends pickableImage{
       body: JSON.stringify({
         tongnum : tongnum,
         tongMemId: memId,
-        tongOwnId: this.state.dataSource.creator,
+        tongOwnId: this.state.dataSource[0].creator,
     })
     }
+    console.log(options)
     return fetch(apiUrl, options).then((response) => response.json())
       .then((responseJson)=> {
         console.log(responseJson)
         if(responseJson === 'succed') {
+          Alert.alert('커뮤니티에 가입되었습니다.')
           this.setState({refresh:Date(Date.now()).toString()})
           this.getTong();
           this.getBbs();

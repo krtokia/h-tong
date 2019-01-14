@@ -67,7 +67,6 @@ export default class CommunityPeople extends Component{
     return fetch("http://13.124.127.253/api/results.php?page=selectMembers&tongnum=" + tongnum)
       .then((response) => response.json())
       .then((responseJson) => {
-        console.log('getFriend',responseJson)
         if(responseJson) {
           this.setState({
             isLoading: false,

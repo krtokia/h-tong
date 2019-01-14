@@ -27,9 +27,12 @@ class SearchInvite extends Component{
     super(props)
     this.state = {
       isLoading: true,
+      isLoading2: true,
       userId: StoreGlobal({type:'get',key:'loginId'}),
       inviteSource: null,
+      inviteSource2: null,
       modal: false,
+      modal2: false,
       invData: {
         tongtitle: "",
         constructor: "",
@@ -45,14 +48,17 @@ class SearchInvite extends Component{
         inviteDt: "",
         message: "",
         inviteSeq: "",
+        tongtype: "C",
       },
       count: 0,
+      count2: 0,
       action: true,
     }
   }
 
   componentDidMount() {
     this.getInvite()
+    this.getInvite2()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -68,6 +74,22 @@ class SearchInvite extends Component{
           isLoading: false,
           inviteSource: responseJson ? responseJson : [],
           count: responseJson ? responseJson.length : 0
+        });
+      })
+
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+  getInvite2 = async() => {
+    return fetch("http://13.124.127.253/api/results.php?page=getInviteCommunity&id=" + this.state.userId)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.setState({
+          isLoading2: false,
+          inviteSource2: responseJson ? responseJson : [],
+          count2: responseJson ? responseJson.length : 0
         });
       })
 
@@ -91,13 +113,14 @@ class SearchInvite extends Component{
 
   acceptInvite = (invData2) => {
     const { invData } = this.state;
-
+    var inviteData;
     if(invData2) {
       inviteData = invData2;
+      console.log("11111")
     } else {
       inviteData = invData;
+      console.log("22222")
     }
-
     let apiUrl = 'http://13.124.127.253/api/inviteTong.php?action=accept';
     options = {
       method: 'POST',
@@ -153,6 +176,7 @@ class SearchInvite extends Component{
             invData.tongtitle+" 현장초대 거부하였습니다.");
           this.setState({modal:false})
           this.getInvite()
+          this.getInvite2()
         } else {
           console.log(responseJson);
         }
@@ -206,6 +230,13 @@ class SearchInvite extends Component{
           acceptFunc={(invData) => this.acceptFunc(invData)}
           />
       })
+      let invite2 = this.state.inviteSource2.map((val,key) => {
+        return <InviteList key={key}
+          invSource={val}
+          modal={this.modalOpen}
+          acceptFunc={(invData) => this.acceptFunc(invData)}
+          />
+      })
       const { invData } = this.state;
       return (
         <Container>
@@ -218,52 +249,69 @@ class SearchInvite extends Component{
             }}>
             <View style={{flex:1,backgroundColor:'#0008'}}>
               <ModalOut closeModal={(close) => this.setState({modal:close})}/>
-              <View style={{alignItems:'center',backgroundColor:'#fff',flex:6,padding:10,marginHorizontal:20}}>
+              <View style={{alignItems:'center',backgroundColor:'#fff',flex:invData.tongtype === 'T' ? 7 : 1,padding:10,marginHorizontal:20}}>
                 <View style={[styles.inviteDetailItem]}>
-                  <Text style={styles.inviteDetailTitle}>현장 이름:</Text>
+                  <Text style={styles.inviteDetailTitle}>{invData.tongtype === 'T' ? "현장" : "커뮤니티"} 이름:</Text>
                   <Text style={styles.inviteDetailText}>{invData.tongtitle}</Text>
                 </View>
+                { invData.tongtype === 'T' && (
                 <View style={[styles.inviteDetailItem,]}>
                   <Text style={styles.inviteDetailTitle}>현장 시공자:</Text>
                   <Text style={styles.inviteDetailText}>{invData.constructor}</Text>
                 </View>
+                )}
+                { invData.tongtype === 'T' && (
                 <View style={[styles.inviteDetailItem,]}>
                   <Text style={styles.inviteDetailTitle}>현장 감리자:</Text>
                   <Text style={styles.inviteDetailText}>{invData.supervisor}</Text>
                 </View>
+                )}
+                { invData.tongtype === 'T' && (
                 <View style={[styles.inviteDetailItem,]}>
                   <Text style={styles.inviteDetailTitle}>현장 발주자:</Text>
                   <Text style={styles.inviteDetailText}>{invData.owner}</Text>
                 </View>
+                )}
+                { invData.tongtype === 'T' && (
                 <View style={[styles.inviteDetailItem,]}>
                   <Text style={styles.inviteDetailTitle}>현장 연락처:</Text>
                   <Text style={styles.inviteDetailText}>{invData.contact}</Text>
                 </View>
+                )}
+                { invData.tongtype === 'T' && (
                 <View style={[styles.inviteDetailItem,]}>
                   <Text style={styles.inviteDetailTitle}>공사 기간:</Text>
                   <Text style={styles.inviteDetailText}>{invData.term}</Text>
                 </View>
+                )}
+                { invData.tongtype === 'T' && (
                 <View style={[styles.inviteDetailItem,]}>
                   <Text style={styles.inviteDetailTitle}>현장 주소:</Text>
                   <Text style={styles.inviteDetailText}>{invData.addr}</Text>
                 </View>
+                )}
                 <View style={{height:20}} />
                 <View style={[styles.inviteDetailItem,]}>
                   <Text style={styles.inviteDetailTitle}>초대자:</Text>
                   <Text style={styles.inviteDetailText}>{invData.inviteNm}({invData.inviteId})</Text>
                 </View>
+                { invData.tongtype === 'T' && (
                 <View style={[styles.inviteDetailItem,]}>
                   <Text style={styles.inviteDetailTitle}>구분:</Text>
                   <Text style={styles.inviteDetailText}>{this.gradeGetter(invData.userGrade)}</Text>
                 </View>
+                )}
+                { invData.tongtype === 'T' && (
                 <View style={[styles.inviteDetailItem,]}>
                   <Text style={styles.inviteDetailTitle}>직급:</Text>
                   <Text style={styles.inviteDetailText}>{invData.jobGrade}</Text>
                 </View>
+                )}
                 <View style={[styles.inviteDetailItem,]}>
                   <Text style={styles.inviteDetailTitle}>초대 일자:</Text>
                   <Text style={[styles.inviteDetailText,{flex:2}]}>{invData.inviteDt}</Text>
                 </View>
+                { invData.tongtype === 'T' && (
                 <View style={[styles.inviteDetailItem,{height:70,flexDirection:'column',alignItems:'flex-start',justifyContent:'flex-start'}]}>
                   <Text style={styles.inviteDetailTitle}>초대 메시지:</Text>
                   <View style={{height:50,width:'100%'}}>
@@ -274,6 +322,7 @@ class SearchInvite extends Component{
                     </ScrollView>
                   </View>
                 </View>
+                )}
                 <View style={[styles.Row,{width:'100%',height:40}]}>
                   <View style={[{flex:1,padding:20}]}>
                     <Button
@@ -281,7 +330,7 @@ class SearchInvite extends Component{
                       block
                       success
                       iconLeft
-                      onPress={this.acceptInvite}
+                      onPress={() => this.acceptInvite(null)}
                     >
                       <Icon name="check" type="FontAwesome" />
                       <Text>수락</Text>
@@ -322,9 +371,13 @@ class SearchInvite extends Component{
             style={{ backgroundColor: "#f4f4f4" }}
           >
             <View style={{padding:10}}>
-              <Text style={{fontSize:11}}>받은 초대장({this.state.count})</Text>
+              <Text style={{fontSize:11}}>받은 현장 초대장({this.state.count})</Text>
             </View>
             {invites}
+            <View style={{padding:10}}>
+              <Text style={{fontSize:11}}>받은 커뮤니티 초대장({this.state.count2})</Text>
+            </View>
+            {invite2}
           </Content>
         </Container>
       );
@@ -359,7 +412,7 @@ class InviteList extends Component {
   render() {
     const data = this.props.invSource;
     return(
-      <TouchableOpacity style={styles.inviteBox} onPress={() => this.props.modal(true,data)}>
+      <TouchableOpacity style={styles.inviteBox} onPress={() => {this.props.modal(true,data)}}>
         <View style={styles.inviteInnerBox}>
           <View style={[styles.inviteContent,styles.center,{flex:2}]} onLayout={this.onPageLayout}>
             <Image

@@ -121,7 +121,7 @@ class TongAdmin extends Component{
     } else {
       return <View style={[styles.Box,{flex:1}]}>
               <View style={[styles.grayBottom,styles.row2,{padding:3}]}>
-                <Text>adminName</Text>
+                <Text>{adminName}</Text>
               </View>
               <TouchableOpacity style={{flex:1}}
                 onPress={() => this.props.navigation.navigate('TongAdmin2',{param:div,refresh:this.refresh})}

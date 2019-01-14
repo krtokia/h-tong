@@ -315,14 +315,12 @@ class createTong2 extends pickableImage{
 
     }
 
-    console.log(options)
-
     return fetch(apiUrl, options).then((response) => response.json())
       .then((responseJson)=> {
 		console.log("responseJson:",responseJson);
         if(responseJson === 'success') {
           Alert.alert(
-			"현장통",
+			tongType === 'T' ? "현장통" : "커뮤니티통",
 			"생성되었습니다.",
 			 [
 				{text:"확인",onPress:() => {this.props.navigation.navigate("Home", { refresh:Date(Date.now()).toString()})}}
@@ -569,8 +567,9 @@ class createTong2 extends pickableImage{
                     Alert.alert('현장통','길이가 너무 깁니다.')
                     content = content.substr( 0, content.length-1 )
                   }
-                  this.setState({tongName:content})
+                  this.setState({tongName:content.replace(/[^0-9a-zA-Zㄱ-힣]/g,'')})
                 }}
+                value={this.state.tongName}
                  />
             </View>
                  <Image style={styles.tongImage}

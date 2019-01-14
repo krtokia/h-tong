@@ -51,7 +51,7 @@ export default class Signup extends Component {
     const { userId, userPass, userPass2, userName } = this.state;
     const resetAction = StackActions.reset({
       index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'HomeMore' })],
+      actions: [NavigationActions.navigate({ routeName: 'Main' })],
     });
         fetch('http://13.124.127.253/api/signup.php', {
             method: 'POST',
@@ -73,6 +73,7 @@ export default class Signup extends Component {
                 "가입이 완료 되었습니다"
               )
               StoreGlobal({type:'set',key:'loginId',value:userId})
+              StoreGlobal({type:'set',key:'signup',value:"Y"})
               this.props.navigation.dispatch(resetAction);
             } else {
               //alert(responseJson);
@@ -102,7 +103,9 @@ export default class Signup extends Component {
           <TextInput
             ref="userName"
             value={this.state.userName}
-            onChangeText={(userName) => this.setState({ userName })}
+            onChangeText={(userName) => {
+              this.setState({ userName:userName.replace(/[^a-zA-Zㄱ-힣]/g,'') })
+            }}
             placeholder={'이름'}
             style={styles.input}
             underlineColorAndroid='rgba(0,0,0,0)'
@@ -116,7 +119,9 @@ export default class Signup extends Component {
           <TextInput
             ref="userId"
             value={this.state.userId}
-            onChangeText={(userId) => this.setState({ userId })}
+            onChangeText={(userId) => {
+              this.setState({ userId:userId.replace(/[^0-9a-zA-Z]/g,'') })
+            }}
             placeholder={'아이디'}
             style={styles.input}
             underlineColorAndroid='rgba(0,0,0,0)'

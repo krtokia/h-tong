@@ -275,7 +275,6 @@ const AppStackNavigator = createStackNavigator({
   FriendDetail: { screen: FriendDetail },
   FriendPapers: { screen: FriendPapers },
   Papers: { screen: Papers },
-  HomeMore: { screen: More },
   Signature: { screen: Signature },
   ChatRoom: { screen: ChatRoom },
   Settings: { screen: Settings },

@@ -1,5 +1,18 @@
 import React, { Component } from 'react';
-import { ToastAndroid, StatusBar, Image, AppRegistry, ListView, ImageBackground, TouchableOpacity, TouchableHighlight, ActivityIndicator, ScrollView, Alert } from 'react-native';
+import {
+  ToastAndroid,
+  StatusBar,
+  Image,
+  AppRegistry,
+  ListView,
+  ImageBackground,
+  TouchableOpacity,
+  TouchableHighlight,
+  ActivityIndicator,
+  ScrollView,
+  Alert,
+  BackHandler
+} from 'react-native';
 import {
   Container,
   Content,
@@ -62,8 +75,17 @@ class Home extends Component{
 
   componentDidMount() {
     StoreGlobal({type:'set',key:'userGrade',value:0})
+    if(StoreGlobal({type:'get',key:'signup'}) === 'Y') {
+      this.props.navigation.navigate('Mypage')
+      StoreGlobal({type:'set',key:'signup',value:"N"})
+    }
     this.tongList()
     this.commList()
+//    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  componentWillUnmount() {
+//    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -72,8 +94,17 @@ class Home extends Component{
      this.tongList()
      this.commList()
      StoreGlobal({type:'set',key:'userGrade',value:0})
+     StoreGlobal({type:'set',key:'isAdmin',value:0})
     }
   }
+
+  // handleBackPress = () => {
+  //   Alert.alert('','앱을 종료하시겠습니까?',[
+  //     {text: '예', onPress: BackHandler.exitApp},
+  //     {text: '아니오', onPress: () => {}, style: 'cancel'},
+  //   ])
+  //   return true;
+  // }
 
   ListViewItemSeparator = () => {
     return (
@@ -208,9 +239,13 @@ class Home extends Component{
             </ScrollView>
           </View>
           <Card>
-            <CardItem button onPress={() => {this.props.navigation.navigate('createTong')}}>
+            <CardItem button onPress={() => {this.props.navigation.navigate('createTong2',{tongType:'T'})}}>
               <Icon name="add-circle" />
               <Text>현장통 생성</Text>
+            </CardItem>
+            <CardItem button onPress={() => {this.props.navigation.navigate('createTong2',{tongType:'C'})}}>
+              <Icon name="add-circle" />
+              <Text>커뮤니티통 생성</Text>
             </CardItem>
             <CardItem button onPress={() => {this.props.navigation.navigate('TongSearch')}}>
               <Icon name="search" />

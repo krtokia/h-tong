@@ -161,10 +161,14 @@ export default Chat;
 
 class ChatList extends Component{
   render() {
+    var uri = 'profile_no.png';
+    if(this.props.photo) {
+      uri = this.props.photo
+    }
     return(
       <TouchableOpacity onPress={this.props.chatHref}>
         <View style={styles.chatList}>
-          <Image source={require('../../assets/images/profile_no.png')} style={styles.chatThumbnail} />
+          <Image source={{uri: 'http://13.124.127.253/images/userProfile/'+uri}} style={styles.chatThumbnail} />
           <View style={{marginLeft: 15}}>
             <Text style={styles.chatName}>{this.props.name}</Text>
             <Text style={styles.chatInfo}>{this.props.recent}</Text>

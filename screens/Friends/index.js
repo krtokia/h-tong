@@ -60,13 +60,15 @@ class Friends extends Component{
     		    dataSource: responseJson,
     		    count: Object.keys(responseJson).length,
             searchTxt: '',
+            refreshing: false
           });
         } else {
           this.setState({
             isLoading: false,
             searchTxt: '',
             dataSource: null,
-            count:0
+            count:0,
+            refreshing: false,
           })
         }
       })
@@ -104,6 +106,7 @@ class Friends extends Component{
   	  fvalue = this.state.dataSource.map((data, key) => {
   		  return <View key={key}>
             <FriendList
+              photo={data.photo}
               name={data.friendNm}
               type={data.friendJob}
               detailHref={() => {this.props.navigation.navigate('FriendDetail', {friendId:data.friendId,refresh:Date(Date.now()).toString(),prevPage:'index'})}}
@@ -117,6 +120,7 @@ class Friends extends Component{
     let fvalue2 = this.state.dataSource2.map((data, key) => {
 		  return <View key={key}>
           <FriendList
+            photo={data.photo}
             name={data.userNm}
             type={data.jobgroup}
             detailHref={() => {this.props.navigation.navigate('FriendDetail', {friendId:data.userId,refresh:Date(Date.now()).toString(),prevPage:'index'})}}
@@ -165,10 +169,14 @@ class Friends extends Component{
 
 class FriendList extends Component{
   render() {
+    var uri = 'profile_no.png';
+    if(this.props.photo) {
+      uri = this.props.photo
+    }
     return(
       <TouchableOpacity onPress={this.props.detailHref}>
         <View style={styles.friendList}>
-          <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
+          <Image source={{uri: 'http://13.124.127.253/images/userProfile/'+uri}} style={styles.friendThumbnail} />
           <Text style={styles.friendName}>{this.props.name}</Text>
           <Text style={styles.friendInfo}>{this.props.type}</Text>
           <Button transparent style={styles.friendChatBtn} onPress={this.props.chatHref}>

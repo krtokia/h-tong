@@ -37,6 +37,7 @@ class Mypage extends pickableImage{
       id: StoreGlobal({type:'get',key:'loginId'}),
       dataSource: null,
       isLoading: true,
+      isLoading10:false,
       phoneEnd: true,
       tempPhone: '',
       passUpdate: false,
@@ -80,6 +81,7 @@ class Mypage extends pickableImage{
   }
 
   userUpdate() {
+    this.setState({isLoading10:true})
     const { id, dataSource, imageSource, imgresult } = this.state;
 
     let apiUrl = 'http://13.124.127.253/api/userUpdate.php?action=userInfo';
@@ -124,6 +126,7 @@ class Mypage extends pickableImage{
       .then((responseJson)=> {
         if(responseJson === 'succed') {
           Alert.alert("현장통","수정 되었습니다.")
+          this.setState({isLoading10:false})
           this.props.navigation.navigate('HomeMore', {refresh:Date(Date.now()).toString()})
         } else {
           //alert(responseJson);
@@ -499,11 +502,16 @@ class Mypage extends pickableImage{
             <Text style={{fontSize:10,color:'#db3928',marginVertical:20}}>
               ※필수 입력란을 확인해주시기 바랍니다.
             </Text>
-            <Button rounded style={{backgroundColor:'#db3928',paddingHorizontal:50,alignSelf:'center'}}
-              onPress={() => {this.userUpdate()}}
-            >
-              <Text style={{fontSize:15}}>완료</Text>
-            </Button>
+            { this.isLoading10 ? (
+              <ActivityIndicator />
+            ) : (
+              <Button rounded style={{backgroundColor:'#db3928',paddingHorizontal:50,alignSelf:'center'}}
+                onPress={() => {this.userUpdate()}}
+              >
+                <Text style={{fontSize:15}}>완료</Text>
+              </Button>
+            )}
+
           </View>
           </KeyboardAvoidingView>
         </Content>

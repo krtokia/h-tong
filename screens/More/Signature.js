@@ -68,10 +68,17 @@ class Signature extends Component{
 
      axios.get('http://h-tong.kr/api/uploadSign.php?id=' + this.state.memId + '&sign=' + this.state.imageSource)
      .then( response => {
-       alert("전자 서명이 등록 되었습니다");
+       Alert.alert('',"전자 서명이 등록 되었습니다");
+       this._goBack()
      })
      .catch( response => { } )
 
+  }
+
+  _goBack = () => {
+    const { navigation } = this.props;
+    navigation.goBack();
+    navigation.state.params.refresh({ refresh: Date(Date.now()).toString() })
   }
 
 

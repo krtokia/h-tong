@@ -433,9 +433,13 @@ class CommunityMain extends pickableImage{
   }
 
   write() {
-    this.setState({writeModal:false,isModify:false,content:""})
-    const {tongnum, memId, content, imageSource} = this.state;
 
+    const {tongnum, memId, content, imageSource} = this.state;
+    if(content.length < 1) {
+      Alert.alert('글의 내용을 입력 해 주세요.')
+      return false;
+    }
+    this.setState({writeModal:false,isModify:false})
     let apiUrl = 'http://13.124.127.253/api/write.php';
     let uri = null;
     let fileType = null;
@@ -476,7 +480,7 @@ class CommunityMain extends pickableImage{
     return fetch(apiUrl, options).then((response) => response.json())
       .then((responseJson)=> {
         if(responseJson === 'succed') {
-          console.log(responseJson);
+          this.setState({content:''})
           this.getBbs()
         } else {
           //alert(responseJson);
@@ -879,7 +883,6 @@ class ReplyView extends Component {
      return fetch("http://13.124.127.253/api/results.php?page=reply&seq=" + this.props.tongnum + "&board=" + this.props.boardnum)
              .then((response) => response.json())
              .then((responseJson) => {
-               console.log("rep",responseJson)
                 this.setState({
                   isLoading: false,
                   repData: responseJson,

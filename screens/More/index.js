@@ -4,12 +4,13 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
-  ScrollView,
   DatePickerAndroid,
   TextInput,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
-  Modal
+  Modal,
+  ScrollView,
+  RefreshControl
  } from 'react-native';
  import {
    View,
@@ -51,7 +52,9 @@ class More extends pickableImage{
       career: "",
       careerSource: null,
       modal: false,
-      modalImg: null
+      modalImg: null,
+      refreshing: false,
+      refresh: '',
     }
   }
 
@@ -204,6 +207,18 @@ class More extends pickableImage{
     this.setState({modal:!this.state.modal,modalImg:data})
   }
 
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getUser()
+    this.getImages()
+    this.getCareer()
+    this.setState({refreshing: false});
+  }
+
+  refresh = refresh => {
+    this.setState({refresh})
+  }
+
   render(){
     if(this.state.isLoading) {
       return (
@@ -279,6 +294,15 @@ class More extends pickableImage{
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#f4f4f4" }}
         >
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
+          style={{backgroundColor:'#f9f9f9'}}
+        >
         <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={100} enabled>
           <View style={[styles.Box,{marginTop:0,paddingTop:30}]}>
             <View style={{flexDirection:'row',borderColor:'#e9e9e9',borderBottomWidth:1}}>
@@ -308,7 +332,7 @@ class More extends pickableImage{
                 </TouchableOpacity>
               </View>
               <View style={{flex:1,justifyContent:'center',alignItems:'center',borderRightWidth:1,borderLeftWidth:1,borderColor:'#e9e9e9'}}>
-                <TouchableOpacity style={{justifyContent:'center',alignItems:'center'}} onPress={() => {this.props.navigation.navigate('Signature')}}>
+                <TouchableOpacity style={{justifyContent:'center',alignItems:'center'}} onPress={() => {this.props.navigation.navigate('Signature',{refresh:this.refresh})}}>
                   <Icon name="pencil-square-o" type="FontAwesome" style={styles.myIcon} />
                   <Text style={{fontSize:13,color:"#555"}}>전자 서명</Text>
                 </TouchableOpacity>
@@ -381,6 +405,7 @@ class More extends pickableImage{
             </View>
           </View>
         </KeyboardAvoidingView>
+        </ScrollView>
         </Content>
       </Container>
     );

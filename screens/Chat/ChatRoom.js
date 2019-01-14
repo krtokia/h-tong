@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet,Image,TouchableOpacity,ScrollView } from 'react-native';
+import { StyleSheet,Image,TouchableOpacity,ScrollView, KeyboardAvoidingView } from 'react-native';
 import {
   View,
   Button,
@@ -18,6 +18,7 @@ import {
   Icon,
   Footer,
 } from 'native-base';
+
 
 import styles from './styles.js';
 import { GiftedChat } from 'react-native-gifted-chat';
@@ -159,6 +160,7 @@ class ChatRoom extends Component{
           }}
           rendersend = {this.renderSend}
         />
+        <KeyboardAvoidingView behavior = 'position'  enabled keyboardVerticalOffset={30} />
       </Container>
     );
   }

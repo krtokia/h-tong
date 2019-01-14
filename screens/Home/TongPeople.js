@@ -140,6 +140,7 @@ class TongPeople extends Component{
             return (
               <TongFriendList
                 key={val}
+                photo={key.photo}
                 name={key.tongMemNm}
                 type={key.jobgroup}
                 detailHref={() => {this.props.navigation.navigate('Mypage')}}
@@ -149,6 +150,7 @@ class TongPeople extends Component{
             return (
               <TongFriendList2
                 key={val}
+                photo={key.photo}
                 name={key.tongMemNm}
                 type={key.jobgroup}
                 data={key}
@@ -185,6 +187,7 @@ class TongPeople extends Component{
             return (
               <TongFriendList2
                 key={val}
+                photo={key.photo}
                 name={key.tongMemNm}
                 type={key.jobgroup}
                 detailHref={() => {this.props.navigation.navigate('FriendDetail',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
@@ -237,11 +240,15 @@ class TongPeople extends Component{
 }
 class TongFriendList extends Component{
   render() {
+    var uri = 'profile_no.png';
+    if(this.props.photo) {
+      uri = this.props.photo
+    }
     return(
       <TouchableOpacity onPress={this.props.detailHref}>
         <View style={styles.friendList}>
           <View style={{flexDirection:'row',alignItems:'center'}}>
-            <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
+            <Image source={{uri: 'http://13.124.127.253/images/userProfile/'+uri}} style={styles.friendThumbnail} />
             <Text style={styles.friendName}>{this.props.name}</Text>
             <Text style={styles.friendInfo}>{this.props.type}</Text>
           </View>
@@ -266,11 +273,15 @@ class TongFriendList2 extends Component{
   }
   render() {
     const attendIcon = this.createIcon();
+    var uri = 'profile_no.png';
+    if(this.props.photo) {
+      uri = this.props.photo
+    }
     return(
       <TouchableOpacity onPress={this.props.detailHref}>
         <View style={[styles.friendList,{justifyContent:'space-between'}]}>
           <View style={{flexDirection:'row',alignItems:'center'}}>
-            <Image source={require('../../assets/images/profile_no.png')} style={styles.friendThumbnail} />
+            <Image source={{uri: 'http://13.124.127.253/images/userProfile/'+uri}} style={styles.friendThumbnail} />
             <Text style={styles.friendName}>{this.props.name}</Text>
             <Text style={styles.friendInfo}>{this.props.type}</Text>
           </View>

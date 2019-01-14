@@ -42,6 +42,7 @@ class ChatRoom extends Component{
     }
 
     this.onReceivedMessage = this.onReceivedMessage.bind(this);
+    this.renderSend = this.renderSend.bind(this);
 
     this.socket = SocketIOClient('http://h-tong.kr:3000');
     this.socket.on('chat', this.onReceivedMessage);
@@ -71,6 +72,21 @@ class ChatRoom extends Component{
     this.socket.emit('join', this.state.info);
     this.socket.emit('message', messages);
     this.saveChat(messages);
+  }
+
+  renderSend(props) {
+      return (
+        <Send
+          {...props}
+          wrapperStyle={{
+          text: {
+                color: constants.primaryColor
+              }
+          }}
+          label={'보내기'}
+          >
+          </Send>
+      );
   }
 
   onReceivedMessage(messages=[]) {
@@ -118,6 +134,7 @@ class ChatRoom extends Component{
   }
 
   render(){
+
     return (
       <Container>
         <Header style={{backgroundColor:'#db3928',justifyContent:'space-between'}}>
@@ -132,6 +149,7 @@ class ChatRoom extends Component{
           </Right>
         </Header>
         <GiftedChat
+          label = '보내기'
           placeholder='이곳에 입력해 주세요'
           messages={this.state.messages}
           onSend={messages => this.onSend(messages)}
@@ -139,6 +157,7 @@ class ChatRoom extends Component{
           user={{
             _id: this.state.memId,
           }}
+          rendersend = {this.renderSend}
         />
       </Container>
     );

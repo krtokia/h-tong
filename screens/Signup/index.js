@@ -48,7 +48,7 @@ export default class Signup extends Component {
   }
 
   onLogin() {
-    const { userId, userPass, userName } = this.state;
+    const { userId, userPass, userPass2, userName } = this.state;
     const resetAction = StackActions.reset({
       index: 0,
       actions: [NavigationActions.navigate({ routeName: 'HomeMore' })],
@@ -88,7 +88,7 @@ export default class Signup extends Component {
         if (this.props.valid) {
           this.props.navigation.goBack();
         } else {
-          Alert.alert("All the fields are compulsory!")
+        //  Alert.alert("All the fields are compulsory!")
         }
   }
 
@@ -152,7 +152,7 @@ export default class Signup extends Component {
                   Alert.alert('현장통','패스워드길이가 너무 짧습니다.')
                   this.refs['userPass2'].focus();
                 }
-              }              
+              }
             }
             placeholder={'패스워드확인'}
             secureTextEntry={true}

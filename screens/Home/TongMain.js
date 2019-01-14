@@ -120,8 +120,9 @@ class TongMain extends pickableImage{
           .then((response) => response.json())
           .then((responseJson) => {
             //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
             this.setState({
-              city : responseJson.documents[0].address.region_2depth_name
+              city : responseJson.documents[0].road_address.address_name
             });
           })
           .catch((error) => {
@@ -424,15 +425,24 @@ class TongMain extends pickableImage{
       const areaStatus = this.state.w4;
       if (areaStatus == 1) {
         cityStatus = "맑음";
-      } else if (areaStatus <= 4) {
-        cityStatus = "흐림";
-      } else if (areaStatus <= 11) {
+      } else if (areaStatus == 2) {
+        cityStatus = "약간 구름";
+      } else if (areaStatus == 3 ) {
+        cityStatus = "구름";
+      } else if (areaStatus == 4) {
+        cityStatus = "먹구름";
+      } else if (areaStatus == 9) {
+        cityStatus = "약간 비";
+      } else if (areaStatus == 10) {
         cityStatus = "비";
+      } else if (areaStatus == 11) {
+        cityStatus = "천둥번개";
       } else if (areaStatus == 13) {
         cityStatus = "눈";
       } else {
-        cityStatus = "기타";
+        cityStatus = "안개";
       }
+      console.log("status: " + areaStatus);
       let notiList = this.createNotiList();
       let workList = this.createWorkList();
       let d = new Date(Date.now());
@@ -622,7 +632,7 @@ class TongMain extends pickableImage{
                   <Text style={{fontSize:30}}>{this.state.w1}℃</Text>
                 </View>
                 <View style={[styles.center,{flex:3}]}>
-                  <Text style={{fontSize:18}}>{this.state.city}</Text>
+                  <Text style={{fontSize:9}}>{this.state.city}</Text>
                 </View>
                 <View style={[{flex:3,justifyContent:'space-around',paddingLeft:10}]}>
                   <Text style={{fontSize:11,color:'#999'}}>{cityStatus}</Text>

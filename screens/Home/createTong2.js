@@ -105,9 +105,10 @@ class createTong2 extends pickableImage{
             .then((response) => response.json())
             .then((responseJson) => {
               //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-              console.log(responseJson.documents[0].address.region_2depth_name,)
+              //console.log(" 주소: " + responseJson.documents[0].road_address.address_name)
+              console.log(responseJson.documents[0])
               this.setState({
-                addr : responseJson.documents[0].address.region_2depth_name,
+                addr : responseJson.documents[0].address.address_name,
               });
             })
             .catch((error) => {

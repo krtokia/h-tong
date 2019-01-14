@@ -120,9 +120,9 @@ class TongMain extends pickableImage{
           .then((response) => response.json())
           .then((responseJson) => {
             //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
+            console.log('getCity',responseJson)
             this.setState({
-              city : responseJson.documents[0].road_address.address_name
+              city : responseJson ? responseJson.documents ? responseJson.documents[0].address.address_name : '미확인 도시' : '미확인 도시'
             });
           })
           .catch((error) => {

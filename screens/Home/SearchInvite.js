@@ -146,6 +146,7 @@ class SearchInvite extends Component{
             inviteData.tongtitle+" 현장에 가입되었습니다.");
           this.setState({modal:false,action:true})
           this.getInvite()
+          this.getInvite2()
         } else {
           console.log(responseJson);
         }

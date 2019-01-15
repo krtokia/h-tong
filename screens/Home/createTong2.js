@@ -22,7 +22,7 @@ import {
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { NavigationActions } from "react-navigation";
-import { ImagePicker } from 'expo';
+import { ImagePicker, Permissions } from 'expo';
 import styles from "./styles";
 import pickableImage from "../common.js"
 import { StoreGlobal } from "../../App"
@@ -64,11 +64,17 @@ class createTong2 extends pickableImage{
         longitudeDelta: 0.0421,
     },
     markers: [],
-    isLoading10: false
+    isLoading10: false,
+    status: null,
     }
     //uploadImage.state = uploadImage.state.bind(this);
     this.uploadImage = this.uploadImage.bind(this);
 
+    }
+
+    async componentWillMount() {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA);
+      this.setState({ hasCameraPermission: status === 'granted' });
     }
 
     componentDidMount() {
@@ -581,7 +587,7 @@ class createTong2 extends pickableImage{
                     source={{ uri: this.state.imageSource }}
                  />
             <View style={{marginTop:20,alignItems:'center',justifyContent:'center'}}>
-                 <TouchableOpacity onPress={this._pickImage.bind(this)}>
+                 <TouchableOpacity onPress={this.pickFromCamera.bind(this)}>
                  <View style={{borderRadius:10,width:150,height:150,backgroundColor:'#eee',justifyContent:'center',alignItems:'center'}}>
                   <NBIcon name="camera" style={{fontSize:50,color:'#999'}} />
                   <Text style={{color:'#999',fontSize:15}}>{tongDiv}통 사진 추가</Text>

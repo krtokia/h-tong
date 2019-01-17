@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ToastAndroid,StyleSheet,Image,TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { ToastAndroid,StyleSheet,Image,TouchableOpacity, Alert, ActivityIndicator, ScrollView,RefreshControl, } from 'react-native';
 import {
   View,
   Button,
@@ -27,7 +27,7 @@ class TongPeople extends Component{
     super(props);
 
     this.state = {
-      isLoading: true,
+      isLoading: false,
       isLoading2: true,
       isLoading3: true,
       dataSource2: null,
@@ -37,6 +37,7 @@ class TongPeople extends Component{
       memId: StoreGlobal({type:'get',key:'loginId'}),
       count: 0,
       count2: 0,
+      refreshing: false
     }
   }
 
@@ -63,22 +64,32 @@ class TongPeople extends Component{
       });
   }
 
-  getFriend = async() => {
+  getCompany = () => {
+    this.setState({isLoading3:true})
     const { tongnum } = this.state;
-    return fetch("http://13.124.127.253/api/results.php?page=selectMembers&tongnum=" + tongnum)
+    return fetch("http://13.124.127.253/api/results.php?page=getCompanyList&tongnum=" + tongnum)
       .then((response) => response.json())
       .then((responseJson) => {
-        if(responseJson) {
-          this.setState({
-            isLoading: false,
-            dataSource: responseJson,
-            count: Object.keys(responseJson).length,
-          });
-        } else {
-          this.setState({
-            isLoading: false,
-          })
-        }
+        this.getCount()
+        this.setState({
+          isLoading3: false,
+          companyList: responseJson ? responseJson : [],
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  getCount = async() => {
+    const { tongnum } = this.state;
+    return fetch("http://13.124.127.253/api/results.php?page=getTongMemCount&tongnum=" + tongnum)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({
+          isLoading4: false,
+          fCount: responseJson[0].fCount
+        });
       })
       .catch((error) => {
         console.error(error);
@@ -86,16 +97,27 @@ class TongPeople extends Component{
   }
 
   componentDidMount() {
-    this.getFriend()
+    this.getCompany()
   }
 
   componentDidUpdate(prevProps) {
     if(this.props.navigation.getParam('refresh') !== prevProps.navigation.getParam('refresh')) {
-      this.getFriend()
+      this.getCompany()
     }
   }
 
-  attendCheck(data) {
+  refresh = refresh => {
+    this.setState({refresh})
+  }
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getCompany();
+    this.setState({refreshing: false});
+  }
+
+
+  attendCheck(data,action) {
+    console.log('action',action)
     const { memId, tongnum } = this.state;
 
     let apiUrl = 'http://13.124.127.253/api/tongMemAttend.php?action=update';
@@ -105,7 +127,7 @@ class TongPeople extends Component{
     formData.append('tongnum', tongnum);
     formData.append('userId', data.tongMemId);
     formData.append('attendId', memId);
-    formData.append('attend', 3);
+    formData.append('attend', action === 'check' ? 3 : 0);
 
     options = {
       method: 'POST',
@@ -115,7 +137,8 @@ class TongPeople extends Component{
       .then((responseJson)=> {
         if(responseJson === 'succed') {
           ToastAndroid.show("출석 체크 완료 되었습니다.", ToastAndroid.BOTTOM)
-          this.getFriend()
+          this.setState({refresh:Date(Date.now()).toString()})
+          console.log(responseJson)
         } else {
           //alert(responseJson);
             console.log(responseJson)
@@ -131,53 +154,11 @@ class TongPeople extends Component{
       return <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
               <ActivityIndicator />
              </View>
+    } else if(this.state.isLoading3) {
+      return <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+              <ActivityIndicator />
+             </View>
     } else {
-      var checky;
-      let fvalue
-      if(this.state.dataSource) {
-        fvalue = this.state.dataSource.map((key, val) => {
-          if(key.tongMemId === this.state.memId) {
-            return (
-              <TongFriendList
-                key={val}
-                photo={key.photo}
-                name={key.tongMemNm}
-                type={key.jobgroup}
-                detailHref={() => {this.props.navigation.navigate('Mypage')}}
-              />
-            )
-          } else {
-            return (
-              <TongFriendList2
-                key={val}
-                photo={key.photo}
-                name={key.tongMemNm}
-                type={key.jobgroup}
-                data={key}
-                detailHref={() => {this.props.navigation.navigate('FriendDetail',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
-                chatHref={() => {this.props.navigation.navigate('ChatRoom',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
-                attend = {key.attend}
-                parentMethod = {(data) => {
-                  if(key.attend === "2") {
-                    Alert.alert(
-                      '출근 체크',
-                      data.tongMemNm+' 출근 체크 하시겠습니까?',
-                      [
-                        {text: '확인', onPress: () => {this.attendCheck(data)}},
-                        {text: '취소' },
-                      ],
-                      { cancelable: false }
-                    )
-                  }
-                }}
-              />
-            )
-          }
-        });
-      } else {
-        fvalue = <View />
-      }
-
       let fvalue2;
       if(this.state.isLoading2) {
         fvalue2 = <View />
@@ -202,6 +183,22 @@ class TongPeople extends Component{
         }
       }
 
+      let cList;
+      if(this.state.companyList.length > 0) {
+        cList = this.state.companyList.map((val,key) => {
+          return <CompanyList
+            key={key}
+            title={val.tongCompany}
+            count={val.cCount}
+            exeFn={(title) => this.getFriend(title)}
+            navigation={this.props.navigation}
+            attendCheck={(data,action) => this.attendCheck(data,action)}
+            refresh={this.state.refresh}
+              />
+            })
+      } else {
+        cList = <View><Text>등록된 회사가 없습니다.</Text></View>
+      }
       return (
         <Container>
           <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
@@ -215,23 +212,46 @@ class TongPeople extends Component{
           </Header>
           <Content
             style={{ backgroundColor: "#f9f9f9" }}
+            contentContainerStyle={{flex:1}}
           >
             <View style={{width:'100%',padding:10,}}>
               <Item rounded style={{alignSelf:'center',width:'90%',height:40,backgroundColor:'rgba(0,0,0,0.1)'}}>
-                <Input placeholder='동료 검색' style={{paddingLeft:30}}  onChangeText={(searchTxt) => this.setState({ searchTxt })}/>
-                <Button style={{width:'25%',height:'100%',borderTopRightRadius:50,borderBottomRightRadius:50,justifyContent:'center',backgroundColor:'#db3928'}}>
-                  <Icon name="search" onPress={this.searchFriend} />
+                <Input placeholder='동료 검색' style={{paddingLeft:30}}  onChangeText={(searchTxt) => this.setState({ searchTxt })}
+                  value={this.state.searchTxt}
+                />
+                <Button style={{width:'25%',height:'100%',borderTopRightRadius:50,borderBottomRightRadius:50,justifyContent:'center',backgroundColor:'#db3928'}}
+                  onPress={() => {
+                      if(this.state.searchTxt) {
+                        this.searchFriend()
+                      } else {
+                        this.setState({dataSource2: null})
+                      }
+                    }}
+                >
+                  <Icon name="search" />
                 </Button>
               </Item>
             </View>
-            <Text style={{marginVertical:10,marginLeft:10,fontSize:13}}>검색 된 동료 ({this.state.count2})</Text>
-            <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
-              {fvalue2}
-            </View>
-            <Text style={{marginVertical:10,marginLeft:10,fontSize:13}}>현장 전체 동료 ({this.state.count})</Text>
-            <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
-              {fvalue}
-            </View>
+            <ScrollView
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.refreshing}
+                  onRefresh={this._onRefresh}
+                />
+              }
+            >
+              <View>
+                <Text style={{marginVertical:10,marginLeft:10,fontSize:13}}>검색 된 동료 ({this.state.count2})</Text>
+                <View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
+                  {fvalue2}
+                </View>
+                <Text style={{marginVertical:10,marginLeft:10,fontSize:13}}>현장 전체 동료 ({this.state.fCount})</Text>
+                {cList}
+                {/*<View style={[styles.Box,{marginBottom:10,paddingVertical:0}]}>
+                  {fvalue}
+                </View>*/}
+              </View>
+            </ScrollView>
           </Content>
         </Container>
       );
@@ -259,7 +279,7 @@ class TongFriendList extends Component{
 }
 class TongFriendList2 extends Component{
   attendCheckParent = () => {
-    this.props.parentMethod(this.props.data);
+    this.props.parentMethod(this.props.data,this.props.attend === "3" ? 'cancel' : 'check');
   }
 
   createIcon() {
@@ -298,6 +318,118 @@ class TongFriendList2 extends Component{
         </View>
       </TouchableOpacity>
     )
+  }
+}
+
+class CompanyList extends Component{
+  constructor(props) {
+    super(props)
+    this.state = {
+      show: false,
+      tongnum: StoreGlobal({type:'get',key:'tongnum'}),
+      dataSource: null,
+      memId: StoreGlobal({type:'get',key:'loginId'}),
+      isLoading20: false,
+      refresh: null
+    }
+  }
+
+  componentDidUpdate(prevProps,prevState) {
+    if(this.state.refresh !== this.props.refresh) {
+      this.setState({refresh:this.props.refresh})
+      this.getFriend()
+    }
+  }
+
+  getFriend = () => {
+    this.setState({isLoading20:true})
+    const { tongnum } = this.state;
+    return fetch("http://13.124.127.253/api/results.php?page=selectMembers&tongnum=" + tongnum + "&tongCompany="+this.props.title)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({
+          isLoading20: false,
+          dataSource: responseJson,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  render() {
+    if(this.state.isLoading20) {
+      return <ActivityIndicator />
+    } else {
+      let fvalue
+      if(this.state.dataSource) {
+        fvalue = this.state.dataSource.map((key, val) => {
+          if(key.tongMemId === this.state.memId) {
+            return (
+              <TongFriendList
+                key={val}
+                photo={key.photo}
+                name={key.tongMemNm}
+                type={key.jobgroup}
+                detailHref={() => {this.props.navigation.navigate('Mypage')}}
+              />
+            )
+          } else {
+            return (
+              <TongFriendList2
+                key={val}
+                photo={key.photo}
+                name={key.tongMemNm}
+                type={key.jobgroup}
+                data={key}
+                detailHref={() => {this.props.navigation.navigate('FriendDetail',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
+                chatHref={() => {this.props.navigation.navigate('ChatRoom',{friendId:key.tongMemId,refresh:Date(Date.now()).toString()})}}
+                attend = {key.attend}
+                parentMethod = {(data) => {
+                  if(key.attend !== "3") {
+                    Alert.alert(
+                      '출근 체크',
+                      data.tongMemNm+' 출근 체크 하시겠습니까?',
+                      [
+                        {text: '확인', onPress: () => {this.props.attendCheck(data,'check')}},
+                        {text: '취소' },
+                      ],
+                      { cancelable: false }
+                    )
+                  } else if(key.attend === "3") {
+                    Alert.alert(
+                      '출근 체크',
+                      data.tongMemNm+' 출근 체크 취소겠습니까?',
+                      [
+                        {text: '확인', onPress: () => {this.props.attendCheck(data,'cancel')}},
+                        {text: '취소' },
+                      ],
+                      { cancelable: false }
+                    )
+                  }
+                }}
+              />
+            )
+          }
+        });
+      } else {
+        fvalue = <View />
+      }
+      return(
+        <TouchableOpacity onPress={() => {this.getFriend(),this.setState({show:!this.state.show})}}>
+          <View style={{marginBottom:10}}>
+            <Text style={{fontSize:11,marginLeft:10}}>
+              {this.props.title} ({this.props.count})
+            </Text>
+            { this.state.show && (
+              <View style={[styles.Box,{marginTop:10,paddingVertical:0}]}>
+                {fvalue}
+              </View>
+            )}
+          </View>
+        </TouchableOpacity>
+      )
+    }
   }
 }
 export default TongPeople;

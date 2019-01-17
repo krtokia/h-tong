@@ -44,6 +44,7 @@ class TongNotice extends Component{
       isLoading: true,
       modal: false,
       memId: StoreGlobal({type:'get',key:'loginId'}),
+      tongCompany: StoreGlobal({type:'get',key:'tongCompany'}),
       content: null,
       isModify: false,
       parentShow: false,
@@ -51,13 +52,13 @@ class TongNotice extends Component{
       tongnum: StoreGlobal({type:'get',key:'tongnum'}),
       modifyVal: null,
       title: "",
-      readGrade: 10,
-      isAdmin: StoreGlobal({type:'get',key:'userGrade'})%2 == 1 ? true : StoreGlobal({type:'get',key:'userGrade'}) == 0 ? true : false
+      readGrade: '',
+      isAdmin: StoreGlobal({type:'get',key:'userGrade'}) < 4 ? true : false
     }
   }
 
   getNoti = async() => {
-      return fetch("http://13.124.127.253/api/results.php?page=selectNotice&tongnum=" + this.state.tongnum + "&grade=" + StoreGlobal({type:'get',key:'userGrade'}))
+      return fetch("http://13.124.127.253/api/results.php?page=selectNotice&tongnum=" + this.state.tongnum + "&grade=" + StoreGlobal({type:'get',key:'tongCompany'}))
             .then((response) => response.json())
             .then((responseJson) => {
               //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -67,7 +68,7 @@ class TongNotice extends Component{
                 parentShow: !this.state.parentShow,
                 content: null,
                 title: "",
-                readGrade: 10,
+                readGrade: '',
               });
             })
             .catch((error) => {
@@ -109,7 +110,6 @@ class TongNotice extends Component{
       title:modifyVal.notiTitle,
       readGrade: modifyVal.readGrade,
     });
-    console.log("readgrade::"+this.state.readGrade)
   }
 
   setDelete(deleteVal) {
@@ -213,6 +213,7 @@ class TongNotice extends Component{
         notiTitle: title,
         readGrade: readGrade,
       })}
+      console.log(options)
       return fetch(apiUrl, options).then((response) => response.json())
         .then((responseJson)=> {
           if(responseJson === 'succed') {
@@ -296,12 +297,16 @@ class TongNotice extends Component{
                   <Picker
                     selectedValue={this.state.readGrade}
                     style={{width:'90%',height:30}}
-                    onValueChange={(itemValue, itemIndex) => this.setState({readGrade: itemValue})}
+                    onValueChange={(itemValue, itemIndex) => {
+                      if(itemValue === "admin") {
+                        Alert.alert('운영자는 전체공지만 가능합니다.')
+                        return false;
+                      }
+                      this.setState({readGrade: itemValue})
+                    }}
                   >
-                    <Picker.Item label="시공사만" value="3" />
-                    <Picker.Item label="감리 이상" value="5" />
-                    <Picker.Item label="협력사 이상" value="7" />
-                    <Picker.Item label="전체" value="10" />
+                    <Picker.Item label="전체" value="every" />
+                    <Picker.Item label="소속사만" value={this.state.tongCompany ? this.state.tongCompany : "admin"} />
                   </Picker>
                   <View style={{height:20}} />
                   <Text style={{fontSize:13}}>공지 내용</Text>

@@ -285,7 +285,7 @@ class TongDanger extends pickableImage{
                   </View>
                 )}
               <View style={{flex:1.5,justifyContent:'center'}}>
-                <Button
+                {/*<Button
                   rounded
                   small
                   style={{backgroundColor:'#db3928'}}
@@ -294,7 +294,7 @@ class TongDanger extends pickableImage{
                   <Text style={{fontSize:12,}}>
                   <Icon name="plus-circle" type="FontAwesome" style={{color:'#fff',fontSize:14}} />
                    {` `}작성</Text>
-                </Button>
+                </Button>*/}
               </View>
             </View>
             {datas}

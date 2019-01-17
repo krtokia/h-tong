@@ -55,7 +55,7 @@ class tong extends Component{
 
     permissionsAlert = () =>
       Alert.alert(
-        'Permissions Required',s
+        'Permissions Required',
         'This app requires Camera & Camera Roll access to function properly. Please go to settings to enable manually (or restart the app).',
         [
           { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },

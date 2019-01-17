@@ -99,15 +99,10 @@ class SearchInvite extends Component{
   }
 
   gradeGetter(userGrade) {
-    switch(userGrade) {
-      case "0" : return "안전관리자(운영자)"; break;
-      case "1" : return "시공사 직원"; break;
-      case "2" : return "시공사 일용직"; break;
-      case "3" : return "감리 직원"; break;
-      case "4" : return "감리 일용직"; break;
-      case "5" : return "협력사 직원"; break;
-      case "6" : return "협력사 일용직"; break;
-      case "7" : return "개인"; break;
+    if(userGrade < 4) {
+      return "직원";
+    } else {
+      return "일용직";
     }
   }
 
@@ -116,10 +111,8 @@ class SearchInvite extends Component{
     var inviteData;
     if(invData2) {
       inviteData = invData2;
-      console.log("11111")
     } else {
       inviteData = invData;
-      console.log("22222")
     }
     let apiUrl = 'http://13.124.127.253/api/inviteTong.php?action=accept';
     options = {
@@ -135,6 +128,7 @@ class SearchInvite extends Component{
         tongMemId: inviteData.userId,
         userGrade: inviteData.userGrade,
         jobGrade: inviteData.jobGrade,
+        tongCompany: inviteData.tongCompany
       })
     }
     return fetch(apiUrl, options).then((response) => response.json())
@@ -299,7 +293,7 @@ class SearchInvite extends Component{
                 { invData.tongtype === 'T' && (
                 <View style={[styles.inviteDetailItem,]}>
                   <Text style={styles.inviteDetailTitle}>구분:</Text>
-                  <Text style={styles.inviteDetailText}>{this.gradeGetter(invData.userGrade)}</Text>
+                  <Text style={styles.inviteDetailText}>{invData.tongCompany} {this.gradeGetter(invData.userGrade)}</Text>
                 </View>
                 )}
                 { invData.tongtype === 'T' && (

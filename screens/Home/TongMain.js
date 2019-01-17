@@ -78,7 +78,7 @@ class TongMain extends pickableImage{
         city: null,
         imgModal: false,
         imgData: null,
-        isAdmin: StoreGlobal({type:'get',key:'userGrade'})%2 == 1 ? true : StoreGlobal({type:'get',key:'userGrade'}) == 0 ? true : false
+        isAdmin: StoreGlobal({type:'get',key:'userGrade'}) < 4 ? true : false
 		}
   }
   getTong = async() => {
@@ -204,10 +204,12 @@ class TongMain extends pickableImage{
     return fetch("http://13.124.127.253/api/results.php?page=selectMembers&tongnum=" + tongnum)
       .then((response) => response.json())
       .then((responseJson) => {
+        let attend = true
         for(i=0;i<Object.keys(responseJson).length;i++) {
           if(responseJson[i]['tongMemId'] === this.state.memId) {
             StoreGlobal({type:'set',key:'userGrade',value:responseJson[i]['userGrade']})
             StoreGlobal({type:'set',key:'isAdmin',value:responseJson[i]['isAdmin']})
+            StoreGlobal({type:'set',key:'tongCompany',value:responseJson[i]['tongCompany']})
           }
         }
         if(responseJson) {
@@ -215,7 +217,7 @@ class TongMain extends pickableImage{
             isLoading4: false,
             memCount: Object.keys(responseJson).length,
             friendSource: responseJson,
-            isAdmin:StoreGlobal({type:'get',key:'userGrade'})%2 == 1 ? true : StoreGlobal({type:'get',key:'userGrade'}) == 0 ? true : false
+            isAdmin: StoreGlobal({type:'get',key:'userGrade'}) < 4 ? true : false
           });
         } else {
           this.setState({
@@ -231,14 +233,54 @@ class TongMain extends pickableImage{
       });
   }
 
-  getAttend = async() => {
+  autoAttend = (userId,tongnum,attend) => {
+    let apiUrl = 'http://13.124.127.253/api/tongMemAttend.php?action=insert';
+
+    const formData = new FormData();
+
+    formData.append('tongnum', tongnum);
+    formData.append('userId', userId);
+    formData.append('attend', 3);
+
+    options = {
+      method: 'POST',
+      body: formData,
+    }
+    return fetch(apiUrl, options).then((response) => response.json())
+      .then((responseJson)=> {
+        if(responseJson === 'succed') {
+          if(attend) {
+            ToastAndroid.show("출근 체크되었습니다.", ToastAndroid.BOTTOM)
+          }
+          this.setState({isLoading5:false})
+        } else {
+          //alert(responseJson);
+            console.log(responseJson)
+        }
+      }).catch((error) => {
+        console.log(error)
+      });
+  }
+
+  getAttend = () => {
     const { tongnum, memId } = this.state;
     return fetch("http://13.124.127.253/api/results.php?page=tongAttend&tongnum=" + tongnum + "&id=" + memId)
       .then((response) => response.json())
       .then((responseJson) => {
+        let attendYn = true;
+        if(StoreGlobal({type:'get',key:'userGrade'}) < 4) {
+            attendYn = false;
+            this.autoAttend(memId,tongnum,responseJson ? responseJson[0].attend < 1 ? true : false : false)
+        } else {
+          if(responseJson) {
+            if(responseJson[0].attend != 0) {
+              attendYn = false
+            }
+          }
+        }
         this.setState({
           isLoading5: false,
-          attendModal: responseJson ? (responseJson[0].attend == 0 ? true : false) : true
+          attendModal: attendYn
         });
       })
       .catch((error) => {
@@ -574,9 +616,10 @@ class TongMain extends pickableImage{
                   onPress={() => this.props.navigation.navigate("TongPeople")}
                 >
                   <View style={{flex:1}}>
-                    <TongPeopleInfo title="시공사">{this.state.friendSource[0].oCount}</TongPeopleInfo>
-                    <TongPeopleInfo title="감리">{this.state.friendSource[0].sCount}</TongPeopleInfo>
-                    <TongPeopleInfo title="협력사">{this.state.friendSource[0].eCount}</TongPeopleInfo>
+                    <TongPeopleInfo title="시공사">{this.state.friendSource[0].cCount}</TongPeopleInfo>
+                    <TongPeopleInfo title="감리">{this.state.friendSource[0].gCount}</TongPeopleInfo>
+                    <TongPeopleInfo title="협력사">{this.state.friendSource[0].pCount}</TongPeopleInfo>
+                    <TongPeopleInfo title="일용직">{this.state.friendSource[0].eCount}</TongPeopleInfo>
                   </View>
                 </TouchableWithoutFeedback>
               </View>

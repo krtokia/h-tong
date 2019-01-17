@@ -180,10 +180,9 @@ class TongDangerDetail extends pickableImage{
             onRequestClose={() => {
               this.setState({modal:!this.state.modal});
             }}>
-            <View style={[{flex:1,backgroundColor:'#0008'}]}>
-              <ModalOut closeModal={(modal) => this.setState({modal})} />
+            <TouchableWithoutFeedback onPress={() => console.log('onPress')} style={[{flex:1}]}>
+            <View style={[styles.center,{flex:1,backgroundColor:'#0008'}]}>
               <View style={[styles.row2]}>
-                <ModalOut closeModal={(modal) => this.setState({modal})} />
                 <View style={[styles.row2,{width:'70%',backgroundColor:'#fff',padding:10,alignItems:'center',borderRadius:10}]}>
                   <Text style={{fontSize:13}}>삭제 사유 : </Text>
                   <TextInput
@@ -196,7 +195,6 @@ class TongDangerDetail extends pickableImage{
                     }}
                   />
                 </View>
-                <ModalOut closeModal={(modal) => this.setState({modal})} />
               </View>
               <View style={{alignSelf:'center',width:'50%',marginTop:10}}>
                 <Button
@@ -211,8 +209,8 @@ class TongDangerDetail extends pickableImage{
                   <Text>위험 삭제</Text>
                 </Button>
               </View>
-              <ModalOut closeModal={(modal) => this.setState({modal})} />
             </View>
+            </TouchableWithoutFeedback>
           </Modal>
           <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
             <Left style={{flex:1}}>

@@ -126,7 +126,7 @@ class TongEmergency extends Component{
               </View>
               <TouchableOpacity style={{flex:1}}
                 onPress={() => {
-                  if(StoreGlobal({type:'get',key:'userGrade'} == 0)) {
+                  if(StoreGlobal({type:'get',key:'userGrade'}) == 0) {
                     this.props.navigation.navigate('TongAdmin2',{param:div,refresh:this.refresh})
                   } else {
                     Alert.alert('현장통','담당자가 지정되지 않았습니다. 운영자에게 문의하세요.')
@@ -137,7 +137,11 @@ class TongEmergency extends Component{
                 <View style={[styles.center,{flex:1}]}>
                   <Text style={{fontSize:17,color:'#db3928'}}>등록되지 않았습니다.</Text>
                   <Text> </Text>
-                  <Text style={{fontSize:15,color:'#db3928'}}>터치하여 등록</Text>
+                  { StoreGlobal({type:'get',key:'userGrade'}) == 0 ? (
+                    <Text style={{fontSize:15,color:'#db3928'}}>터치하여 등록</Text>
+                  ) : (
+                    <Text style={{fontSize:15,color:'#db3928'}}>운영자에게 문의하세요.</Text>
+                  )}
                 </View>
               </View>
               </TouchableOpacity>

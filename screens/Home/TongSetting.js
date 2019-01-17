@@ -44,6 +44,10 @@ class TongSetting extends Component{
     }
   }
 
+  refresh = refresh => {
+    this.setState({refresh})
+  }
+
   deleteMember = () => {
     const { memId, tongnum } = this.state;
     let apiUrl = 'http://13.124.127.253/api/tongMembers.php?action=deleteMembers';
@@ -176,6 +180,12 @@ class TongSetting extends Component{
               <ListItem
                 name="관리자 설정"
                 href={() => {this.props.navigation.navigate('TongAdmin')}}
+              />
+            }
+            { StoreGlobal({type:'get',key:'userGrade'}) == 0 &&
+              <ListItem
+                name="회사 등록"
+                href={() => {this.props.navigation.navigate('TongCompany',{ refresh: this.refresh })}}
               />
             }
             <ListItem

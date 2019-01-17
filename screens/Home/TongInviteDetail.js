@@ -34,13 +34,14 @@ class TongInviteDetail extends Component{
       isLoading: true,
       userId: StoreGlobal({type:'get',key:'loginId'}),
       tongnum: StoreGlobal({type:'get',key:'tongnum'}),
+      userGrade: StoreGlobal({type:'get',key:'userGrade'}),
+      tongCompany: StoreGlobal({type:'get',key:'tongCompany'}),
       friendId: this.props.navigation.getParam('friendId'),
       dataSource: null,
       isFriend: false,
       userImgs: null,
       careerSource: null,
       modal: false,
-      userGrade: 8,
       isInvited: null,
     }
   }
@@ -120,10 +121,23 @@ class TongInviteDetail extends Component{
   }
 
   setInvite = () => {
-    if(!this.state.jobGrade) {
-      Alert.alert('현장통','직급을 입력해주세요.');
-      return null;
+    if(this.state.jobGrade) {
+      var regex=/[ㄱ-ㅎ]/i;
+      if(this.state.jobGrade.match(regex)) {
+        Alert.alert('직급을 정확히 입력해주세요.')
+        this.refs['grade'].focus()
+        return false;
+      }
+    } else {
+      Alert.alert('직급을 정확히 입력해주세요.')
+      this.refs['grade'].focus()
+      return false;
     }
+    if(!this.state.setGrade || !this.state.setCompany || !this.state.setCompony === "error") {
+      Alert.alert('구분 또는 회사 선택은 필수 사항입니다.')
+      return false;
+    }
+
     this.inviteFriend()
   }
 
@@ -137,7 +151,7 @@ class TongInviteDetail extends Component{
 
   inviteFriend() {
     this.setState({modal:!this.state.modal})
-    const { friendId, userId, tongnum, userGrade, jobGrade, message } = this.state;
+    const { friendId, userId, tongnum, setGrade, jobGrade, setCompany, message } = this.state;
     let apiUrl = 'http://13.124.127.253/api/inviteTong.php?action=invite';
     options = {
       method: 'POST',
@@ -149,11 +163,13 @@ class TongInviteDetail extends Component{
         userId: friendId,
         inviteId: userId,
         tongnum: tongnum,
-        userGrade: userGrade,
+        userGrade: setGrade.substring(1,2),
         message: message,
-        jobGrade: jobGrade
+        jobGrade: jobGrade,
+        tongCompany: setCompany
       })
     }
+    console.log(options)
     return fetch(apiUrl, options).then((response) => response.json())
       .then((responseJson)=> {
         if(responseJson === 'succed') {
@@ -178,6 +194,33 @@ class TongInviteDetail extends Component{
 
   refresh = refresh => {
     this.setState({refresh})
+  }
+
+  getCompanyList = (company) => {
+    var cName;
+    if(this.state.userGrade > 0) {
+      cName = this.state.tongCompany;
+    }
+    return fetch("http://13.124.127.253/api/results.php?page=getCompany&tongnum="+this.state.tongnum+"&company="+company+"&cName="+cName)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({
+          isLoading10: false,
+  		    companyList: responseJson,
+        });
+        if(!responseJson) {
+          var companyName;
+          switch(company.substring(0,1)) {
+            case 'C' : companyName = '시공사'; break;
+            case 'G' : companyName = '감리사'; break;
+            case 'P' : companyName = '협력사'; break;
+          }
+          Alert.alert('등록된 '+companyName+'가 없습니다.')
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   render(){
@@ -229,19 +272,26 @@ class TongInviteDetail extends Component{
                 infoVal="경력이 없습니다."
               />
       }
+
+      let compList;
+      if(this.state.companyList) {
+        compList = this.state.companyList.map((val,key) => {
+          return <Picker.Item label={val.companyTitle} value={val.companyTitle} key={key} />;
+        })
+      } else {
+        compList = <Picker.Item label="없음" value="error" />;
+      }
       return (
         <Container>
           <Modal
-            animationType="slide"
-            transparent={true}
-            visible={this.state.modal}
-            onRequestClose={() => {
-              this.setState({modal:!this.state.modal})
-            }}>
-            <View style={[{flex:1,backgroundColor:'#0008'}]}>
-              <ModalOut closeModal={(close) => this.setState({modal:close})}/>
-              <View style={[{flex:3,flexDirection:'row'}]}>
-                <ModalOut closeModal={(close) => this.setState({modal:close})}/>
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modal}
+          onRequestClose={() => {
+          this.setState({modal:!this.state.modal})
+          }}>
+            <View style={[styles.center,{flex:1,backgroundColor:'#0008'}]}>
+              <View style={[{width:'70%',height:'70%'}]}>
                 <View style={{flex:3,backgroundColor:'#fff',padding:10}}>
                   <View style={{flex:1}}>
                     <Text style={{fontSize:13,marginBottom:5}}>초대 동료 이름 :</Text>
@@ -255,26 +305,64 @@ class TongInviteDetail extends Component{
                   <View style={{flex:1}}>
                     <Text style={{fontSize:13,marginBottom:5}}>초대 동료 직급 :</Text>
                     <TextInput
+                      ref="grade"
                       underlineColorAndroid="transparent"
                       style={{textAlign:'center',borderBottomWidth:1,borderColor:'#999'}}
-                      onChangeText={(jobGrade) => {this.setState({jobGrade})}}
+                      onChangeText={(jobGrade) => {this.setState({jobGrade:jobGrade.replace(/[^0-9a-zA-Zㄱ-힣]/g,"")})}}
+                      onBlur={() => {
+                        if(this.state.jobGrade) {
+                          var regex=/[ㄱ-ㅎ]/i;
+                          if(this.state.jobGrade.match(regex)) {
+                            Alert.alert('직급을 정확히 입력해주세요.')
+                            this.refs['grade'].focus()
+                            return false;
+                          }
+                        }
+                      }}
                       placeholder="직급을 입력하세요"
                     />
                   </View>
                   <View style={{flex:1}}>
                     <Text style={{fontSize:13}}>초대 동료 구분 :</Text>
                     <Picker
-                      selectedValue={this.state.userGrade}
-                      onValueChange={(itemValue, itemIndex) => this.setState({userGrade: itemValue})}
+                      selectedValue={this.state.setGrade}
+                      onValueChange={(itemValue, itemIndex) => {
+                        var div;
+                        switch(this.state.userGrade) {
+                          case '1' : div = 'C'; break;
+                          case '2' : div = 'G'; break;
+                          case '3' : div = 'P'; break;
+                          default: div = 'error';
+                        }
+                        if(itemValue === 'error') {
+                          return false
+                        }
+                        if(itemValue.substring(0,1) === div || this.state.userGrade == "0") {
+                          this.getCompanyList(itemValue.substring(0,1))
+                          this.setState({setGrade: itemValue})
+                        } else {
+                          Alert.alert('해당 소속 직원만 초대할 수 있습니다.')
+                        }
+                      }}
                     >
-                      <Picker.Item label="안전관리자(운영자)" value="0" />
-                      <Picker.Item label="시공사 직원" value="1" />
-                      <Picker.Item label="시공사 일용직" value="2" />
-                      <Picker.Item label="감리 직원" value="3" />
-                      <Picker.Item label="감리 일용직" value="4" />
-                      <Picker.Item label="협력사 직원" value="5" />
-                      <Picker.Item label="협력사 일용직" value="6" />
-                      <Picker.Item label="개인" value="8" />
+                    <Picker.Item label="선택하세요" value="error" />
+                    <Picker.Item label="시공사 직원" value="C1" />
+                    <Picker.Item label="감리 직원" value="G2" />
+                    <Picker.Item label="협력사 직원" value="P3" />
+                    <Picker.Item label="시공사 일용직" value="C4" />
+                    <Picker.Item label="감리 일용직" value="G4" />
+                    <Picker.Item label="협력사 일용직" value="P4" />
+                    </Picker>
+                  </View>
+                  <View style={{flex:1}}>
+                    <Text style={{fontSize:13}}>소속 회사 선택 :</Text>
+                    <Picker
+                      selectedValue={this.state.setCompany}
+                      onValueChange={(itemValue, itemIndex) => {
+                        this.setState({setCompany: itemValue})
+                      }}
+                    >
+                      { compList }
                     </Picker>
                   </View>
                   <View style={{flex:2}}>
@@ -286,17 +374,24 @@ class TongInviteDetail extends Component{
                       placeholder="초대 메세지를 입력하세요"
                     />
                   </View>
-                  <TouchableOpacity
-                    style={[styles.Row,styles.center,{flex:0.5,backgroundColor:'#db3928'}]}
-                    onPress={this.setInvite}
-                  >
-                    <Icon name="envelope-o" type="FontAwesome" style={{fontSize:18,color:'#fff'}} />
-                    <Text style={{color:'#fff'}}> 보내기</Text>
-                  </TouchableOpacity>
+                  <View style={[styles.row2,{flex:0.5,justifyContent:'space-between'}]}>
+                    <TouchableOpacity
+                      style={[styles.Row,styles.center,{flex:1,backgroundColor:'#db3928'}]}
+                      onPress={this.setInvite}
+                    >
+                      <Icon name="envelope-o" type="FontAwesome" style={{fontSize:18,color:'#fff'}} />
+                      <Text style={{color:'#fff'}}> 보내기</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.Row,styles.center,{flex:1,backgroundColor:'#aaa'}]}
+                      onPress={() => this.setState({modal:false})}
+                    >
+                      <Icon name="times" type="FontAwesome" style={{fontSize:18,color:'#fff'}} />
+                      <Text style={{color:'#fff'}}> 취소</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <ModalOut closeModal={(close) => this.setState({modal:close})}/>
               </View>
-              <ModalOut closeModal={(close) => this.setState({modal:close})}/>
             </View>
           </Modal>
           <Content

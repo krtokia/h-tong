@@ -60,6 +60,8 @@ import TongInviteDetail from "./Home/TongInviteDetail.js"
 import TongDanger from "./Home/TongDanger.js";
 import TongDangerDetail from "./Home/TongDangerDetail.js";
 import TongEmergency from "./Home/TongEmergency.js";
+import TongCompany from "./Home/TongCompany.js";
+import TongCompany2 from "./Home/TongCompany2.js";
 
 import CommunityMain from "./Home/CommunityMain.js";
 import CommunityNotice from "./Home/CommunityNotice.js";
@@ -293,6 +295,8 @@ const AppStackNavigator = createStackNavigator({
   TongAdmin: { screen: TongAdmin },
   TongAdmin2: { screen: TongAdmin2 },
   TongEmergency: { screen: TongEmergency },
+  TongCompany: { screen: TongCompany },
+  TongCompany2: { screen: TongCompany2 },
   Test: { screen: Test },
   SearchInvite: { screen: SearchInvite },
   HomeTab: {

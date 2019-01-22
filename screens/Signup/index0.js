@@ -8,9 +8,7 @@ import {
   Image,
   Dimensions,
   StatusBar,
-  KeyboardAvoidingView,
-  TouchableOpacity,
-  Text
+  KeyboardAvoidingView
 } from 'react-native';
 import { Header, StackActions, NavigationActions } from 'react-navigation';
 
@@ -38,11 +36,7 @@ export default class Signup extends Component {
       userId: '',
       userPass: '',
       userPass2: '',
-      userName: '',
-      phoneEnd: true,
-      phoneNm: '',
-      tempPhone: '',
-      phoneId:''
+      userName: ''
     };
   }
 
@@ -104,59 +98,8 @@ export default class Signup extends Component {
       <KeyboardAvoidingView behavior = 'position'  enabled keyboardVerticalOffset={5}>
       <ImageBackground source={bg} style={styles.background}>
       <View style={styles.container}>
-        {/*<Image source={logo} style={styles.logo} /> */}
+        <Image source={logo} style={styles.logo} />
         <View style={styles.inputBoxes}>
-          <View style={{flexDirection:'row'}}>
-            <TextInput
-              ref='phoneInput'
-              style={[styles.input]}
-              placeholder="연락처를 입력해주세요"
-              underlineColorAndroid="transparent"
-              onChangeText={(content) => {
-                this.setState({tempPhone:content.replace(/[^0-9]/g,'')})
-              }}
-              onFocus={() => {this.setState({phoneNm:this.state.tempPhone,phoneEnd:false})}}
-              onBlur={() => {
-                if(this.state.tempPhone && this.state.tempPhone.length != 11) {
-                  Alert.alert('현장통','연락처를 알맞게 기입하세요.')
-                  this.refs['phoneInput'].focus();
-                } else {
-                this.setState({
-                    cellPhone:this.state.tempPhone.replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{4})([0-9]{4})/,"$1-$2-$3"),
-                    phoneEnd: true
-                })
-              }}}
-              value={this.state.phoneEnd ? this.state.phoneNm : this.state.tempPhone}
-            >
-            </TextInput>
-            <View style={{width:80,marginLeft:10,padding:5}}>
-              <TouchableOpacity style={{flex:1,backgroundColor:'#db3928',alignItems:'center',justifyContent:'center'}}
-
-              >
-                <Text style={{fontSize:11,color:'#fff'}}>인증받기</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={{flexDirection:'row'}}>
-            <TextInput
-              ref='phoneId'
-              style={[styles.input]}
-              placeholder="인증번호를 입력해주세요"
-              underlineColorAndroid="transparent"
-              onChangeText={(content) => {
-                this.setState({phoneId:content.replace(/[^0-9]/g,'')})
-              }}
-              value={this.state.phoneId}
-            >
-            </TextInput>
-            <View style={{width:80,marginLeft:10,padding:5}}>
-              <TouchableOpacity style={{flex:1,backgroundColor:'#db3928',alignItems:'center',justifyContent:'center'}}
-
-              >
-                <Text style={{fontSize:11,color:'#fff'}}>인증</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
           <TextInput
             ref="userName"
             value={this.state.userName}

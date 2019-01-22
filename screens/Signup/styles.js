@@ -38,5 +38,7 @@ export default {
   },
   btnBoxes: {
 
+  },
+  itemInput: {
   }
 }

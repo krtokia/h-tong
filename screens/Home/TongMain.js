@@ -11,7 +11,9 @@ import {
   TouchableHighlight,
   Alert,
   ActivityIndicator,
-  Linking
+  Linking,
+  RefreshControl,
+  TextInput
 } from 'react-native';
 import {
   Container,
@@ -30,13 +32,16 @@ import {
   Textarea,
   FooterTab,
   Footer,
-  Icon
+  Icon,
+  ActionSheet
 } from "native-base";
 
 import styles from "./styles";
 import pickableImage from "../common.js"
 
 import { StoreGlobal } from '../../App';
+var BUTTONS = ["카메라 촬영", "앨범에서 선택", "취소"];
+
 
 class TongMain extends pickableImage{
   constructor(props) {
@@ -78,7 +83,10 @@ class TongMain extends pickableImage{
         city: null,
         imgModal: false,
         imgData: null,
-        isAdmin: StoreGlobal({type:'get',key:'userGrade'}) < 4 ? true : false
+        isAdmin: StoreGlobal({type:'get',key:'userGrade'}) < 4 ? true : false,
+        refreshing: false,
+        memoModal: false,
+        resCount: 0
 		}
   }
   getTong = async() => {
@@ -130,6 +138,12 @@ class TongMain extends pickableImage{
 
   }
 
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.componentDidMount()
+    this.setState({refreshing: false});
+  }
+
   getWeather() {
 
     var lat = Math.floor(this.state.dataSource.latitude);
@@ -174,19 +188,22 @@ class TongMain extends pickableImage{
           });
   }
   getWork = async() => {
-      var d = new Date(Date.now());
-      var y = d.getFullYear();
-      var m = d.getMonth()+1;
-      var dd = d.getDate();
-      var today = y+"-"+m+"-"+dd
-      return fetch("http://13.124.127.253/api/results.php?page=getWorkListMain&tongnum=" + this.state.tongnum+"&today="+today)
+      return fetch("http://13.124.127.253/api/results.php?page=getWorkListMain&tongnum=" + this.state.tongnum+"&id="+this.state.memId)
             .then((response) => response.json())
             .then((responseJson) => {
+              var res = responseJson ? responseJson : [];
+              var resCount = 0;
+              res.map((val) => {
+                if(val.userId === this.state.memId) {
+                  resCount++
+                }
+              })
               if(responseJson) {
                 this.setState({
                   isLoading3: false,
                   workSource: responseJson,
                   workCount: Object.keys(responseJson).length,
+                  resCount: resCount
                 });
               } else {
                 this.setState({
@@ -292,12 +309,13 @@ class TongMain extends pickableImage{
     const { imageSource, imgresult } = this.state;
     if(imageSource !== prevState.imageSource) {
       if(imageSource) {
-        this.imgupload(imageSource);
+        this.setState({memoModal: true})
       }
     }
   }
 
-  imgupload(imageSource) {
+  imgupload() {
+    const { imageSource, memo } = this.state;
     let apiUrl = 'http://13.124.127.253/api/worklist.php?';
     let uri = null;
     let fileType = null;
@@ -306,6 +324,7 @@ class TongMain extends pickableImage{
 
     formData.append('tongnum', StoreGlobal({type:'get',key:'tongnum'}));
     formData.append('userId', StoreGlobal({type:'get',key:'loginId'}));
+    formData.append('memo', memo);
 
     uri = imageSource;
     uriParts = uri.split('.');
@@ -359,11 +378,14 @@ class TongMain extends pickableImage{
       workDOM = workSource.map((val,key) => {
         return <View key={key}>
           <TouchableWithoutFeedback onPress={() => this.imageView(val.photolist)}>
+            <View>
             <Image
               source={{uri: 'http://13.124.127.253/images/workList/' + val.photolist}}
               style={styles.mainWorkImg}
               key={key}
             />
+            <Text style={{fontSize:10,textAlign:'center'}}>{val.userNm}</Text>
+            </View>
           </TouchableWithoutFeedback>
         </View>
       })
@@ -483,7 +505,6 @@ class TongMain extends pickableImage{
       } else {
         cityStatus = "안개";
       }
-      console.log("status: " + areaStatus);
       let notiList = this.createNotiList();
       let workList = this.createWorkList();
       let d = new Date(Date.now());
@@ -506,6 +527,64 @@ class TongMain extends pickableImage{
                 />
                 </TouchableWithoutFeedback>
               )}
+            </View>
+          </Modal>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.memoModal}
+            onRequestClose={() => {
+              this.setState({memoModal:false,imageSource:null})
+            }}>
+            <View style={[styles.center,{flex:1,backgroundColor:'#0008'}]}>
+              <View style={{width:'80%',height:'50%',backgroundColor:'#fff',padding:10}}>
+                <View style={{flex:2,justifyContent:'center'}}>
+                  <Image source={{uri: this.state.imageSource }} style={{flex:1,resizeMode:'contain'}}/>
+                </View>
+                <View style={{flex:1,justifyContent:'center',padding:5}}>
+                  <Text style={{fontSize:12,color:'#666',marginBottom:3}}>한줄 메모:</Text>
+                  <TextInput
+                    ref="memo"
+                    style={[{borderColor:'#eee',borderWidth:1,width:'100%',height:'auto',fontSize:12,paddingRight:5}]}
+                    placeholder="30자 이하로 작성해주십시오."
+                    underlineColorAndroid="transparent"
+                    onChangeText={(content) => {
+                      if(content.length > 30) {
+                        Alert.alert('30자 이하로 작성해주십시오.')
+                        content = content.substr( 0, content.length-1 )
+                      }
+                      this.setState({memo:content})
+                    }}
+                  />
+                </View>
+                <View style={[styles.row2,{flex:1,alignItems:'flex-end',paddingBottom:5}]}>
+                  <View style={{flex:1,marginRight:3}}>
+                    <Button
+                      rounded
+                      block
+                      style={{backgroundColor:'#db3928'}}
+                      onPress={() => {
+                        this.setState({memoModal:false})
+                        this.imgupload()
+                      }}
+                    >
+                      <Text>완료</Text>
+                    </Button>
+                  </View>
+                  <View style={{flex:1,marginLeft:3}}>
+                    <Button
+                      rounded
+                      block
+                      style={{backgroundColor:'#aaa'}}
+                      onPress={() => {
+                        this.setState({memoModal:false,imageSource:null})
+                      }}
+                    >
+                      <Text>취소</Text>
+                    </Button>
+                  </View>
+                </View>
+              </View>
             </View>
           </Modal>
           <Modal
@@ -564,6 +643,14 @@ class TongMain extends pickableImage{
             showsVerticalScrollIndicator={false}
             style={{ backgroundColor: "#f4f4f4" }}
             contentContainerStyle={{flex:1}}
+          >
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this._onRefresh}
+              />
+            }
           >
             {/* Header Start */}
             <View style={[styles.ImageHeader,{padding:0,margin:0}]}>
@@ -648,12 +735,29 @@ class TongMain extends pickableImage{
                   <Text style={{fontSize:9,color:'#aaa',marginRight:10}}>{today}</Text>
                   <Text style={styles.boxSub}>전체 {this.state.workCount}</Text>
                 </View>
-                <ScrollView style={{height:60}} horizontal={true}>
+                <ScrollView style={{height:100}} horizontal={true}>
                   {workList}
                 </ScrollView>
                 <View style={[styles.center,{flex:1}]}>
                   <TouchableOpacity style={styles.Row}
-                    onPress={this._pickImage}
+                    onPress={() => {
+                      if(this.state.resCount < 3) {
+                      ActionSheet.show(
+                      {
+                        options: BUTTONS,
+                        cancelButtonIndex: 3,
+                      },
+                      (buttonIndex) => {
+                        if(BUTTONS[buttonIndex] === "카메라 촬영") {
+                          this.pickFromCamera()
+                        } else {
+                          this._pickImage2()
+                        }
+                      }
+                      )} else {
+                        Alert.alert('더이상 올릴 수 없습니다.')
+                      }
+                    }}
                   >
                     <Icon name="ios-add-circle-outline" type="Ionicons" style={{fontSize:20,color:'#db3928'}} />
                     <Text style={{fontSize:15,color:'#db3928'}}> 사진 올리기</Text>
@@ -711,6 +815,7 @@ class TongMain extends pickableImage{
               </View>
             </View>
             {/* footer End */}
+          </ScrollView>
           </Content>
         </Container>
       );

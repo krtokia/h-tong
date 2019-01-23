@@ -98,9 +98,18 @@ class More extends pickableImage{
       .then((response) => response.json())
       .then((responseJson) => {
         //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        let res = responseJson ? responseJson : [];
+        let workObj = {};
+        res.map((val) => {
+          if(workObj[val.workdate+"_"+val.tongtitle]) {
+            workObj[val.workdate+"_"+val.tongtitle] = [...workObj[val.workdate+"_"+val.tongtitle], val.photolist];
+          } else {
+            workObj[val.workdate+"_"+val.tongtitle] = [val.photolist];
+          }
+        })
         this.setState({
           isLoading3: false,
-          careerSource: responseJson,
+          careerSource: workObj,
           openInput: false,
           career: "",
           selectedDate: "",
@@ -116,6 +125,7 @@ class More extends pickableImage{
     this.getUser()
     this.getImages()
     this.getCareer()
+
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -212,7 +222,7 @@ class More extends pickableImage{
     this.getUser()
     this.getImages()
     this.getCareer()
-    this.setState({refreshing: false});
+    this.setState({refreshing:false})
   }
 
   refresh = refresh => {
@@ -256,12 +266,15 @@ class More extends pickableImage{
 
       let getCareer;
       if(this.state.careerSource) {
-        getCareer = this.state.careerSource.map((val,key) => {
+        getCareer = Object.keys(this.state.careerSource).map((val,key) => {
+          var dateVal = val.split('_')[0];
+          var infoVal = val.split('_')[1];
+
           return <CareerList
                   key={key}
-                  dateVal={val.careerDate}
-                  infoVal={val.career}
-                  photoVal={val.photo}
+                  dateVal={dateVal}
+                  infoVal={infoVal}
+                  photoVal={this.state.careerSource[val]}
                   imgMethod={(data) => this.imageView(data)}
                 />
         })
@@ -293,6 +306,7 @@ class More extends pickableImage{
         <Content
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#f4f4f4" }}
+          contentContainerStyle={{flex:1}}
         >
         <ScrollView
           refreshControl={
@@ -367,7 +381,7 @@ class More extends pickableImage{
             </View>
             <View style={{flexDirection:'row',alignItems:'flex-start',marginTop:10}}>
               <Text style={{color:'#aaa',fontSize:13}}>경력</Text>
-              <View style={{marginLeft:10}}>
+              <View style={{marginLeft:10,flex:1}}>
                 {getCareer}
 {/*                { this.state.openInput &&
                   <View>
@@ -416,22 +430,24 @@ export default More;
 
 class CareerList extends Component{
   render() {
-    return(
-      <View style={{flexDirection:'row',marginBottom:12}}>
-        <View style={{width:"20%",alignSelf:'center'}}>
-          <Text style={{fontSize:11}}>{this.props.dateVal}</Text>
-        </View>
-        <View style={{width:"50%",alignSelf:'center'}}>
-          <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:13}}>{this.props.infoVal}</Text>
-        </View>
-        <View style={{width:"30%",height:50,paddingRight:10}}>
-        { this.props.photoVal && (
-          <TouchableWithoutFeedback onPress={() => this.props.imgMethod(this.props.photoVal)}>
-            <Image source={{uri: `http://13.124.127.253/images/workList/`+this.props.photoVal}}
-              style={{width:"100%", height:"100%", resizeMode:'contain'}}
+    let photoList = this.props.photoVal.map((val,key) => {
+      return <View key={key} style={{width:50,height:50,marginRight:3,padding:3,borderWidth:1,borderColor:'#666'}}>
+          <TouchableWithoutFeedback onPress={() => this.props.imgMethod(val)}>
+            <Image source={{uri: `http://13.124.127.253/images/workList/`+val}}
+              style={{width:'100%', height:'100%',resizeMode:'contain'}}
             />
           </TouchableWithoutFeedback>
-        )}
+        </View>
+    })
+
+    return(
+      <View style={{flexDirection:'row',padding:5,height:60,width:'100%',borderBottomWidth:1,borderBottomColor:'#ddd'}}>
+        <View style={{flex:1.5,justifyContent:'space-around'}}>
+          <Text style={{fontSize:11}}>{this.props.dateVal}</Text>
+          <Text numberOfLines={1} ellipsizeMode="tail" style={{fontSize:11}}>{this.props.infoVal}</Text>
+        </View>
+        <View style={{flex:2,flexDirection:'row'}}>
+          {photoList}
         </View>
       </View>
     )

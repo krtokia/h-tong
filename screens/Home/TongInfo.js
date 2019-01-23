@@ -75,7 +75,6 @@ class TongInfo extends Component{
 
   onRegionChange = (data) => {
     this.markerPosition = data;
-    console.log(data)
   }
   onMapPress(e) {
     this.setState({

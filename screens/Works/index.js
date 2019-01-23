@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert,ActivityIndicator,StyleSheet,Image,TouchableOpacity,TouchableHighlight,Modal,TextInput, Picker,KeyboardAvoidingView } from 'react-native';
+import { ScrollView,RefreshControl,Alert,ActivityIndicator,StyleSheet,Image,TouchableOpacity,TouchableHighlight,Modal,TextInput, Picker,KeyboardAvoidingView } from 'react-native';
 import {
   View,
   Button,
@@ -42,6 +42,7 @@ class Works extends Component{
       isLoading: true,
       workData: null,
       modalDate: "",
+      refreshing: false
     }
   }
 
@@ -99,7 +100,6 @@ class Works extends Component{
       body: formData,
     }
 
-    console.log(formData)
     return fetch(apiUrl, options).then((response) => response.json())
       .then((responseJson)=> {
         if(responseJson === 'succed') {
@@ -176,6 +176,12 @@ class Works extends Component{
      //this.setState({refresh:this.props.navigation.getParam('refresh')})
      console.log("refresh works")
     }
+  }
+
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getWorkList()
+    this.setState({refreshing:false})
   }
 
   render(){
@@ -301,6 +307,16 @@ class Works extends Component{
           <Content
             showsVerticalScrollIndicator={false}
             style={{ backgroundColor: "#f9f9f9"}}
+            contentContainerStyle={{flex:1}}
+          >
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this._onRefresh}
+              />
+            }
+            style={{backgroundColor:'#f9f9f9'}}
           >
             <View style={[styles.Box,{height:'auto',padding:0}]}>
               <Calendar
@@ -326,6 +342,7 @@ class Works extends Component{
             <View style={[styles.Box,{marginTop:0,paddingHorizontal:10}]}>
               {worklist}
             </View>
+            </ScrollView>
           </Content>
         </Container>
       );

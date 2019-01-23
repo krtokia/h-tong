@@ -23,7 +23,7 @@ class tong extends Component{
         if (permissions.length !== 2) {
           return new Error('Camera & Camera Roll Permissions Required');
         }
-        console.log({ permissions });
+        //console.log({ permissions });
         return true;
       });
     pickFromGallery = async () => {
@@ -72,7 +72,7 @@ class tong extends Component{
       );
 
   _pickImage = async () => {
-    let result = await ImagePicker.launchCameraAsync({
+    let result = await ImagePicker.launchImageLibraryAsync({
     });
 
     console.log(result);

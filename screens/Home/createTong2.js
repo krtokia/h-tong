@@ -18,7 +18,8 @@ import {
   Textarea,
   Item,
   Label,
-  Input
+  Input,
+  ActionSheet
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { NavigationActions } from "react-navigation";
@@ -30,7 +31,7 @@ import { StoreGlobal } from "../../App"
 import MapView, { Marker } from 'react-native-maps';
 
 const _this = null;
-
+var BUTTONS = ["카메라 촬영", "앨범에서 선택"];
 let id = 0;
 
 class createTong2 extends pickableImage{
@@ -587,7 +588,20 @@ class createTong2 extends pickableImage{
                     source={{ uri: this.state.imageSource }}
                  />
             <View style={{marginTop:20,alignItems:'center',justifyContent:'center'}}>
-                 <TouchableOpacity onPress={this.pickFromCamera.bind(this)}>
+                 <TouchableOpacity onPress={() => {
+                   ActionSheet.show(
+                   {
+                     options: BUTTONS,
+                     cancelButtonIndex: 3,
+                   },
+                   (buttonIndex) => {
+                     if(BUTTONS[buttonIndex] === "카메라 촬영") {
+                       this.pickFromCamera()
+                     } else {
+                       this._pickImage2()
+                     }
+                   })
+                 }}>
                  <View style={{borderRadius:10,width:150,height:150,backgroundColor:'#eee',justifyContent:'center',alignItems:'center'}}>
                   <NBIcon name="camera" style={{fontSize:50,color:'#999'}} />
                   <Text style={{color:'#999',fontSize:15}}>{tongDiv}통 사진 추가</Text>

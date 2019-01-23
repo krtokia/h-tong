@@ -8,7 +8,8 @@ import {
   TouchableWithoutFeedback,
   ActivityIndicator,
   Alert,
-  ScrollView
+  ScrollView,
+  TextInput
  } from 'react-native';
  import {
    Container,
@@ -25,12 +26,14 @@ import {
    Form,
    Textarea,
    Footer,
-   FooterTab
+   FooterTab,
+   ActionSheet
  } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
 
 import { StoreGlobal } from '../../App';
 import pickableImage from "../common.js"
+var BUTTONS = ["카메라 촬영", "앨범에서 선택"];
 
 import styles from './styles.js';
 
@@ -47,7 +50,8 @@ class TongWork extends Component{
       dateKor: "",
       dateOrigin: "",
       modal:false,
-      modalImg:null
+      modalImg:null,
+      memoModal: false
     }
   }
 
@@ -62,7 +66,7 @@ class TongWork extends Component{
 
 
   getWorklist = async() => {
-      return fetch("http://13.124.127.253/api/results.php?page=getWorkList&tongnum=" + this.state.tongnum)
+      return fetch("http://13.124.127.253/api/results.php?page=getWorkListMain&tongnum=" + this.state.tongnum + "&id=" + this.state.memId)
             .then((response) => response.json())
             .then((responseJson) => {
               if(!responseJson) {
@@ -73,11 +77,18 @@ class TongWork extends Component{
               dateKor = nowDate.getFullYear()+"년 "+this.numFormat(nowDate.getMonth()+1)+"월 "+this.numFormat(nowDate.getDate())+"일";
               dateOrigin = nowDate.getFullYear()+"-"+(nowDate.getMonth()+1)+"-"+nowDate.getDate();
 //              responseJson.unshift({workdate:'9999년 99월 99일'})
+              var resCount = 0;
+              responseJson.map((val) => {
+                if(val.userId === this.state.memId) {
+                  resCount++
+                }
+              })
               this.setState({
                 isLoading: false,
                 workData: responseJson,
                 dateKor:dateKor,
-                dateOrigin:dateOrigin
+                dateOrigin:dateOrigin,
+                resCount: resCount
               })
             })
             .catch((error) => {
@@ -89,7 +100,12 @@ class TongWork extends Component{
     this.getWorklist();
   }
 
-  imgupload(imageSource) {
+  memoSet = (imageSource) => {
+    this.setState({imageSource,memoModal:true})
+  }
+
+  imgupload() {
+    const { imageSource, memo } = this.state;
     let apiUrl = 'http://13.124.127.253/api/worklist.php?';
     let uri = null;
     let fileType = null;
@@ -98,6 +114,7 @@ class TongWork extends Component{
 
     formData.append('tongnum', StoreGlobal({type:'get',key:'tongnum'}));
     formData.append('userId', StoreGlobal({type:'get',key:'loginId'}));
+    formData.append('memo', memo);
 
     uri = imageSource;
     uriParts = uri.split('.');
@@ -108,7 +125,6 @@ class TongWork extends Component{
       name: `photo.${fileType}`,
       type: `image/${fileType}`,
     });
-
     options = {
       method: 'POST',
       body: formData,
@@ -143,6 +159,7 @@ class TongWork extends Component{
         dateObj[num] = [data[i].photolist];
       }
     }
+    console.log(dateObj)
     return dateObj;
   }
 
@@ -179,9 +196,10 @@ class TongWork extends Component{
             <WorkList
               workdate={val}
               photolist={convertData[val]}
-              method={this.imgupload}
+              method={this.memoSet}
               imgMethod={(data) => this.imgShow(data)}
               isToday={isToday}
+              resCount={this.state.resCount}
             />
           </View>
         })
@@ -239,6 +257,64 @@ class TongWork extends Component{
               )}
             </View>
           </Modal>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.memoModal}
+            onRequestClose={() => {
+              this.setState({memoModal:false,imageSource:null})
+            }}>
+            <View style={[styles.center,{flex:1,backgroundColor:'#0008'}]}>
+              <View style={{width:'80%',height:'50%',backgroundColor:'#fff',padding:10}}>
+                <View style={{flex:2,justifyContent:'center'}}>
+                  <Image source={{uri: this.state.imageSource }} style={{flex:1,resizeMode:'contain'}}/>
+                </View>
+                <View style={{flex:1,justifyContent:'center',padding:5}}>
+                  <Text style={{fontSize:12,color:'#666',marginBottom:3}}>한줄 메모:</Text>
+                  <TextInput
+                    ref="memo"
+                    style={[{borderColor:'#eee',borderWidth:1,width:'100%',height:'auto',fontSize:12,paddingRight:5}]}
+                    placeholder="30자 이하로 작성해주십시오."
+                    underlineColorAndroid="transparent"
+                    onChangeText={(content) => {
+                      if(content.length > 30) {
+                        Alert.alert('30자 이하로 작성해주십시오.')
+                        content = content.substr( 0, content.length-1 )
+                      }
+                      this.setState({memo:content})
+                    }}
+                  />
+                </View>
+                <View style={[styles.row2,{flex:1,alignItems:'flex-end',paddingBottom:5}]}>
+                  <View style={{flex:1,marginRight:3}}>
+                    <Button
+                      rounded
+                      block
+                      style={{backgroundColor:'#db3928'}}
+                      onPress={() => {
+                        this.setState({memoModal:false})
+                        this.imgupload()
+                      }}
+                    >
+                      <Text>완료</Text>
+                    </Button>
+                  </View>
+                  <View style={{flex:1,marginLeft:3}}>
+                    <Button
+                      rounded
+                      block
+                      style={{backgroundColor:'#aaa'}}
+                      onPress={() => {
+                        this.setState({memoModal:false,imageSource:null})
+                      }}
+                    >
+                      <Text>취소</Text>
+                    </Button>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </Modal>
           <Header style={{height:70,paddingTop:20,backgroundColor:'#db3928',borderBottomWidth:1,borderBottomColor:'#ccc'}}>
             <Left style={{flex:1}}>
             </Left>
@@ -257,7 +333,7 @@ class TongWork extends Component{
                 <WorkList
                   workdate={this.state.dateKor}
                   photolist={new Array()}
-                  method={this.imgupload}
+                  method={this.memoSet}
                   isToday={true}
                 />
               }
@@ -321,9 +397,26 @@ class WorkList extends pickableImage {
         { this.state.show &&
         <View style={[styles.Box,styles.Row,{flexWrap:'wrap',justifyContent:'flex-start'}]}>
           {photolist}
-          { this.props.isToday &&
+          { (this.props.isToday && this.props.resCount < 3) &&
           <TouchableOpacity style={styles.workListBox}
-            onPress={this._pickImage}
+            onPress={() => {
+              if(this.props.resCount < 3) {
+              ActionSheet.show(
+              {
+                options: BUTTONS,
+                cancelButtonIndex: 3,
+              },
+              (buttonIndex) => {
+                if(BUTTONS[buttonIndex] === "카메라 촬영") {
+                  this.pickFromCamera()
+                } else {
+                  this._pickImage2()
+                }
+              }
+            )} else {
+              Alert.alert('더이상 올릴 수 없습니다.')
+            }
+            }}
           >
             <View style={[styles.center,{flex:1}]}>
               <Icon name="plus" type="FontAwesome" style={{fontSize:30,color:'#666'}} />

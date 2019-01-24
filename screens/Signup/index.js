@@ -48,7 +48,7 @@ export default class Signup extends Component {
       certStart: false,
       certFin: false,
       idCertFin: false,
-      agree1: false,
+      agreeAll: false,
       agree2: false,
       agree3: false,
       isLoading1: false,
@@ -61,6 +61,14 @@ export default class Signup extends Component {
     this.setState({ [event.target.id]: event.target.value });
     for (const key in event) {
       console.log(key + " : " + event[key])
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(this.state.agree1 && this.state.agree2) {
+      if(!this.state.agreeAll) {
+        this.setState({agreeAll:true})
+      }
     }
   }
 
@@ -211,10 +219,27 @@ export default class Signup extends Component {
         }
   }
 
+  agreeAll() {
+    const { agreeAll, agree1, agree2 } = this.state;
+    if(agreeAll) {
+      this.setState({
+        agreeAll: false,
+        agree1: false,
+        agree2: false
+      })
+    } else {
+      this.setState({
+        agreeAll: true,
+        agree1: true,
+        agree2: true
+      })
+    }
+  }
+
   render() {
-    const { certStart, certFin, idCertFin, agree1, agree2, agree3 } = this.state;
+    const { certStart, certFin, idCertFin, agree1, agree2, agreeAll } = this.state;
     let signupGo = false;
-    if(certStart && certFin && idCertFin && agree1 && agree2 && agree3) {
+    if(certStart && certFin && idCertFin && agree1 && agree2) {
       signupGo = true
     }
     return (
@@ -445,23 +470,23 @@ export default class Signup extends Component {
           <View style={[styles.inputBox,{flexDirection:'column',width:'100%',flex:2.5,alignItems:'flex-start'}]}>
             <View style={styles.agree}>
               <TouchableOpacity style={{flexDirection:'row'}}
-                onPress={() => this.setState({agree1:!this.state.agree1})}
+                onPress={() => this.agreeAll()}
               >
-                <Icon name={this.state.agree1 ? "check-square-o" : "square-o"} type="FontAwesome" style={styles.agreeIcon} />
+                <Icon name={this.state.agreeAll ? "check-square-o" : "square-o"} type="FontAwesome" style={styles.agreeIcon} />
                 <Text style={styles.agreeText}> 모든 운영원칙 전체동의(필수)</Text>
               </TouchableOpacity>
             </View>
             <View style={[styles.agree,{flex:2,justifyContent:'space-around'}]}>
               <TouchableOpacity style={{flexDirection:'row'}}
-                onPress={() => this.setState({agree2:!this.state.agree2})}
+                onPress={() => this.setState({agree1:!this.state.agree1})}
               >
-                <Icon name={this.state.agree2 ? "check-square-o" : "square-o"} type="FontAwesome" style={styles.agreeIcon} />
+                <Icon name={this.state.agree1 ? "check-square-o" : "square-o"} type="FontAwesome" style={styles.agreeIcon} />
                 <Text style={styles.agreeText}> 이용약관 동의(필수)</Text>
               </TouchableOpacity>
               <TouchableOpacity style={{flexDirection:'row'}}
-                onPress={() => this.setState({agree3:!this.state.agree3})}
+                onPress={() => this.setState({agree2:!this.state.agree2})}
               >
-                <Icon name={this.state.agree3 ? "check-square-o" : "square-o"} type="FontAwesome" style={styles.agreeIcon} />
+                <Icon name={this.state.agree2 ? "check-square-o" : "square-o"} type="FontAwesome" style={styles.agreeIcon} />
                 <Text style={styles.agreeText}> 개인정보 취급방침 동의(필수)</Text>
               </TouchableOpacity>
             </View>

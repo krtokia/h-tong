@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Keyboard,
   Alert,
   Button,
   TextInput,
@@ -11,7 +12,8 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   Text,
-  ActivityIndicator
+  ActivityIndicator,
+  ScrollView
 } from 'react-native';
 import { Icon } from 'native-base';
 import { Header, StackActions, NavigationActions } from 'react-navigation';
@@ -54,6 +56,7 @@ export default class Signup extends Component {
       isLoading1: false,
       isLoading2: false,
       isLoading3: false,
+      keyboard: false
     };
   }
 
@@ -71,6 +74,7 @@ export default class Signup extends Component {
       }
     }
   }
+
 
   sendSMS() {
     this.setState({isLoading1:true})
@@ -243,9 +247,10 @@ export default class Signup extends Component {
       signupGo = true
     }
     return (
-      <KeyboardAvoidingView behavior = 'position'  enabled keyboardVerticalOffset={5}>
       <ImageBackground source={bg} style={styles.background}>
+      <ScrollView style={styles.contain}>
       <View style={styles.container}>
+
         <View style={{width:'80%',height:'80%',justifyContent:'center',alignItems:'center'}}>
           {/* 전화번호 입력부 */}
           <View style={styles.inputBox}>
@@ -256,10 +261,11 @@ export default class Signup extends Component {
               editable={this.state.certStart ? false : true}
               placeholder="연락처를 입력 해 주세요"
               underlineColorAndroid="transparent"
+              keyboardType="numeric"
               onChangeText={(content) => {
                 this.setState({tempPhone:content.replace(/[^0-9]/g,'')})
               }}
-              onFocus={() => {this.setState({phoneNm:this.state.tempPhone,phoneEnd:false})}}
+              onFocus={() => {this.setState({phoneNm:this.state.tempPhone,phoneEnd:false,keyboard:true})}}
               onBlur={() => {
                 if(this.state.tempPhone && this.state.tempPhone.length != 11) {
                   Alert.alert('현장통','연락처를 알맞게 기입하세요.')
@@ -267,7 +273,8 @@ export default class Signup extends Component {
                 } else {
                   this.setState({
                       phoneNm:this.state.tempPhone.replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]{4})([0-9]{4})/,"$1-$2-$3"),
-                      phoneEnd: true
+                      phoneEnd: true,
+                      keyboard:false
                   })
                 }
               }}
@@ -321,10 +328,13 @@ export default class Signup extends Component {
                 editable = {this.state.certStart ? true : false }
                 placeholder="인증번호를 입력 해 주세요"
                 underlineColorAndroid="transparent"
+                keyboardType="numeric"
                 onChangeText={(content) => {
                   this.setState({phoneId:content.replace(/[^0-9]/g,'')})
                 }}
                 value={this.state.phoneId}
+                onFocus={() => this.setState({keyboard:true})}
+                onBlur={() => this.setState({keyboard:false})}
               >
               </TextInput>
             </View>
@@ -365,6 +375,7 @@ export default class Signup extends Component {
                 placeholder={'아이디를 입력 해 주세요.'}
                 style={styles.input}
                 underlineColorAndroid='rgba(0,0,0,0)'
+                onFocus={() => this.setState({keyboard:true})}
                 onBlur={() => {
                   if(this.state.userId && this.state.userId.length < 4) {
                     Alert.alert('현장통','아이디를 4자 이상 입력해주세요.')
@@ -417,6 +428,7 @@ export default class Signup extends Component {
               placeholder={'이름을 입력 해 주세요.'}
               style={styles.input}
               underlineColorAndroid='rgba(0,0,0,0)'
+              onFocus={() => this.setState({keyboard:true})}
               onBlur={() => {
                 if(this.state.userName && this.state.userName.length < 2) {
                   Alert.alert('현장통','이름을 2자 이상 입력해주세요.')
@@ -425,6 +437,7 @@ export default class Signup extends Component {
                   Alert.alert('현장통','이름을 8자 이내로 입력해주세요.')
                   this.refs['userName'].focus();
                 }
+                this.setState({keyboard:false})
               }}
             />
           </View>
@@ -438,6 +451,7 @@ export default class Signup extends Component {
                     Alert.alert('현장통','패스워드길이가 너무 짧습니다.')
                     this.refs['userPass'].focus();
                   }
+                  this.setState({keyboard:false})
                 }
               }
               onChangeText={(userPass) => this.setState({ userPass })}
@@ -445,6 +459,7 @@ export default class Signup extends Component {
               secureTextEntry={true}
               style={styles.input}
               underlineColorAndroid='rgba(0,0,0,0)'
+              onFocus={() => this.setState({keyboard:true})}
             />
           </View>
           {/* 패스워드 확인 입력부 */}
@@ -458,12 +473,14 @@ export default class Signup extends Component {
                     Alert.alert('현장통','패스워드길이가 너무 짧습니다.')
                     this.refs['userPass2'].focus();
                   }
+                  this.setState({keyboard:false})
                 }
               }
               placeholder={'패스워드를 한번 더 입력 해 주세요.'}
               secureTextEntry={true}
               style={styles.input}
               underlineColorAndroid='rgba(0,0,0,0)'
+              onFocus={() => this.setState({keyboard:true})}
             />
           </View>
           {/* 동의 박스 */}
@@ -532,9 +549,11 @@ export default class Signup extends Component {
             </View>
           </View>
         </View>
+
       </View>
+      <View style={{height:this.state.keyboard ? 200 : 0}} />
+      </ScrollView>
       </ImageBackground>
-      </KeyboardAvoidingView>
     );
   }
 }

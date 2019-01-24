@@ -263,7 +263,6 @@ class createTong2 extends pickableImage{
     }
 
 	createTong(tongType) {
-    this.setState({isLoading10:true})
     const { imageSource, tongName, projectnm, authnum, constructor, supervisor, owner, contact, term, scale, addr, creator, fLatitude, fLongitude} = this.state;
     if(tongType == 'T') {
       if(!projectnm || !authnum || !constructor || !supervisor || !owner || !contact || !term || !scale || !addr || !fLatitude || !fLongitude ) {
@@ -271,6 +270,8 @@ class createTong2 extends pickableImage{
         return false
       }
     }
+
+    this.setState({isLoading10:true})
 
     let apiUrl = 'http://13.124.127.253/api/createTong.php';
     let options = null;

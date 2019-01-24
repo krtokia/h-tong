@@ -6,7 +6,8 @@ const deviceHeight = Dimensions.get("window").height;
 
 export default {
   container: {
-    flex: 1,
+    width: deviceWidth,
+    height: deviceHeight,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -46,5 +47,9 @@ export default {
   agreeIcon: {
     fontSize:15,
     color:'#333'
+  },
+  contain: {
+    height: deviceHeight,
+    width: deviceWidth
   }
 }

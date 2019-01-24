@@ -64,6 +64,7 @@ class TongSearch extends Component{
     let tongs;
     if (this.state.dataSource) {
       tongs = this.state.dataSource.map((val,key) => {
+        console.log(val)
         return <View key={key}>
             <TongList
               name={val.tongtitle}
@@ -133,7 +134,7 @@ class TongSearch extends Component{
 }
 class TongList extends Component{
   render() {
-    let tongimg = this.props.tongimg ? "http://13.124.127.253/images/tongHead/"+this.props.tongimg : "http://13.124.127.253/images/tongHead/noImage.png"
+    let tongimg = this.props.tongImg ? "http://13.124.127.253/images/tongHead/"+this.props.tongImg : "http://13.124.127.253/images/tongHead/noImage.png"
     return(
       <TouchableOpacity onPress={this.props.Href}>
         <View style={[styles.friendList,{justifyContent:'flex-start'}]}>

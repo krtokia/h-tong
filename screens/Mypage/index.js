@@ -52,6 +52,7 @@ class Mypage extends pickableImage{
       .then((response) => response.json())
       .then((responseJson) => {
         //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        console.log(responseJson)
         this.setState({
           isLoading: false,
           dataSource: responseJson[0],

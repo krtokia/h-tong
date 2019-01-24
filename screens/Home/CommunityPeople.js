@@ -88,6 +88,10 @@ export default class CommunityPeople extends Component{
     this.getFriend()
   }
 
+  componentDidUpdate() {
+    console.log('pepple')
+  }
+
   attendCheck(name) {
     Alert.alert(
       '출근 체크',

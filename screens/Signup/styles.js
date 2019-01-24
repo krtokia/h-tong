@@ -10,35 +10,41 @@ export default {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  input: {
-    width: 200,
-    height: 44,
-    padding: 10,
-    borderWidth: 1,
-    color: "#000",
-    marginBottom: 10,
-    flexDirection: "row",
-    backgroundColor: "rgba(255,255,255,0.8)",
-    borderWidth: 0,
+  inputBox: {
+    flex:1,
+    flexDirection:'row',
+    padding:5,
+    justifyContent:'center',
   },
-  background: {
-  width: '100%',
-  height: '100%',
-  backgroundColor: "rgba(0,0,0,0.1)"
-  },
-  logo: {
-  resizeMode: "contain",
-  height:deviceHeight/4,
-  alignSelf: "center",
-  marginTop: 50,
-  marginBottom: 50,
-  },
-  inputBoxes: {
-    marginTop: 50
-  },
-  btnBoxes: {
+  inputBox2: {
 
   },
-  itemInput: {
+  input: {
+    width:'100%',
+    height:'100%',
+    backgroundColor: "rgba(255,255,255,0.8)",
+    padding:10
+  },
+  background: {
+  width:'100%',
+  height:'100%',
+  backgroundColor: "rgba(0,0,0,0.1)"
+  },
+  agree: {
+    width:'100%',
+    flex:1,
+    padding:10,
+    borderBottomWidth:1,
+    borderBottomColor:'#666',
+    justifyContent:'center',
+    alignItems:'flex-start'
+  },
+  agreeText: {
+    fontSize: 10,
+    color:'#333'
+  },
+  agreeIcon: {
+    fontSize:15,
+    color:'#333'
   }
 }

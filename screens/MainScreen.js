@@ -164,6 +164,12 @@ const CommunityTabNavi = createBottomTabNavigator({
       backgroundColor: '#fff',
     },
   },
+  // navigationOptions: ({ navigation }) => ({
+  //     tabBarOnPress: (navigation) => {
+  //         console.log(navigation)
+  //         navigation.defaultHandler(0);
+  //     },
+  // }),
 })
 
 

@@ -113,6 +113,7 @@ class CommunityMain extends pickableImage{
       .then((response) => response.json())
       .then((responseJson) => {
         //let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        StoreGlobal({type:'set',key:'communityMember',value:responseJson[0]['isMember']})
         this.setState({
           isLoading: false,
           dataSource: responseJson,
@@ -148,7 +149,6 @@ class CommunityMain extends pickableImage{
 
   componentDidMount() {
     //console.log("START componentDidMount");
-    console.log(this.state.tongnum)
     this.getTong();
     this.getBbs();
     this.getFriend();
@@ -244,7 +244,6 @@ class CommunityMain extends pickableImage{
       return fetch(apiUrl, options).then((response) => response.json())
         .then((responseJson)=> {
           if(responseJson === 'succed') {
-            console.log(responseJson);
             Alert.alert(
               "현장통",
               "수정 되었습니다."
@@ -276,7 +275,6 @@ class CommunityMain extends pickableImage{
     return fetch(apiUrl, options).then((response) => response.json())
       .then((responseJson)=> {
         if(responseJson === 'succed') {
-          console.log(responseJson);
           Alert.alert(
             "현장통",
             "삭제 되었습니다."
@@ -314,7 +312,6 @@ class CommunityMain extends pickableImage{
       return fetch(apiUrl, options).then((response) => response.json())
         .then((responseJson)=> {
           if(responseJson === 'succed') {
-            console.log(responseJson);
             this.setState({refresh:Date(Date.now()).toString()})
           } else {
             console.log(responseJson);
@@ -333,7 +330,7 @@ class CommunityMain extends pickableImage{
 
   modifyReply(content, boardnum, replynum) {
     const {tongnum, memId} = this.state;
-    let apiUrl = 'http://13.124.127.253/api/???.php';
+    let apiUrl = 'http://13.124.127.253/api/write_reply.php?action=update';
     options = {
       method: 'POST',
       headers: {
@@ -344,13 +341,13 @@ class CommunityMain extends pickableImage{
         tongnum : tongnum,
         boardnum: boardnum,
         replynum: replynum,
-        reContent: content,
+        content: content,
       })
     }
     return fetch(apiUrl, options).then((response) => response.json())
       .then((responseJson)=> {
         if(responseJson === 'succed') {
-          console.log(responseJson);
+          this.getBbs()
           this.setState({refresh:Date(Date.now()).toString()})
         } else {
           console.log(responseJson);
@@ -387,7 +384,6 @@ class CommunityMain extends pickableImage{
       return fetch(apiUrl, options).then((response) => response.json())
         .then((responseJson)=> {
           if(responseJson === 'succed') {
-            console.log(responseJson);
             this.setState({refresh:Date(Date.now()).toString()})
           } else {
             console.log(responseJson);
@@ -497,6 +493,7 @@ class CommunityMain extends pickableImage{
   _goBack = () => {
     const { navigation } = this.props;
 //    navigation.navigate('TongInvite',{refresh: new Date(Date.now()).toString()});
+console.log("aaaaaa")
     navigation.navigate("Home",{refresh:Date(Date.now()).toString()});
   }
 
@@ -555,7 +552,6 @@ class CommunityMain extends pickableImage{
       )
     } else {
 
-
     const TongType = this.props.navigation.getParam('tongType');
     let weatherBox;
     if(TongType === "T") {
@@ -585,6 +581,10 @@ class CommunityMain extends pickableImage{
     let bbsList;
     if (this.state.bbsData) {
       bbsList = this.state.bbsData.map((val, key) => {
+        let canModify = false
+        if(val.author === this.state.memId || StoreGlobal({type:'get',key:'isAdmin'}) == 1) {
+          canModify=true;
+        }
         return <TouchableWithoutFeedback onPress={() => {this.setState({parentShow:!this.state.parentShow})}} key={key}>
               <View style={styles.TongContentBox}>
                 <View style={styles.TongContentHeader}>
@@ -595,7 +595,7 @@ class CommunityMain extends pickableImage{
                       <Text style={{fontSize:10,color:'#aaa'}}>{val.date}</Text>
                     </View>
                   </View>
-                  { "ID" === "ID" &&
+                  { canModify &&
                   <ToggleMenu
                     setModifyParent={this.setModify}
                     setDeleteParent={this.setDelete}
@@ -821,7 +821,7 @@ class CommunityMain extends pickableImage{
               <NBIcon name="chevron-circle-left" type="FontAwesome" style={styles.tongBackBtn} />
               </TouchableOpacity>
             </Animated.View>
-            <Animated.View style={{width:30,height:30,position:'absolute',top:32,left:10,borderRadius:15,opacity:imageOpacityR}}>
+            <Animated.View style={{zIndex:10,width:30,height:30,position:'absolute',top:32,left:10,borderRadius:15,opacity:imageOpacityR}}>
               <TouchableOpacity style={{width:'100%',height:'100%',justifyContent:'center',alignItems:'center'}}
                 onPress={this._goBack}
               >
@@ -923,7 +923,7 @@ class ReplyView extends Component {
             </View>
             <View style={{flex:0.5}} />
             <View style={{flex:9}}>
-              { "ID" === "ID" ? (
+              { val.replyer === StoreGlobal({type:'get',key:'loginId'}) ? (
               <ReplyToggle
                 replyVal={val}
                 parentShow={this.props.parentShow}
@@ -935,7 +935,7 @@ class ReplyView extends Component {
               }
             </View>
             <View style={[styles.Row,{flex:1.5,justifyContent:'space-around'}]}>
-            { "ID" === "ID" &&
+            { val.replyer === StoreGlobal({type:'get',key:'loginId'}) || StoreGlobal({type:'get',key:'isAdmin'}) == 1 &&
               <TouchableOpacity onPress={() => this.setReplyDelete(val)}>
                 <NBIcon name="trash-o" type="FontAwesome" style={[fontStyle,{color:'#db3928'}]} />
               </TouchableOpacity>
@@ -987,7 +987,7 @@ class ReplyToggle extends Component {
           />
           <TouchableOpacity
             onPress={this.modifyReply}
-            style={[styles.center,{width:"70%",height:20,backgroundColor:'green',marginTop:10,alignSelf:'center'}]}>
+            style={[styles.center,{width:"70%",height:20,backgroundColor:'#db3928',marginTop:10,alignSelf:'center'}]}>
             <Text style={{fontSize:13,color:'#fff'}}>저장</Text>
           </TouchableOpacity>
         </Form>
@@ -1018,7 +1018,13 @@ class ReplyMake extends Component {
     return (
       <View style={styles.TongContentReply}>
       <TouchableOpacity style={{width:'100%',alignItems:'center'}}
-        onPress={() => {this.setState({show:!this.state.show})}}>
+        onPress={() => {
+          if(this.state.isMember > 0) {
+            this.setState({show:!this.state.show})
+          } else {
+            Alert.alert("커뮤니티에 먼저 가입해야 합니다.")
+          }
+        }}>
         <Text style={this.state.show ? styles.ContentReplyT : styles.ContentReplyF}>{this.state.show ? "접기" : "댓글달기"} <Icon name={this.state.show ? "angle-up" : "comment"} /></Text>
       </TouchableOpacity>
       { this.state.show && (

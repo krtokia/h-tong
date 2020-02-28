@@ -21,7 +21,7 @@ class tong extends Component{
       .then(r => r.filter(o => o.status === 'granted'))
       .then(permissions => {
         if (permissions.length !== 2) {
-          return new Error('Camera & Camera Roll Permissions Required');
+          return new Error('카메라 기능은 권한이 필요합니다');
         }
         //console.log({ permissions });
         return true;
@@ -39,6 +39,8 @@ class tong extends Component{
         });
     };
 
+  
+
     pickFromCamera = async () => {
     //  this.handleModalDismiss();
 
@@ -55,8 +57,8 @@ class tong extends Component{
 
     permissionsAlert = () =>
       Alert.alert(
-        'Permissions Required',
-        'This app requires Camera & Camera Roll access to function properly. Please go to settings to enable manually (or restart the app).',
+        '권한이 필요합니다',
+        '이 어플은 카메라 권한이 활성화 되있어야합니다. 설정에서 권한을 활성화 해 주세요 (혹은 어플을 다시 시작 해 주세요).',
         [
           { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
           {
